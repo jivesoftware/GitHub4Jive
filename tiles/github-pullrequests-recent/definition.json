@@ -1,0 +1,21 @@
+{
+    "sampleData" : {
+        "title" : "github-pullrequests-recent",
+        "contents" : [ {
+            "text" : "Initial text to be replaced"
+        } ],
+        "config" : {
+               "listStyle" : "contentList"
+        }
+    },
+    "displayName" : "github-pullrequests-recent",
+    "name" : "github-pullrequests-recent",
+    "description" : "github-pullrequests-recent",
+    "style" : "LIST",
+    "icons" : {
+        "16" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+        "48" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+        "128" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    },
+    "action": "/github-pullrequests-recent/action"
+}

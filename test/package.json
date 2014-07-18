@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "jive-testing-framework": "*",
+    "q": "*"
+  },
+  "devDependencies": {
+    "should": "^4.0.4"
+  }
+}

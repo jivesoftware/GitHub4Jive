@@ -1,0 +1,12 @@
+{
+    "sampleData" : {},
+    "displayName" : "github-pullrequests-active",
+    "name" : "github-pullrequests-active",
+    "description" : "github-pullrequests-active",
+    "style" : "ACTIVITY",
+    "icons" : {
+        "16" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+        "48" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+        "128" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    }
+}

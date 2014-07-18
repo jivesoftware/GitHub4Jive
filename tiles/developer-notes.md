@@ -51,7 +51,8 @@ As a any Jive User with access to the place linked to a GitHub repository:
 
 As a GitHub Contributor:
 <ol>
-    <li>I should be able to see Issues that I have commented on. Above others, unless it has been closed or otherwise inactive. In other words, it should not hide new issues by showing old Issues that I don't need to see anymore.</li>
+    <li>I should be able to see Issues that I have commented on. Above others, unless it has been closed or otherwise inactive. 
+    In other words, it should not hide new issues by showing old Issues that I don't need to see anymore.</li>
     <li>I should be able to see my most recent pull requests and what state they are in.
         <ul>
             <li>Linked to GitHub page.</li>

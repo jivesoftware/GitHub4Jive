@@ -1,0 +1,117 @@
+{
+  "9c31dfac-55bd-4e57-bfbd-f7454392bb98": {
+    "sampleData": {
+      "title": "github-commits-recent",
+      "contents": [
+        {
+          "text": "Initial text to be replaced"
+        }
+      ],
+      "config": {
+        "listStyle": "contentList"
+      }
+    },
+    "displayName": "github-commits-recent",
+    "name": "github-commits-recent",
+    "description": "github-commits-recent",
+    "style": "LIST",
+    "icons": {
+      "16": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    },
+    "action": "/github-commits-recent/action",
+    "id": "9c31dfac-55bd-4e57-bfbd-f7454392bb98",
+    "definitionDirName": "github-commits-recent"
+  },
+  "474b57ae-f1d9-43a1-868a-e123ae26a67c": {
+    "sampleData": {
+      "title": "github-issues-recent",
+      "contents": [
+        {
+          "text": "Initial text to be replaced"
+        }
+      ],
+      "config": {
+        "listStyle": "contentList"
+      }
+    },
+    "displayName": "github-issues-recent",
+    "name": "github-issues-recent",
+    "description": "github-issues-recent",
+    "style": "LIST",
+    "icons": {
+      "16": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    },
+    "action": "/github-issues-recent/action",
+    "id": "474b57ae-f1d9-43a1-868a-e123ae26a67c",
+    "definitionDirName": "github-issues-recent"
+  },
+  "cdd76b76-e4a8-4a7a-bad3-2d5da943f5a2": {
+    "sampleData": {
+      "message": "github-project-health",
+      "sections": [
+        {
+          "color": "#ff0000",
+          "label": "dummy"
+        },
+        {
+          "color": "#ff8000",
+          "label": "dummy"
+        },
+        {
+          "color": "#dcdc00",
+          "label": "dummy"
+        },
+        {
+          "color": "#80bb00",
+          "label": "dummy"
+        },
+        {
+          "color": "#00bb00",
+          "label": "dummy"
+        }
+      ],
+      "activeIndex": 4,
+      "status": "Excellent"
+    },
+    "displayName": "github-project-health",
+    "name": "github-project-health",
+    "description": "github-project-health",
+    "style": "GAUGE",
+    "icons": {
+      "16": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    },
+    "id": "cdd76b76-e4a8-4a7a-bad3-2d5da943f5a2",
+    "definitionDirName": "github-project-health"
+  },
+  "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d": {
+    "sampleData": {
+      "title": "github-pullrequests-recent",
+      "contents": [
+        {
+          "text": "Initial text to be replaced"
+        }
+      ],
+      "config": {
+        "listStyle": "contentList"
+      }
+    },
+    "displayName": "github-pullrequests-recent",
+    "name": "github-pullrequests-recent",
+    "description": "github-pullrequests-recent",
+    "style": "LIST",
+    "icons": {
+      "16": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
+      "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+    },
+    "action": "/github-pullrequests-recent/action",
+    "id": "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d",
+    "definitionDirName": "github-pullrequests-recent"
+  }
+}

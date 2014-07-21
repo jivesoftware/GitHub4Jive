@@ -1,0 +1,16 @@
+{
+    "default": {
+        "name": "defaultTemplate",
+        "displayName": "GitHub4Jive",
+        "description": "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo.",
+        "tiles": [
+            "github-commits-recent",
+            "github-issues-recent",
+            "github-project-health",
+            "github-pullrequests-recent",
+            "github-commits-active",
+            "github-issues-active",
+            "github-pullrequests-active"
+        ]
+    }
+}

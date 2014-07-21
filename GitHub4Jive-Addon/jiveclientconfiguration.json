@@ -1,5 +1,5 @@
 {
-    "clientUrl": "http://localhost",
+    "clientUrl": "http://lt-a4-110375.jiveland.com/",
     "port": "8090",
     "development": true,
 	"logLevel": "DEBUG",
@@ -8,5 +8,11 @@
         "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66",
         "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
+    },
+    "oauth2-github": {
+        "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
+        "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token",
+        "oauth2ConsumerKey": "1443920cbbcb2fb97f06",
+        "oauth2ConsumerSecret": "3701567a1f08868cdd93fe932fd62e2a2b57643e"
     }
 }

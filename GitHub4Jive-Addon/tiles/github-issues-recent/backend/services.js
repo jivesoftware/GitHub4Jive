@@ -14,102 +14,110 @@
  *    limitations under the License.
  */
 
+var count = 0;
 var jive = require("jive-sdk");
-var q = require('q');
+var github = require("./github")
 
-/**
- * Handles actually pushing data to the tile instance
- * @param instance
- */
+var colorMap = {
+    'green':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
+    'red':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_red.png',
+    'disabled':'http://cdn1.iconfinder.com/data/icons/function_icon_set/warning_48.png'
+};
+
 function processTileInstance(instance) {
     jive.logger.debug('running pusher for ', instance.name, 'instance', instance.id);
 
-    // creates a data update structure
-    function getFormattedData(count) {
-        return {
-            data: {
-                "title": "Simple Counter",
-                "contents": [
-                    {
-                        "text": "Current count: " + count,
-                        "icon": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
-                        "linkDescription": "Current counter."
-                    }
-                ],
-                "config": {
-                    "listStyle": "contentList"
-                },
-                "action": {
-                    "text": "Share State",
-                    "context": {
-                        "count": count
-                    }
-                }
-            }
-        };
-    }
+    var config = tile.config;
 
-    var store = jive.service.persistence();
-    return store.find('exampleStore', { 'key': 'count' } ).then(function(found) {
-        found = found.length > 0 ? found[0].count : parseInt(instance.config.startSequence, 10);
-
-        store.save('exampleStore', 'count', {
-            'key':'count',
-            'count':found + 1
-        }).then(function() {
-            return jive.tiles.pushData(instance, getFormattedData(found));
-        });
-    }, function(err) {
-        jive.logger.debug('Error encountered, push failed', err);
+    github.getData( org, repo, types, config.ticketID, function(data) {
+        callback(data)
     });
 }
 
-/**
- * Iterates through the tile instances registered in the service, and pushes an update to it
- */
-var pushData = function() {
-    var deferred = q.defer();
-    jive.tiles.findByDefinitionName('github-issues-recent').then(function(instances) {
-        if (instances) {
-            q.all(instances.map(processTileInstance)).then(function() {
-                deferred.resolve(); //success
-            }, function() {
-                deferred.reject(); //failure
-            });
-        } else {
-            jive.logger.debug("No jive instances to push to");
-            deferred.resolve();
+function prepareData(tile, data, callback) {
+    var config = tile.config;
+    jive.logger.info("PREPARE DATA: ticketID=" + config.ticketID)
+
+    // use path for repository: organization / repository
+    var repository = config["organization"];        // for now, this holds the full name ...
+
+    // to check .. can we pass an object to the action so that we have a cleaner interface ?
+    var fields = Object.keys(data).map(function(field) {
+        return {
+            text: '' + data[field].title,
+            'icon': (data[field].labels.search("bug") >= 0)? colorMap["red"] : colorMap["green"],
+            'linkDescription':'Visit this job in Github',
+            'action':{
+                url : jive.service.options['clientUrl'] + '/github-issues-recent/action?id='+ new Date().getTime(),
+                context : {url:data[field].url,title:data[field]['full_title'],number:data[field].number,repo:repository, labels:data[field].labels  }
+            }
         }
     });
-    return deferred.promise;
-};
 
-/**
- * Schedules the tile update task to automatically fire every 10 seconds
- */
-exports.task = [
-    {
-        'interval' : 10000,
-        'handler' : pushData
-    }
-];
+    var preparedData = {
+        title : "Repository: '" + repository +"'" ,
+        contents : fields,
+        action: {
+            text: 'Github' ,
+            'url': 'https://www.github.com'
+        }
+    };
 
-/**
- * Defines event handlers for the tile life cycle events
- */
-exports.eventHandlers = [
+    jive.logger.info("Prepared data", JSON.stringify(preparedData));
 
-    // process tile instance whenever a new one is registered with the service
-    {
-        'event' : jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : processTileInstance
+    callback(preparedData);
+}
+
+function pushUpdate(tile) {
+    var config = tile.config;
+    console.log('pushing update: '+ tile.name +','+ config.organization + ", " + tile.jiveCommunity);
+
+    github.getData(tile.config.organization, tile.config.repository, "", tile.config.ticketID, function(data) {
+        prepareData(tile, data, function(prepared) {
+            jive.tiles.pushData(tile, { data: prepared });
+        });
+    });
+}
+
+exports.task = new jive.tasks.build(
+    // runnable
+    function() {
+        jive.tiles.findByDefinitionName( 'github-issues-recent' ).then( function(tiles) {
+            tiles.forEach(pushUpdate) ;
+        });
     },
 
-    // process tile instance whenever an existing tile instance is updated
+    // interval (optional)
+    10000
+);
+
+exports.eventHandlers = [
+
     {
-        'event' : jive.constants.globalEventNames.INSTANCE_UPDATED,
-        'handler' : processTileInstance
+        'event': 'activityUpdateInstance',
+        'handler' : function(theInstance){
+            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
+            if ( theInstance['name'] == 'github-issues-recent' ) {
+                pushUpdate(theInstance);
+            }
+        }
+    },
+    {
+        'event': jive.constants.globalEventNames.NEW_INSTANCE,
+        'handler' : function(theInstance){
+            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
+            if ( theInstance['name'] == 'github-issues-recent' ) {
+                pushUpdate(theInstance);
+            }
+        }
+    },
+    {
+        'event': jive.constants.globalEventNames.INSTANCE_UPDATED,
+        'handler' : function(theInstance){
+            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
+            if ( theInstance['name'] == 'github-issues-recent' ) {
+                pushUpdate(theInstance);
+            }
+        }
     }
 ];
-
-

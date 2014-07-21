@@ -24,14 +24,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://localhost:8090/github-commits-recent/action",
+            "action": "http://lt-a4-110375.jiveland.com:8090/github-commits-recent/action",
             "id": "9c31dfac-55bd-4e57-bfbd-f7454392bb98",
             "definitionDirName": "github-commits-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-commits-recent/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-commits-recent/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {
@@ -54,14 +54,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://localhost:8090/github-issues-recent/action",
+            "action": "http://lt-a4-110375.jiveland.com:8090/github-issues-recent/action",
             "id": "474b57ae-f1d9-43a1-868a-e123ae26a67c",
             "definitionDirName": "github-issues-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-issues-recent/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-issues-recent/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {
@@ -104,9 +104,9 @@
             "definitionDirName": "github-project-health",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-project-health/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-project-health/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {
@@ -129,14 +129,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://localhost:8090/github-pullrequests-recent/action",
+            "action": "http://lt-a4-110375.jiveland.com:8090/github-pullrequests-recent/action",
             "id": "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d",
             "definitionDirName": "github-pullrequests-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-pullrequests-recent/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-pullrequests-recent/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -153,9 +153,9 @@
             "definitionDirName": "github-commits-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-commits-active/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-commits-active/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -172,9 +172,9 @@
             "definitionDirName": "github-issues-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-issues-active/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-issues-active/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -191,9 +191,9 @@
             "definitionDirName": "github-pullrequests-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://localhost:8090/github-pullrequests-active/configure",
-            "unregister": "http://localhost:8090/unregister",
-            "register": "http://localhost:8090/registration"
+            "config": "http://lt-a4-110375.jiveland.com:8090/github-pullrequests-active/configure",
+            "unregister": "http://lt-a4-110375.jiveland.com:8090/unregister",
+            "register": "http://lt-a4-110375.jiveland.com:8090/registration"
         }
     ],
     "templates": [

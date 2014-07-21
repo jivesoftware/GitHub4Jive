@@ -1,3 +1,4 @@
+
 (function() {
     jive.tile.onOpen(function(config, options ) {
         gadgets.window.adjustHeight();
@@ -7,14 +8,17 @@
         }
 
         var json = config || {
-            "startSequence": "1"
+            "organization" : "" ,
+            "repository" : ""
         };
 
         // prepopulate the sequence input dialog
-        $("#start_sequence").val( json["startSequence"]);
+        $("#organization").val( json["organization"]);
+        $("#repository").val( json["repository"]);
 
         $("#btn_submit").click( function() {
-            config["startSequence"] = $("#start_sequence").val();
+            config["organization"] = $("#organization").val();
+            config["repository"] = $("#repository").val();
             jive.tile.close(config, {} );
             gadgets.window.adjustHeight(300);
         });

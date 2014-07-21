@@ -1,0 +1,20 @@
+{
+  "d136e893-ecb3-4300-bbe0-0bcd3e967fa4": {
+    "url": "http://LT-A4-110375.jiveland.com:8080/api/jivelinks/v1/tiles/1068/data",
+    "config": {
+      "organization": "glen-nicol/massive-avenger",
+      "repository": "massive-avenger",
+      "ticketID": "FD7B775BBC327CEF7E412548C11585578FA8D8A9",
+      "parent": "http://LT-A4-110375.jiveland.com:8080/api/core/v3/places/1002",
+      "isGitHub": true
+    },
+    "name": "github-issues-recent",
+    "accessToken": "3qdmvwd3vvf7d6h43t0arjd1ky32mrnfzkdl14kl.t",
+    "expiresIn": "172799",
+    "refreshToken": "7tzwia7z9r6iuvft42vahuh0rwakmij6zk308aaj.r",
+    "scope": "uri:/api/jivelinks/v1/tiles/1068",
+    "guid": "eb55df3c-33e9-4efe-aeed-9851012b84b8_1068",
+    "jiveCommunity": "lt-a4-110375.jiveland.com:8080",
+    "id": "d136e893-ecb3-4300-bbe0-0bcd3e967fa4"
+  }
+}

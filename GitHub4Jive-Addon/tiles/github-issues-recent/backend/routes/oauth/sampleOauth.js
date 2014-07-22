@@ -37,3 +37,14 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
 myOauth.getTokenStore = function() {
     return tokenStore;
 };
+
+myOauth.getOauthToken = function(ticketID){
+    return tokenStore.find('tokens', {'ticket': ticketID }).then( function(found) {
+        if (found[0] != undefined) {
+            var accessToken = found[0]['accessToken'];
+            return {"type": "oauth", "token": accessToken};
+        }else {
+            throw Error("No token record found for ticket ID=" + ticketID);
+        }
+    });
+}

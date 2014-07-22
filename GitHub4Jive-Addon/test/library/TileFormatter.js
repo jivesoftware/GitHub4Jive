@@ -28,6 +28,14 @@ describe("TileFormatter", function(){
        should.exist(formatter);
     });
 
+    function createDummyArray(elements){
+        var a = [];
+        for(var i = 0; i < elements; i++){
+            a.push(i);
+        }
+        return a;
+    }
+
     describe("#formatAccordionData", function(){
         it("should return object with title and items", function(){
             var formatted = formatter.formatAccordionData("a", []);
@@ -36,22 +44,37 @@ describe("TileFormatter", function(){
             formatted.should.have.property("items");
         });
 
-        function createDummyArray(elements){
-            var a = [];
-            for(var i = 0; i < elements; i++){
-                a.push(i);
-            }
-            return a;
-        }
+
 
         it("should throw error with more than 15 items", function(){
            var sixteenElementArray = createDummyArray(16);
-           expect(function(){formatter.formatAccordionData("", sixteenElementArray, {title:""});}).to.throw(formatter.FormatException);
+           expect(function(){formatter.formatAccordionData("", sixteenElementArray, {title:""});}).to.throw(formatter.AccordionItemLengthError);
         });
 
         it("should have items each with a property of text", function(){
             var items = createDummyArray(5);
             formatter.formatAccordionData("", items).items.forEach(function(item){
+                item.should.have.property("text");
+            });
+        });
+    });
+
+    describe("#formatListData", function(){
+        it("should return object with title and contents", function(){
+            var formatted = formatter.formatListData("a", []);
+            formatted.should.be.an("object");
+            formatted.should.have.property("title");
+            formatted.should.have.property("contents");
+        });
+
+        it("should throw error with more than 10 items", function(){
+            var elevenElementArray = createDummyArray(11);
+            expect(function(){formatter.formatListData("", elevenElementArray);}).to.throw(formatter.ListItemLengthError)
+        });
+
+        it("should have items each with a property of text", function(){
+            var items = createDummyArray(5);
+            formatter.formatListData("", items).contents.forEach(function(item){
                 item.should.have.property("text");
             });
         });

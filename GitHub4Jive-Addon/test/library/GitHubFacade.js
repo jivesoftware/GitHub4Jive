@@ -26,7 +26,10 @@ var Q = require("q");
 chai.use(chaiAsPromised);
 
 var owner = "jivesoftware";
+var specificUser = "glen-nicol";
 var repo = "GitHub4Jive";
+
+var auth = {type:"basic", username:"", password: ""}
 
 describe("GitHubFacade", function(){
     var git = require("../../common/GitHubFacade");
@@ -34,8 +37,30 @@ describe("GitHubFacade", function(){
             should.exist(git);
     });
 
+    describe("#isAuthenticated", function(){
+        it("should return true with correct auth", function(){
+            return git.isAuthenticated(auth).should.eventually.equal.true;
+        });
+    });
+
+    describe("#getCurrentUser", function(){
+        it("should return an object with login property", function(){
+            var userPromise = git.getCurrentUser(auth);
+            return userPromise.then(function(user){
+                user.should.be.an("object");
+                user.should.have.property("login");
+                user.login.should.not.contain(" ");
+                user.login.should.equal(specificUser);
+            });
+//            return Q.all([
+//                userPromise.should.eventually.be.an("object"),
+//                userPromise.should.eventually.have.property("login").should.equal(specificUser)
+//            ]);
+        });
+    });
+
     describe("#getChangeList", function(){
-        var changeListPromise = git.getChangeList(owner, repo);
+        var changeListPromise = git.getChangeList(owner, repo, auth);
         /*
         * Below is an example of the Chai as Promised fluent assertions. To test multiple assertions in a
         * single test you must wrap it in Q.all so that all the resulting promises are collected into one
@@ -60,6 +85,42 @@ describe("GitHubFacade", function(){
                 changeList[0].changes.should.have.length.above(0);
                 changeList[0].changes[0].should.have.property("fileName");
             });
+        });
+    });
+
+    describe("#getCompleteRepositoryListForUser", function(){
+       var repositoriesPromise = git.getCompleteRepositoryListForUser(specificUser, auth);
+
+        it("should contain an entry for all repositories the owner can push to.", function(){
+            return Q.all([
+            repositoriesPromise.should.eventually.be.an("array"),
+            repositoriesPromise.should.eventually.have.length.above(0),
+            repositoriesPromise.then(function(repos){
+                repos.forEach(function(repo){
+                    //checking for url correctness
+                    repo.should.have.property("name").and.not.contain(" ");
+                    repo.should.have.property("owner").and.not.contain(" ");
+                    repo.should.have.property("fullName").and.not.contain(" ");
+                })
+            })
+                ]);
+        });
+    });
+
+    describe("#getRepositoryIssues", function(){
+        var repoIssuesPromise = git.getRepositoryIssues(owner, repo, auth);
+
+        it("should return an array of objects", function(){
+            return Q.all([
+                repoIssuesPromise.should.eventually.be.an("array"),
+                repoIssuesPromise.should.eventually.have.length.above(0),
+                repoIssuesPromise.then(function(issues){
+                    issues[0].should.have.property("title");
+                    issues[0].should.have.property("state");
+
+
+                })
+            ]);
         });
     });
 })

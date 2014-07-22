@@ -19,8 +19,12 @@ var Q = require("q");
 
 /********************* Private Functions **************************/
 
-function GitHubInstance(){
-    return new GitHubApi({version: "3.0.0"});
+function GitHubInstance(auth){
+    var git = new GitHubApi({version: "3.0.0"});
+    if(auth){
+        git.authenticate(auth)
+    }
+    return git;;
 }
 
 function getFullCommitDetails(git, owner, repo, sha){
@@ -36,14 +40,49 @@ function getFullCommitDetails(git, owner, repo, sha){
     return deferred.promise;
 }
 
+function getUsersRepositories(git, user){
+    var deferred = Q.defer();
+    git.repos.getFromUser({"user": user, "type":"all"}, function(error, repositories){
+        if(error){
+            deferred.reject(error);
+        }else{
+            deferred.resolve(repositories);
+        }
+    });
+    return deferred.promise;
+}
 
+function getOrgsRepositories(git, org){
+    var deferred = Q.defer();
+    git.repos.getFromOrg({"org": org, "type":"member"}, function(error, repos){
+        if(error){
+            deferred.reject(error);
+        }else{
+            deferred.resolve(repos);
+        }
+    });
+    return deferred.promise;
+}
 
 /********************* public Functions **************************/
 
-
-exports.getChangeList = function(owner, repo, oauthToken, upTo){
+exports.isAuthenticated = function(authOptions){
     var deferred = Q.defer();
-    var git = GitHubInstance();
+    var git = GitHubInstance(authOptions);
+    git.user.get({}, function(error, user){
+        if(error){
+            deferred.reject(error);
+        }else{
+            deferred.resolve(true);
+        }
+    });
+    return deferred.promise;
+}
+
+
+exports.getChangeList = function(owner, repo, authOptions, upTo){
+    var deferred = Q.defer();
+    var git = GitHubInstance(authOptions);
     git.repos.getCommits({"user":owner,"repo": repo}, function(error, commits){
         if(error){
             console.log(error);
@@ -66,3 +105,55 @@ exports.getChangeList = function(owner, repo, oauthToken, upTo){
     });
     return deferred.promise;
 };
+
+
+exports.getCompleteRepositoryListForUser = function(user, authOptions){
+    var deferred = Q.defer();
+    var git = GitHubInstance(authOptions);
+    getUsersRepositories(git, user).then(function(repos){
+        git.orgs.getFromUser({"user":user, "type": "member"}, function(error, orgs){
+            if(error){
+                deferred.reject(error);
+            }else{
+                Q.all(orgs.map(function(org){
+                    return getOrgsRepositories(git, org.login);
+                })).then(function(orgRepos){
+                    return repos.concat(orgRepos[0]);
+                }).then(function(completeRepos){
+
+                   deferred.resolve(completeRepos.map(function(repo){
+                       return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
+                   }));
+                });
+            }
+        })
+    });
+
+    return deferred.promise;
+};
+
+exports.getCurrentUser = function(authOptions){
+    var deferred = Q.defer();
+    var git = GitHubInstance(authOptions);
+    git.user.get({}, function(error, user){
+        if(error){
+            return deferred.reject(error);
+        }else{
+            return deferred.resolve(user);
+        }
+    });
+    return deferred.promise;
+};
+
+exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
+    var deferred = Q.defer();
+    var git = GitHubInstance(authOptions);
+    git.issues.repoIssues({"user" : owner, "repo" : repo}, function(error, issues){
+        if(error){
+            deferred.reject(error);
+        }else{
+            deferred.resolve(issues);
+        }
+    });
+    return deferred.promise;
+}

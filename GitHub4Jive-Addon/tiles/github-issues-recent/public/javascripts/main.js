@@ -13,12 +13,16 @@
         };
 
         // prepopulate the sequence input dialog
-        $("#organization").val( json["organization"]);
-        $("#repository").val( json["repository"]);
+        $("#repository").val( json["repoFullname"]);
 
         $("#btn_submit").click( function() {
-            config["organization"] = $("#organization").val();
-            config["repository"] = $("#repository").val();
+            var fullName = $("#repository").val();
+            var parts = fullName.split("/");
+            var owner = parts[0];
+            var repoName = parts[1];
+            config["repoFullName"] = fullName;
+            config["repoOwner"] = owner;
+            config["repoName"] = repoName;
             jive.tile.close(config, {} );
             gadgets.window.adjustHeight(300);
         });

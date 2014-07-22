@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jive Software
+ * Copyright 2014 Jive Software
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 
 var count = 0;
 var jive = require("jive-sdk");
-var github = require("./github")
+
+var gitHubFacade = require("../../../common/GitHubFacade")
+var sampleOauth = require('./routes/oauth/sampleOauth');
+var tileFormatter = require("../../../common/TileFormatter");
 
 var colorMap = {
     'green':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
@@ -24,65 +27,34 @@ var colorMap = {
     'disabled':'http://cdn1.iconfinder.com/data/icons/function_icon_set/warning_48.png'
 };
 
-function processTileInstance(instance) {
-    jive.logger.debug('running pusher for ', instance.name, 'instance', instance.id);
+var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
 
-    var config = tile.config;
-
-    github.getData( org, repo, types, config.ticketID, function(data) {
-        callback(data)
+function decorateIssuesWithColoredIcons(issues){
+    issues.forEach(function(issue){
+        var labels = issue.labels.map(function(label){return label.name;});
+        var icon = labels.indexOf("bug") >= 0 ? colorMap["red"] : colorMap["green"];
+        issue["icon"] = icon;
     });
-}
-
-function prepareData(tile, data, callback) {
-    var config = tile.config;
-    jive.logger.info("PREPARE DATA: ticketID=" + config.ticketID)
-
-    // use path for repository: organization / repository
-    var repository = config["organization"];        // for now, this holds the full name ...
-
-    // to check .. can we pass an object to the action so that we have a cleaner interface ?
-    var fields = Object.keys(data).map(function(field) {
-        return {
-            text: '' + data[field].title,
-            'icon': (data[field].labels.search("bug") >= 0)? colorMap["red"] : colorMap["green"],
-            'linkDescription':'Visit this job in Github',
-            'action':{
-                url : jive.service.options['clientUrl'] + '/github-issues-recent/action?id='+ new Date().getTime(),
-                context : {url:data[field].url,title:data[field]['full_title'],number:data[field].number,repo:repository, labels:data[field].labels  }
-            }
-        }
-    });
-
-    var preparedData = {
-        title : "Repository: '" + repository +"'" ,
-        contents : fields,
-        action: {
-            text: 'Github' ,
-            'url': 'https://www.github.com'
-        }
-    };
-
-    jive.logger.info("Prepared data", JSON.stringify(preparedData));
-
-    callback(preparedData);
+    return issues;
 }
 
 function pushUpdate(tile) {
     var config = tile.config;
-    console.log('pushing update: '+ tile.name +','+ config.organization + ", " + tile.jiveCommunity);
+    console.log('pushing update: '+ tile.name +','+ config.repoOwner + "/" + config.repoName +", " + tile.jiveCommunity);
 
-    github.getData(tile.config.organization, tile.config.repository, "", tile.config.ticketID, function(data) {
-        prepareData(tile, data, function(prepared) {
-            jive.tiles.pushData(tile, { data: prepared });
-        });
-    });
+    sampleOauth.getOauthToken(config.ticketID).then(function(authOptions){
+        return gitHubFacade.getRepositoryIssues(config.repoOwner, config.repoName, authOptions, 10);
+    }).then(function(issues){
+        var decoratedIssues = decorateIssuesWithColoredIcons( issues);
+        var formattedIssues = tileFormatter.formatListData(config.repoFullName,decoratedIssues, {"text" : "title"});
+        jive.tiles.pushData(tile, {data: formattedIssues});
+    })
 }
 
 exports.task = new jive.tasks.build(
     // runnable
     function() {
-        jive.tiles.findByDefinitionName( 'github-issues-recent' ).then( function(tiles) {
+        jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
             tiles.forEach(pushUpdate) ;
         });
     },
@@ -97,7 +69,7 @@ exports.eventHandlers = [
         'event': 'activityUpdateInstance',
         'handler' : function(theInstance){
             jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == 'github-issues-recent' ) {
+            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
                 pushUpdate(theInstance);
             }
         }
@@ -106,7 +78,7 @@ exports.eventHandlers = [
         'event': jive.constants.globalEventNames.NEW_INSTANCE,
         'handler' : function(theInstance){
             jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == 'github-issues-recent' ) {
+            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
                 pushUpdate(theInstance);
             }
         }
@@ -115,7 +87,7 @@ exports.eventHandlers = [
         'event': jive.constants.globalEventNames.INSTANCE_UPDATED,
         'handler' : function(theInstance){
             jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == 'github-issues-recent' ) {
+            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
                 pushUpdate(theInstance);
             }
         }

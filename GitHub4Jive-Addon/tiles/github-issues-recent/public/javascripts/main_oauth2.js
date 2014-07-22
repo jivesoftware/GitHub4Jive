@@ -19,6 +19,7 @@ var onLoadCallback = function( config, identifiers ) {
     };
 };
 
+
 function doIt( host ) {
     var oauth2SuccessCallback = function(ticketID) {
         // do configuration
@@ -33,13 +34,14 @@ function doIt( host ) {
         if (ticketID == undefined)    ticketID = viewerID;
 
         // set up a query to get this user's list of repositories
-        var query = encodeURIComponent("/user/repos");
+        debugger;
+        //var query = encodeURIComponent("/user/repos");
         osapi.http.get({
-            'href' : host + '/example-github/oauth/query?' +
+            'href' : host + '/example-github/user/repos?' +
                 'id=' + ticketID +
                 "&ts=" + new Date().getTime() +
-                "&ticketID=" + ticketID +
-                "&query=" + query,
+                "&ticketID=" + ticketID,
+                //"&query=" + query,
             'format' : 'json',
             'authz': 'signed'
         }).execute(function( response ) {
@@ -52,9 +54,9 @@ function doIt( host ) {
                 var opt;
 
                 if (data[i].full_name == config['organization']) {
-                    opt = "<option value=" + data[i].name + " selected>" + data[i].full_name +"</option>";
+                    opt = "<option value=" + data[i].name + " selected>" + data[i].fullName +"</option>";
                 } else {
-                    opt = "<option value=" + data[i].name + ">" + data[i].full_name +"</option>";
+                    opt = "<option value=" + data[i].name + ">" + data[i].fullName +"</option>";
                 }
                 $("#repoList").append(opt);
             }
@@ -62,9 +64,13 @@ function doIt( host ) {
             $("#btn_done").click( function() {
                 var repo = $("#repoList").val();
                 var fullName = $("#repoList option:selected").text();
+                var parts = fullName.split("/");
+                var owner = parts[0];
+                var repoName = parts[1];
                 var toReturn = {
-                    "organization" : fullName,
-                    "repository" : repo,
+                    "repoOwner" : owner,
+                    "repoName" : repoName,
+                    "repoFullName": fullName,
                     "isGitHub" : true
                 };
 

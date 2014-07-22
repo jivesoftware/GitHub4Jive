@@ -1,6 +1,8 @@
 var sampleOauth = require('./sampleOauth.js');
 var gitHubQueryer = require('./githubQueryer.js');
 
+var gitHubEndPoint = require("../../GitHubController");
+
 exports.authorizeUrl = {
     'verb' : 'get',
     'path' : '/example-github/oauth/authorizeUrl',
@@ -31,3 +33,8 @@ exports.isAuthenticated = {
     'route' : gitHubQueryer.isAuthenticated
 };
 
+exports.repositoryListForUser = {
+    'verb' : 'get',
+    'path' : '/example-github/user/repos',
+    'route' : gitHubEndPoint.getUserRepos
+}

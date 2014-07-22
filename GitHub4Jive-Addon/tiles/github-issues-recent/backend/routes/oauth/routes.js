@@ -1,40 +1,44 @@
-var sampleOauth = require('./sampleOauth.js');
-var gitHubQueryer = require('./githubQueryer.js');
-
-var gitHubEndPoint = require("../../GitHubController");
+var oAuth = require('../../../../../common/OauthProvider.js');
+var gitHubController = require("../../../../../common/GitHubController");
 
 exports.authorizeUrl = {
     'verb' : 'get',
     'path' : '/example-github/oauth/authorizeUrl',
-    'route': sampleOauth.authorizeUrl.bind(sampleOauth)
+    'route': oAuth.authorizeUrl.bind(oAuth)
 };
 
 exports.oauth2Callback = {
     'verb' : 'get',
     'path' : '/example-github/oauth/oauth2Callback',
-    'route': sampleOauth.oauth2Callback.bind(sampleOauth)
-};
-
-exports.query = {
-    'verb' : 'get',
-    'path' : '/example-github/oauth/query',
-    'route' : gitHubQueryer.handleGitHubQuery
-};
-
-exports.post = {
-    'verb' : 'post',
-    'path' : '/example-github/oauth/post',
-    'route' : gitHubQueryer.handleGitHubPost
+    'route': oAuth.oauth2Callback.bind(oAuth)
 };
 
 exports.isAuthenticated = {
     'path' : '/example-github/oauth/isAuthenticated',
     'verb' : 'get',
-    'route' : gitHubQueryer.isAuthenticated
+    'route' : gitHubController.isAuthenticated
 };
 
 exports.repositoryListForUser = {
     'verb' : 'get',
     'path' : '/example-github/user/repos',
-    'route' : gitHubEndPoint.getUserRepos
+    'route' : gitHubController.getUserRepos
+}
+
+exports.commentsForIssue = {
+    'verb' : 'get',
+    'path' : '/example-github/comments',
+    'route' : gitHubController.getIssueComments
+}
+
+exports.closeIssue = {
+    'verb' : 'post',
+    'path' : '/example-github/changeIssueState',
+    'route' : gitHubController.changeIssueState
+}
+
+exports.newComment = {
+    'verb' : 'post',
+    'path' : '/example-github/newComment',
+    'route' : gitHubController.newComment
 }

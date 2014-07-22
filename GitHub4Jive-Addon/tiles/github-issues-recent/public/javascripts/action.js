@@ -16,10 +16,13 @@ var preOauth2DanceCallback = function () {
     if (typeof config === 'string') {
         config = JSON.parse(config);
     }
-
+    debugger;
     $("#repoA").text(config.repo);
     $("#issueA").text(config.number);
-    $("#labelsA").text(config.labels);
+    $("#labelsA").empty();
+    config.labels.forEach(function(label){
+        $("#labelsA").append('<span style="color:#'+label.color+'">'+label.name+'</span>,&nbsp;');
+    });
     $("#GitHubLinkA").attr("href", config.url);
     $("#GitHubLinkA").text(config.title);
 };
@@ -30,17 +33,17 @@ var onLoadCallback = function (config, identifiers) {
         identifiers: identifiers
     };
 };
-function populateCommentsTable(host, ticketID, repository, issue_number) {
+function populateCommentsTable(host, ticketID, repository, issueNumber) {
     // get the data ...
-    var query = "/repos/" + repository + "/issues/" + issue_number + "/comments";
     var bodyPayload = { body: ""};
 
     osapi.http.get({
-        'href': host + '/example-github/oauth/query?' +
+        'href': host + '/example-github/comments?' +
             'id=all' + // hack job to get us to act different that the one and only other GET we make ...
             "&ts=" + new Date().getTime() +
             "&ticketID=" + ticketID +
-            "&query=" + query,
+            "&repo=" + repository +
+            "&number=" + issueNumber,
         headers: { 'Content-Type': ['application/json'] },
         'noCache': true,
         'authz': 'signed'
@@ -95,15 +98,15 @@ function doIt(host) {
             config = JSON.parse(config);
         }
 
-        var query = encodeURIComponent("/repos/" + config.repo + "/issues/" + config.number);
-
         var bodyPayload = {"state": "closed"};
         osapi.http.post({
-            'href': host + '/example-github/oauth/post?' +
+            'href': host + '/example-github/changeIssueState?' +
                 'id=' + qTicketID +
                 "&ts=" + new Date().getTime() +
                 "&ticketID=" + qTicketID +
-                "&query=" + query,
+                "&repo=" + config.repo +
+                "&number=" + config.number +
+                "&state=closed" ,
             headers: { 'Content-Type': ['application/json'] },
             'noCache': true,
             'authz': 'signed',
@@ -132,20 +135,21 @@ function doIt(host) {
             return;
         }
 
-        var bodyPayload = { body: comment};
+
         var config = onLoadContext['config'];
 
         if (typeof config === 'string') {
             config = JSON.parse(config);
         }
 
-        var query = encodeURIComponent("/repos/" + config.repo + "/issues/" + config.number + "/comments");
+        var bodyPayload = { newComment: comment};
         osapi.http.post({
-            'href': host + '/example-github/oauth/post?' +
+            'href': host + '/example-github/newComment?' +
                 'id=' + qTicketID +
                 "&ts=" + new Date().getTime() +
                 "&ticketID=" + qTicketID +
-                "&query=" + query,
+                "&repo=" + config.repo +
+                "&number=" + config.number,
             headers: { 'Content-Type': ['application/json'] },
             'noCache': true,
             'authz': 'signed',
@@ -185,7 +189,11 @@ function doIt(host) {
 
         $("#repoB").text(config.repo);
         $("#issueB").text(config.number);
-        $("#labelsB").text(config.labels);
+        //    $("#labelsA").text(config.labels);
+        $("#labelsB").empty();
+        config.labels.forEach(function(label){
+            $("#labelsB").append('<span style="color:#'+label.color+'">'+label.name+'</span>,&nbsp;');
+        });
         $("#GitHubLinkB").attr("href", config.url);
         $("#GitHubLinkB").text(config.title);
 

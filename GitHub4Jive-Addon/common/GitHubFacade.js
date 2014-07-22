@@ -27,133 +27,119 @@ function GitHubInstance(auth){
     return git;;
 }
 
-function getFullCommitDetails(git, owner, repo, sha){
+function deferredTemplate(toCall, callobject){
     var deferred = Q.defer();
-    git.repos.getCommit({"user":owner, "repo": repo, "sha": sha}, function(error, commit){
+
+    toCall(callobject, function(error, result){
         if(error){
-            deferred.reject(new Error(error));
-        }
-        else{
-            deferred.resolve(commit);
+            deferred.reject(error);
+        }else{
+            deferred.resolve(result);
         }
     });
+
     return deferred.promise;
+}
+
+function getCurrentUser(git){
+    return deferredTemplate(git.user.get, {});
+}
+
+function getFullCommitDetails(git, owner, repo, sha){
+    return deferredTemplate(git.repos.getCommit,{"user":owner, "repo": repo, "sha": sha});
 }
 
 function getUsersRepositories(git, user){
-    var deferred = Q.defer();
-    git.repos.getFromUser({"user": user, "type":"all"}, function(error, repositories){
-        if(error){
-            deferred.reject(error);
+    return getCurrentUser(git).then(function(current){
+        if(current.login === user){
+            return deferredTemplate(git.repos.getAll,{ "type":"all"});
         }else{
-            deferred.resolve(repositories);
+            return deferredTemplate(git.repos.getFromUser, {"user": user, "type": "all"});
         }
     });
-    return deferred.promise;
 }
 
 function getOrgsRepositories(git, org){
-    var deferred = Q.defer();
-    git.repos.getFromOrg({"org": org, "type":"member"}, function(error, repos){
-        if(error){
-            deferred.reject(error);
-        }else{
-            deferred.resolve(repos);
-        }
-    });
-    return deferred.promise;
+    return deferredTemplate(git.repos.getFromOrg,{"org": org, "type":"member"});
 }
+
+
 
 /********************* public Functions **************************/
 
 exports.isAuthenticated = function(authOptions){
-    var deferred = Q.defer();
     var git = GitHubInstance(authOptions);
-    git.user.get({}, function(error, user){
-        if(error){
-            deferred.reject(error);
-        }else{
-            deferred.resolve(true);
-        }
+    return deferredTemplate(git.user.get,{}).then( function( user){
+        return true;
     });
-    return deferred.promise;
 }
 
 
 exports.getChangeList = function(owner, repo, authOptions, upTo){
-    var deferred = Q.defer();
     var git = GitHubInstance(authOptions);
-    git.repos.getCommits({"user":owner,"repo": repo}, function(error, commits){
-        if(error){
-            console.log(error);
-            deferred.reject(new Error(error));
-        }
-        else{
-            commits = commits.slice(0, (upTo || 5));
-            Q.all(commits.map(function(commit) {
-                return getFullCommitDetails(git, owner, repo, commit.sha).then(function(commit){
-                    var commitMessage = commit.commit.message;
-                    var filesChanged = commit.files.map(function(file){
-                        return {fileName: file.filename};
-                    });
-                    return {commitMessage: commitMessage, changes: filesChanged};
+    return deferredTemplate(git.repos.getCommits, {"user":owner,"repo": repo}).then(function( commits){
+        commits = commits.slice(0, (upTo || 5));
+        return Q.all(commits.map(function(commit) {
+            return getFullCommitDetails(git, owner, repo, commit.sha).then(function(commit){
+                var commitMessage = commit.commit.message;
+                var filesChanged = commit.files.map(function(file){
+                    return {fileName: file.filename};
                 });
-            })).then(function(changes){
-                deferred.resolve(changes);
+                return {commitMessage: commitMessage, changes: filesChanged};
             });
-        }
+        }));
     });
-    return deferred.promise;
 };
 
 
 exports.getCompleteRepositoryListForUser = function(user, authOptions){
-    var deferred = Q.defer();
     var git = GitHubInstance(authOptions);
-    getUsersRepositories(git, user).then(function(repos){
-        git.orgs.getFromUser({"user":user, "type": "member"}, function(error, orgs){
-            if(error){
-                deferred.reject(error);
-            }else{
-                Q.all(orgs.map(function(org){
-                    return getOrgsRepositories(git, org.login);
-                })).then(function(orgRepos){
-                    return repos.concat(orgRepos[0]);
-                }).then(function(completeRepos){
-
-                   deferred.resolve(completeRepos.map(function(repo){
-                       return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
-                   }));
-                });
-            }
+    return getUsersRepositories(git, user).then(function(repos){
+        return deferredTemplate(git.orgs.getFromUser,{"user":user, "type": "member"}).then( function(orgs){
+            return Q.all(orgs.map(function(org){
+                return getOrgsRepositories(git, org.login);
+            })).then(function(orgRepos){
+                return repos.concat(orgRepos[0]);
+            }).then(function(completeRepos){
+               return completeRepos.map(function(repo){
+                   return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
+               });
+            });
         })
     });
-
-    return deferred.promise;
 };
 
 exports.getCurrentUser = function(authOptions){
-    var deferred = Q.defer();
     var git = GitHubInstance(authOptions);
-    git.user.get({}, function(error, user){
-        if(error){
-            return deferred.reject(error);
-        }else{
-            return deferred.resolve(user);
-        }
-    });
-    return deferred.promise;
+    return getCurrentUser(git);
 };
 
 exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
-    var deferred = Q.defer();
     var git = GitHubInstance(authOptions);
-    git.issues.repoIssues({"user" : owner, "repo" : repo}, function(error, issues){
-        if(error){
-            deferred.reject(error);
-        }else{
-            deferred.resolve(issues);
-        }
-    });
-    return deferred.promise;
+    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo});
 }
+
+exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.getComments,{"user" : owner, "repo": repo, "number" : issueNumber} );
+}
+
+exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions){
+    if(state === "closed" && state == "open"){
+        throw Error("Invalid Issue State");
+    }
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.edit, {"user": owner, "repo": repo, "number": issueNumber, "state": state}).then(function(issue){
+        return issue.state === "closed";
+    });
+};
+
+exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptions){
+    if(!newComment || newComment === "") {
+        throw Error("Comment must not be Empty.");
+    }
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.createComment, {"user":owner, "repo": repo, "number": issueNumber, "body": newComment}).then(function(comment){
+        return comment && comment.body === newComment;
+    });
+};

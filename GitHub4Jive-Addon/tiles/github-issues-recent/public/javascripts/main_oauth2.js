@@ -34,8 +34,6 @@ function doIt( host ) {
         if (ticketID == undefined)    ticketID = viewerID;
 
         // set up a query to get this user's list of repositories
-        debugger;
-        //var query = encodeURIComponent("/user/repos");
         osapi.http.get({
             'href' : host + '/example-github/user/repos?' +
                 'id=' + ticketID +

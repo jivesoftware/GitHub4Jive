@@ -28,8 +28,10 @@ chai.use(chaiAsPromised);
 var owner = "jivesoftware";
 var specificUser = "glen-nicol";
 var repo = "GitHub4Jive";
+var issueNumber = 1;
 
 var auth = {type:"basic", username:"", password: ""}
+
 
 describe("GitHubFacade", function(){
     var git = require("../../common/GitHubFacade");
@@ -121,6 +123,21 @@ describe("GitHubFacade", function(){
 
                 })
             ]);
+        });
+    });
+
+    describe("#getIssueComments", function(){
+        var issueCommentsPromise = git.getIssueComments(owner, repo, issueNumber, auth);
+
+        it("should return an array of objects", function(){
+
+            return issueCommentsPromise.then(function(comments){
+                    comments.should.be.an("array"),
+                    comments.should.have.length.above(0),
+                    comments[0].should.have.property("body");
+                    comments[0].should.have.property("user");
+                });
+
         });
     });
 })

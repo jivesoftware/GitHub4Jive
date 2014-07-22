@@ -16,10 +16,12 @@
 
 var count = 0;
 var jive = require("jive-sdk");
+var COMMONS_DIRECTORY = "../../../common/";
 
-var gitHubFacade = require("../../../common/GitHubFacade")
-var sampleOauth = require('./routes/oauth/sampleOauth');
-var tileFormatter = require("../../../common/TileFormatter");
+
+var gitHubFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
+var sampleOauth = require(COMMONS_DIRECTORY+ "OauthProvider");
+var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
 
 var colorMap = {
     'green':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
@@ -38,6 +40,17 @@ function decorateIssuesWithColoredIcons(issues){
     return issues;
 }
 
+function decorateIssuesWithActions(issues, repository){
+    issues.forEach(function(issue){
+
+        issue["action"] = {
+            url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
+                context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels  }
+        };
+    });
+    return issues;
+}
+
 function pushUpdate(tile) {
     var config = tile.config;
     console.log('pushing update: '+ tile.name +','+ config.repoOwner + "/" + config.repoName +", " + tile.jiveCommunity);
@@ -46,6 +59,7 @@ function pushUpdate(tile) {
         return gitHubFacade.getRepositoryIssues(config.repoOwner, config.repoName, authOptions, 10);
     }).then(function(issues){
         var decoratedIssues = decorateIssuesWithColoredIcons( issues);
+        decoratedIssues = decorateIssuesWithActions(decoratedIssues, config.repoFullName);
         var formattedIssues = tileFormatter.formatListData(config.repoFullName,decoratedIssues, {"text" : "title"});
         jive.tiles.pushData(tile, {data: formattedIssues});
     })

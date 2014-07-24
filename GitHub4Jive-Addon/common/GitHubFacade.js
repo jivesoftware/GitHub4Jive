@@ -26,7 +26,7 @@ function GitHubInstance(auth){
     if(auth){
         git.authenticate(auth)
     }
-    return git;;
+    return git;
 }
 
 function deferredTemplate(toCall, callobject){
@@ -65,93 +65,12 @@ function getOrgsRepositories(git, org){
     return deferredTemplate(git.repos.getFromOrg,{"org": org, "type":"member"});
 }
 
-
-
-/********************* public Functions **************************/
-
-exports.isAuthenticated = function(authOptions){
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.user.get,{}).then( function( user){
-        return true;
-    });
-}
-
-
-exports.getChangeList = function(owner, repo, authOptions, upTo){
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.repos.getCommits, {"user":owner,"repo": repo}).then(function( commits){
-        commits = commits.slice(0, (upTo || 5));
-        return Q.all(commits.map(function(commit) {
-            return getFullCommitDetails(git, owner, repo, commit.sha).then(function(commit){
-                var commitMessage = commit.commit.message;
-                var filesChanged = commit.files.map(function(file){
-                    return {fileName: file.filename};
-                });
-                return {commitMessage: commitMessage, changes: filesChanged};
-            });
-        }));
-    });
-};
-
-
-exports.getCompleteRepositoryListForUser = function(user, authOptions){
-    var git = GitHubInstance(authOptions);
-    return getUsersRepositories(git, user).then(function(repos){
-        return deferredTemplate(git.orgs.getFromUser,{"user":user, "type": "member"}).then( function(orgs){
-            return Q.all(orgs.map(function(org){
-                return getOrgsRepositories(git, org.login);
-            })).then(function(orgRepos){
-                return repos.concat(orgRepos[0]);
-            }).then(function(completeRepos){
-                return completeRepos.map(function(repo){
-                    return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
-                });
-            });
-        })
-    });
-};
-
-exports.getCurrentUser = function(authOptions){
-    var git = GitHubInstance(authOptions);
-    return getCurrentUser(git);
-};
-
-exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo});
-}
-
-exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.getComments,{"user" : owner, "repo": repo, "number" : issueNumber} );
-}
-
-exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions){
-    if(state === "closed" && state == "open"){
-        throw Error("Invalid Issue State");
-    }
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.edit, {"user": owner, "repo": repo, "number": issueNumber, "state": state}).then(function(issue){
-        return issue.state === "closed";
-    });
-};
-
-exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptions){
-    if(!newComment || newComment === "") {
-        throw Error("Comment must not be Empty.");
-    }
-    var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.createComment, {"user":owner, "repo": repo, "number": issueNumber, "body": newComment}).then(function(comment){
-        return comment && comment.body === newComment;
-    });
-};
-
 var repoHooks = {};
 
 function updateGitHubHook(git,owner, repo, events){
     return deferredTemplate( git.repos.createHook,
         {"user": owner, "repo": repo, "name": "web",
-            "config": JSON.stringify( { "url": config.clientUrl + ":" + config.port +  "/example-github/gitHubHookPortal", "content_type": "json"}),
+            "config": JSON.stringify( { "url": config.clientUrl + ":" + config.port +  config.gitHubWebHookUrl, "content_type": "json"}),
             "events": events,
             "active": true
         });
@@ -193,14 +112,10 @@ function EventHandler(event, handler){
     return {event: event,token: guid(),handler: handler};
 }
 
-var events = {
-    Issue : "issues"
-};
-
 /*
  * Hook
  *   events
- *       issue
+ *       issues
  *           handlers
  *               [{event,token,handler}]
  *       commit
@@ -219,7 +134,7 @@ function subscribeTo(git,owner,repo, gitEvent, handler){
 
 
         return deletePreviousHooks(git, owner, repo).then(function(){
-            updateGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
+            return updateGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
                 var eventHandler = EventHandler(gitEvent, handler);
                 repoHooks[fullName] = {events:{}, key: hookResponse.id};
                 repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
@@ -246,18 +161,6 @@ function subscribeTo(git,owner,repo, gitEvent, handler){
     }
 }
 
-exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, handler){
-    if(!(owner && repo && gitEvent && authOptions)){
-        throw Error("Invalid subscription parameters.");
-    }
-    if(Object.keys(events).map(function(key){return events[key];}).indexOf(gitEvent) < 0){
-        throw Error("Invalid GitHub Event.");
-    }if(!handler){
-        throw Error("Event handler cannot be null.");
-    }
-    var git = GitHubInstance(authOptions);
-    return subscribeTo(git, owner, repo, gitEvent, handler);
-};
 
 function findPathToHandler(token){
     for(var repo in repoHooks){
@@ -273,6 +176,175 @@ function findPathToHandler(token){
 }
 
 
+function extractRepoParts(repo) {
+    var repoParts = repo.split("/");
+    return {owner: repoParts[0], repo: repoParts[1]};
+}
+
+
+/********************* public Functions **************************/
+
+/*
+ * Test the authentication object
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+
+exports.isAuthenticated = function(authOptions){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.user.get,{}).then( function( user){
+        return true;
+    });
+}
+
+/*
+ * Retrieve the most recent commits and their changes
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @param upTo Number of commits to retrieve. Defaults to 5
+ * @return promise promise -> {commitMessage: string, changes: [{fileName: string}]}) Use .then(function(result){}; to process return asynchronously
+ */
+exports.getChangeList = function(owner, repo, authOptions, upTo){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.repos.getCommits, {"user":owner,"repo": repo}).then(function( commits){
+        commits = commits.slice(0, (upTo || 5));
+        return Q.all(commits.map(function(commit) {
+            return getFullCommitDetails(git, owner, repo, commit.sha).then(function(commit){
+                var commitMessage = commit.commit.message;
+                var filesChanged = commit.files.map(function(file){
+                    return {fileName: file.filename};
+                });
+                return {commitMessage: commitMessage, changes: filesChanged};
+            });
+        }));
+    });
+};
+
+/*
+ * Retrieve a list of all the repositories a user has access to
+ * @param user Name of the user to get list for
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.getCompleteRepositoryListForUser = function(user, authOptions){
+    var git = GitHubInstance(authOptions);
+    return getUsersRepositories(git, user).then(function(repos){
+        return deferredTemplate(git.orgs.getFromUser,{"user":user, "type": "member"}).then( function(orgs){
+            return Q.all(orgs.map(function(org){
+                return getOrgsRepositories(git, org.login);
+            })).then(function(orgRepos){
+                return repos.concat(orgRepos[0]);
+            }).then(function(completeRepos){
+                return completeRepos.map(function(repo){
+                    return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
+                });
+            });
+        })
+    });
+};
+/*
+ * Retrieve the currently authenticated user
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.getCurrentUser = function(authOptions){
+    var git = GitHubInstance(authOptions);
+    return getCurrentUser(git);
+};
+
+/*
+ * Retrieve a list of issues from a repository
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @param upTo Number of issues to retrieve up to 100. Default is 30.
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo, "per_page" : upTo});
+}
+
+/*
+ * Retrieve a list of comments for a given issue on a repository
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @param upTo Number of comments to retrieve up to 100. Default is 30.
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.getComments,{"user" : owner, "repo": repo, "number" : issueNumber} );
+}
+
+/*
+ * Change the state of an issue to open or closed
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
+ * @param state String either "open" or "closed"
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return (promise) Use .then(function(result){}); to process return asynchronously
+ */
+exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions){
+    if(state === "closed" && state == "open"){
+        throw Error("Invalid Issue State");
+    }
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.edit, {"user": owner, "repo": repo, "number": issueNumber, "state": state}).then(function(issue){
+        return issue.state === "closed";
+    });
+};
+
+/*
+ * Add a new comment to an issue
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
+ * @param newComment String the content of the new comment to be made. Must not be empty.
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptions){
+    if(!newComment || newComment === "") {
+        throw Error("Comment must not be Empty.");
+    }
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.createComment, {"user":owner, "repo": repo, "number": issueNumber, "body": newComment}).then(function(comment){
+        return comment && comment.body === newComment;
+    });
+};
+
+/*
+ * Register an event handler for a GitHub Event. Events are defined on the Events member.
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param gitEvent The GitHub event that this handler should respond to. Possible values are defined on the Events member
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @param handler Callback function. Passed raw GitHub payload on event.
+ * @return  promise promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
+ */
+exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, handler){
+    if(!(owner && repo && gitEvent && authOptions)){
+        throw Error("Invalid subscription parameters.");
+    }
+    if(Object.keys(events).map(function(key){return events[key];}).indexOf(gitEvent) < 0){
+        throw Error("Invalid GitHub Event.");
+    }if(!handler){
+        throw Error("Event handler cannot be null.");
+    }
+    var git = GitHubInstance(authOptions);
+    return subscribeTo(git, owner, repo, gitEvent, handler);
+};
+
+/*
+ * UnRegister an event handler from GitHub.
+ * @param token Use the token returned from the promise of subscribeToRepoEvent to unsubscribe handler
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
 exports.unSubscribeFromRepoEvent = function(token){
     var path = findPathToHandler(token);
     var repo = repoHooks[path.hook]
@@ -280,25 +352,47 @@ exports.unSubscribeFromRepoEvent = function(token){
 
     var handler = event.handlers.splice(path.handler, 1)[0];
 
-    if(event.handlers.length == 0){
-        if(!(delete repo.events[path.event])){
+    if(event.handlers.length == 0) {
+        if (!(delete repo.events[path.event])) {
             throw Error("Unable to unregister hook event.");
         }
 
         var currentEvents = currentSubscribedEvents(repo);
         var unregisterAction;
-        var repoParts = repo.split("/");
-        var owner =  repoParts[0];
-        var r = repoParts[1];
-        if(currentEvents.length == 0){
-            unregisterAction = deleteRepoHook(git,owner, r, repo.key);
-        }else{
-            unregisterAction = updateGitHubHook(git,owner, r, currentEvents);
+        var r = extractRepoParts(repo);
+        if (currentEvents.length == 0) {
+            unregisterAction = deleteRepoHook(git, r.owner, r.repo, repo.key);
+        }
+        else {
+            unregisterAction = updateGitHubHook(git, r.owner, r.repo, currentEvents);
         }
         return unregisterAction;
     }
-    return Q.delay(0).then(function(){return true;});//sorry for the hack. Makes the interface consistent when including asynchronous code
+    return Q.delay(0).then(function(){return true;});//sorry for the hack. Makes the interface consistent when mixing asynchronous code
 }
+
+/*
+ * Remove all outstanding GitHub events that were previously registered.
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.RemoveAllWebHooks = function(authOptions){
+    var git = GitHubInstance(authOptions);
+    var repoDeletes = [];
+    for(var repo in repoHooks){
+        var r = extractRepoParts(repo);
+        repoDeletes.push( deletePreviousHooks(git, r.owner, r.repo));
+    }
+    return Q.all(repoDeletes);
+}
+
+/*
+ * This is used to notify event handlers of new data. This needs to be wired up to web accessible controller to pass GitHub payloads to event handlers.
+ * Currently web hooks are created looking for the url set in jiveClientConfiguration.json by gitHubWebHookUrl. This url must be used to capture the GitHub Payloads.
+ * @param eventType String must be either "ping" or one of the events in the Events member
+ * @param eventData GitHub Payload body
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
 
 exports.notifyNewGitHubHookInfo = function(eventType, eventData){
     if(eventType == "ping"){
@@ -309,7 +403,179 @@ exports.notifyNewGitHubHookInfo = function(eventType, eventData){
             handler.handler(eventData);
         });
     }
-
 };
 
+var events = {
+    /*
+     * Triggered any time any of of the following events occurs.
+     */
+    All: "*",
+    /*
+     * Triggered any time a commit is commented on.
+     * */
+    CommitComment: "commit_comment",
+    /*
+     * Triggered any time a branch or tag is created.
+     * */
+    Create: "create",
+    /*
+     * Triggered any time a branch or tag is deleted.
+     * */
+    Delete: "delete",
+    /*
+     * Triggered any time a Repository has a new deployment created from the API.
+     */
+    Deployment: "deployment",
+    /*
+     * Triggered any time a deployment for the Repository has a status update from the API.
+     */
+    DeploymentStatus: "deployment_status",
+    /*
+     * Triggered any time a repository is forked
+     */
+    Fork: "fork",
+    /*
+     * Triggered any time a Wiki page is updated
+     * */
+    Gollum: "gollum",
+    /*
+     * Triggered any time an Issue is commented on.
+     */
+    IssueComment: "issue_comment",
+    /*
+     * Triggered any time an Issue is opened or closed.
+     */
+    Issues : "issues",
+    /*
+     * Triggered any time a User is added as a collaborator to a non-Organization Repository.
+     */
+    Member: "member",
+    /*
+     * Triggered any time a Pages site is built or results in a failed build.
+     */
+    PageBuild: "page_build",
+    /*
+     * Triggered any time a Repository changes from private to public.
+     */
+    Public: "public",
+    /*
+     * Triggered any time a Commit is commented on while inside a Pull Request review (the Files Changed tab).
+     */
+    PullRequestReviewComment: "pull_request_review_comment",
+    /*
+     * Triggered any time a Pull Request is opened, closed, or synchronized (updated due to a new push in the branch that the pull request is tracking).
+     */
+    PullRequest: "pull_request",
+    /*
+     * Triggered any git push to a Repository.
+     */
+    Push: "push",
+    /*
+     * Triggered any time a Release is published in the Repository.
+     */
+    Release: "release",
+    /*
+     * Triggered any time a Repository has a status update from the API
+     */
+    Status: "status",
+    /*
+     * Triggered any time a team is added or modified on a Repository.
+     */
+    TeamAdd: "team_add",
+    /*
+     * Triggered any time a User watches the Repository.
+     */
+    Watch: "watch"
+};
+
+
+/*
+ * <table>
+ <tr>
+ <th>Name</th>
+ <th>Description</th>
+ </tr>
+ <tr>
+ <td><code>*</code></td>
+ <td>Any time any event is triggered (<a href="#wildcard-event">Wildcard Event</a>).</td>
+ </tr>
+ <tr>
+ <td><code>CommitComment</code></td>
+ <td>Any time a Commit is commented on.</td>
+ </tr>
+ <tr>
+ <td><code>Create</code></td>
+ <td>Any time a Branch or Tag is created.</td>
+ </tr>
+ <tr>
+ <td><code>Delete</code></td>
+ <td>Any time a Branch or Tag is deleted.</td>
+ </tr>
+ <tr>
+ <td><code>Deployment</code></td>
+ <td>Any time a Repository has a new deployment created from the API.</td>
+ </tr>
+ <tr>
+ <td><code>DeploymentStatus</code></td>
+ <td>Any time a deployment for the Repository has a status update from the API.</td>
+ </tr>
+ <tr>
+ <td><code>Fork</code></td>
+ <td>Any time a Repository is forked.</td>
+ </tr>
+ <tr>
+ <td><code>Gollum</code></td>
+ <td>Any time a Wiki page is updated.</td>
+ </tr>
+ <tr>
+ <td><code>IssueComment</code></td>
+ <td>Any time an Issue is commented on.</td>
+ </tr>
+ <tr>
+ <td><code>Issues</code></td>
+ <td>Any time an Issue is opened or closed.</td>
+ </tr>
+ <tr>
+ <td><code>Member</code></td>
+ <td>Any time a User is added as a collaborator to a non-Organization Repository.</td>
+ </tr>
+ <tr>
+ <td><code>PageBuild</code></td>
+ <td>Any time a Pages site is built or results in a failed build.</td>
+ </tr>
+ <tr>
+ <td><code>Public</code></td>
+ <td>Any time a Repository changes from private to public.</td>
+ </tr>
+ <tr>
+ <td><code>PullRequestReviewComment</code></td>
+ <td>Any time a Commit is commented on while inside a Pull Request review (the Files Changed tab).</td>
+ </tr>
+ <tr>
+ <td><code>PullRequest</code></td>
+ <td>Any time a Pull Request is opened, closed, or synchronized (updated due to a new push in the branch that the pull request is tracking).</td>
+ </tr>
+ <tr>
+ <td><code>Push</code></td>
+ <td>Any git push to a Repository. <strong>This is the default event.</strong>
+ </td>
+ </tr>
+ <tr>
+ <td><code>Release</code></td>
+ <td>Any time a Release is published in the Repository.</td>
+ </tr>
+ <tr>
+ <td><code>Status</code></td>
+ <td>Any time a Repository has a status update from the API</td>
+ </tr>
+ <tr>
+ <td><code>TeamAdd</code></td>
+ <td>Any time a team is added or modified on a Repository.</td>
+ </tr>
+ <tr>
+ <td><code>Watch</code></td>
+ <td>Any time a User watches the Repository.</td>
+ </tr>
+ </table>
+ */
 exports.Events = events;

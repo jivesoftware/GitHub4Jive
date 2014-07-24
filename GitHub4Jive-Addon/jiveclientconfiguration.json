@@ -4,6 +4,7 @@
     "development": true,
 	"logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
+    "gitHubWebHookUrl": "/github/WebHookPortal",
     "extensionInfo" : {
         "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66",
         "name" : "GitHub4Jive",

@@ -139,8 +139,9 @@ describe("GitHubFacade", function(){
     });
 
     describe("#subscribeToGitHubEvent", function(){
-        var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue, auth, function(payload){
-
+        var receivedGitHubEvent = false;
+        var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issues, auth, function(payload){
+            receivedGitHubEvent = true;
         });
         var subscriptionToken;
         it("should return a token when complete to later unsubscribe", function(){
@@ -151,12 +152,22 @@ describe("GitHubFacade", function(){
             });
         });
 
+        it("should call handler function when gitHubevent occurs and test is web accessible", function(){
+            return subscriptionPromise.then(function(){
+                return git.changeIssueState(owner, repo, 1, "closed", auth).then(function(){
+                    return git.changeIssueState(owner, repo, 1, "open", auth).then(function(){
+                        receivedGitHubEvent.should.be.true;
+                    });
+                });
+            });
+        });
+
         it("should throw when invalid gitHub event is passed", function(){
             return expect(function(){git.subscribeToRepoEvent(owner, repo, "sadsfdsfds", function(){});}).to.throw("Invalid GitHub Event.");
         });
 
         it("should allow multiple subscriptions to the same repo and event", function(){
-            var anotherSubscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue,auth, function(payload){
+            var anotherSubscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issues,auth, function(payload){
 
             });
 
@@ -167,9 +178,8 @@ describe("GitHubFacade", function(){
     });
 
     describe("#unsubscribeFromGitHubEvent", function(){
-
         it("should take the initial subscription token back to unsubscribe", function(){
-            var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue, auth, function(payload){});
+            var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issues, auth, function(payload){});
             return subscriptionPromise.then(function(token){
                 return git.unSubscribeFromRepoEvent(token).should.eventually.be.fulfilled;
             })

@@ -139,7 +139,7 @@ exports.newComment = function(req, res){
 };
 
 exports.gitHubWebHookPortal = function(req, res){
-    var event = req["X-GitHub-Event"];
+    var event = req.headers["x-github-event"];
     var data = req.body;
 
     gitHubFacade.notifyNewGitHubHookInfo(event, data);

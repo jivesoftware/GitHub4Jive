@@ -1,5 +1,5 @@
 {
-    "clientUrl": "http://lt-a4-110375.jiveland.com/",
+    "clientUrl": "http://lt-a4-110375.jiveland.com",
     "port": "8090",
     "development": true,
 	"logLevel": "DEBUG",

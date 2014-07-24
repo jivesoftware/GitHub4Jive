@@ -19,6 +19,7 @@
  * GitHub in a consistent way.
 */
 var chai = require('chai')
+    , expect = chai.expect
     , should = chai.should();
 var chaiAsPromised = require("chai-as-promised");
 var Q = require("q");
@@ -30,7 +31,7 @@ var specificUser = "glen-nicol";
 var repo = "GitHub4Jive";
 var issueNumber = 1;
 
-var auth = {type:"basic", username:"", password: ""}
+var auth = {type:"basic", username: specificUser, password: ""}
 
 
 describe("GitHubFacade", function(){
@@ -54,10 +55,6 @@ describe("GitHubFacade", function(){
                 user.login.should.not.contain(" ");
                 user.login.should.equal(specificUser);
             });
-//            return Q.all([
-//                userPromise.should.eventually.be.an("object"),
-//                userPromise.should.eventually.have.property("login").should.equal(specificUser)
-//            ]);
         });
     });
 
@@ -138,6 +135,48 @@ describe("GitHubFacade", function(){
                     comments[0].should.have.property("user");
                 });
 
+        });
+    });
+
+    describe("#subscribeToGitHubEvent", function(){
+        var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue, auth, function(payload){
+
+        });
+        var subscriptionToken;
+        it("should return a token when complete to later unsubscribe", function(){
+            return subscriptionPromise.then(function(token){
+                token.should.be.a("string");
+                token.length.should.be.above(4);
+                subscriptionToken = token;
+            });
+        });
+
+        it("should throw when invalid gitHub event is passed", function(){
+            return expect(function(){git.subscribeToRepoEvent(owner, repo, "sadsfdsfds", function(){});}).to.throw("Invalid GitHub Event.");
+        });
+
+        it("should allow multiple subscriptions to the same repo and event", function(){
+            var anotherSubscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue,auth, function(payload){
+
+            });
+
+            return anotherSubscriptionPromise.then(function(token){
+                token.should.not.equal(subscriptionToken);
+            });
+        });
+    });
+
+    describe("#unsubscribeFromGitHubEvent", function(){
+
+        it("should take the initial subscription token back to unsubscribe", function(){
+            var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issue, auth, function(payload){});
+            return subscriptionPromise.then(function(token){
+                return git.unSubscribeFromRepoEvent(token).should.eventually.be.fulfilled;
+            })
+        });
+
+        it("should throw when an invalid token is passed back", function(){
+            return expect(function(){git.unSubscribeFromRepoEvent("");}).to.throw();
         });
     });
 })

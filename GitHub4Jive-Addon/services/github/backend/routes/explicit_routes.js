@@ -1,5 +1,6 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
+var gitHubController = require("../../../../common/GitHubController");
 
 exports.getWebhooksLog = {
     'path' : '/webhooks/github',
@@ -55,4 +56,11 @@ exports.postWebhooks = {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end( JSON.stringify( { } ) );
     }
+};
+
+
+exports.GitHubWebHookPortal = {
+    'path': '/example-github/gitHubHookPortal',
+    'verb': 'post',
+    'route': gitHubController.gitHubWebHookPortal
 };

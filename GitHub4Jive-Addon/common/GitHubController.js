@@ -137,3 +137,12 @@ exports.newComment = function(req, res){
     });
 
 };
+
+exports.gitHubWebHookPortal = function(req, res){
+    var event = req["X-GitHub-Event"];
+    var data = req.body;
+
+    gitHubFacade.notifyNewGitHubHookInfo(event, data);
+    res.writeHead(204);
+    res.end();
+};

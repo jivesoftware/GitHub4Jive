@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 
+var jive = require('jive-sdk');
 var GitHubApi = require("github");
 var Q = require("q");
 
@@ -67,7 +68,7 @@ function getOrgsRepositories(git, org){
 
 var repoHooks = {};
 
-function updateGitHubHook(git,owner, repo, events){
+function createGitHubHook(git,owner, repo, events){
     return deferredTemplate( git.repos.createHook,
         {"user": owner, "repo": repo, "name": "web",
             "config": JSON.stringify( { "url": config.clientUrl + ":" + config.port +  config.gitHubWebHookUrl, "content_type": "json"}),
@@ -124,17 +125,15 @@ function EventHandler(event, handler){
  * */
 
 function currentSubscribedEvents(hook){
-    return Object.keys(hook).events.map(function(event){return hook.events[event].event;})
+    return Object.keys(hook.events);
 }
 
 function subscribeTo(git,owner,repo, gitEvent, handler){
     var fullName = owner + "/" + repo;
     var hook = repoHooks[fullName];
     if(!hook){
-
-
         return deletePreviousHooks(git, owner, repo).then(function(){
-            return updateGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
+            return createGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
                 var eventHandler = EventHandler(gitEvent, handler);
                 repoHooks[fullName] = {events:{}, key: hookResponse.id};
                 repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
@@ -149,13 +148,18 @@ function subscribeTo(git,owner,repo, gitEvent, handler){
             //hack to make interface consistent
             return Q.delay(0).then(function() {return eventHandler.token;});
         }else{
-            var newEventList = currentSubscribedEvents(hook).push(gitEvent);
-            return updateGitHubHook(git,owner, repo, newEventList).then(function(hookResponse){
-                hook.key = hookResponse.id;
-                var eventHandler = EventHandler(gitEvent, handler);
-                hook.events[gitEvent].handlers.push(eventHandler);
-                return eventHandler.token;
-            });
+            var newEventList = currentSubscribedEvents(hook);
+            newEventList.push(gitEvent);
+            jive.logger.info(newEventList);
+            return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
+                return createGitHubHook(git,owner, repo, newEventList).then(function(hookResponse){
+                    hook.key = hookResponse.id;
+                    var eventHandler = EventHandler(gitEvent, handler);
+                    repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
+                    return eventHandler.token;
+                });
+            })
+
         }
 
     }
@@ -254,6 +258,20 @@ exports.getCurrentUser = function(authOptions){
 };
 
 /*
+ * Retrieve a list of comments for a given issue on a repository
+ * @param owner Entity that owns the repository. Either a git username or organization name
+ * @param repo Repo name, not full name with owner
+ * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
+ * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
+ * @param upTo Number of comments to retrieve up to 100. Default is 30.
+ * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ */
+exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.getComments,{"user" : owner, "repo": repo, "number" : issueNumber} );
+}
+
+/*
  * Retrieve a list of issues from a repository
  * @param owner Entity that owns the repository. Either a git username or organization name
  * @param repo Repo name, not full name with owner
@@ -267,18 +285,16 @@ exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
 }
 
 /*
- * Retrieve a list of comments for a given issue on a repository
- * @param owner Entity that owns the repository. Either a git username or organization name
- * @param repo Repo name, not full name with owner
- * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
- * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @param upTo Number of comments to retrieve up to 100. Default is 30.
+ * Retrieve a user's details
+ * @param user Username of user
+ * @param authOptions OPTIONAL object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @return promise promise: Use .then(function(result){}); to process return asynchronously
  */
-exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
+
+exports.getUserDetails = function(user, authOptions){
     var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.getComments,{"user" : owner, "repo": repo, "number" : issueNumber} );
-}
+    return deferredTemplate(git.user.getFrom, {"user":user})
+};
 
 /*
  * Change the state of an issue to open or closed
@@ -320,6 +336,7 @@ exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptio
 
 /*
  * Register an event handler for a GitHub Event. Events are defined on the Events member.
+ * These should be done synchronously. Lag between calls to GitHub for hook registration can cause problems otherwise.
  * @param owner Entity that owns the repository. Either a git username or organization name
  * @param repo Repo name, not full name with owner
  * @param gitEvent The GitHub event that this handler should respond to. Possible values are defined on the Events member
@@ -328,8 +345,14 @@ exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptio
  * @return  promise promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
  */
 exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, handler){
-    if(!(owner && repo && gitEvent && authOptions)){
-        throw Error("Invalid subscription parameters.");
+    if(!owner){
+        throw Error("Repository owner required.");
+    }
+    if(!repo) {
+        throw Error("Repository name required.");
+    }
+    if(!authOptions){
+        throw Error("Invalid auth object.");
     }
     if(Object.keys(events).map(function(key){return events[key];}).indexOf(gitEvent) < 0){
         throw Error("Invalid GitHub Event.");
@@ -364,7 +387,7 @@ exports.unSubscribeFromRepoEvent = function(token){
             unregisterAction = deleteRepoHook(git, r.owner, r.repo, repo.key);
         }
         else {
-            unregisterAction = updateGitHubHook(git, r.owner, r.repo, currentEvents);
+            unregisterAction = createGitHubHook(git, r.owner, r.repo, currentEvents);
         }
         return unregisterAction;
     }
@@ -399,17 +422,17 @@ exports.notifyNewGitHubHookInfo = function(eventType, eventData){
 
     }else{
         var repo = repoHooks[eventData.repository.full_name];
-        repo.events[eventType].handlers.forEach(function(handler){
-            handler.handler(eventData);
-        });
+        if(repo) {
+            repo.events[eventType].handlers.forEach(function (handler) {
+                handler.handler(eventData);
+            });
+        }else{
+            jive.logger.warn("Unregistered WebHook Handler for: " + eventData.repository.full_name);
+        }
     }
 };
 
 var events = {
-    /*
-     * Triggered any time any of of the following events occurs.
-     */
-    All: "*",
     /*
      * Triggered any time a commit is commented on.
      * */
@@ -494,10 +517,6 @@ var events = {
  <tr>
  <th>Name</th>
  <th>Description</th>
- </tr>
- <tr>
- <td><code>*</code></td>
- <td>Any time any event is triggered (<a href="#wildcard-event">Wildcard Event</a>).</td>
  </tr>
  <tr>
  <td><code>CommitComment</code></td>

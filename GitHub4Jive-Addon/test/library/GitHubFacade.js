@@ -175,6 +175,12 @@ describe("GitHubFacade", function(){
                 token.should.not.equal(subscriptionToken);
             });
         });
+
+        it("should allow multiple types of events to be subscribed to." , function () {
+            return git.subscribeToRepoEvent(owner, repo, git.Events.IssueComment,auth, function(payload){
+
+            }).should.eventually.be.fulfilled;
+        })
     });
 
     describe("#unsubscribeFromGitHubEvent", function(){

@@ -119,3 +119,26 @@ exports.formatListData = function(title, items, keys){
         }
     };
 }
+
+exports.formatActivityData = function (headLine, description, displayName, email, url) {
+    return {
+        "activity": {
+            "action": {
+                "name": "posted",
+                "description": description
+            },
+            "actor": {
+                "name": displayName,
+                "email": email
+            },
+            "object": {
+                "type": "website",
+                "url": url,
+                "image": "http://placehold.it/102x102",
+                "title": headLine ,
+                "description": description
+            },
+            "externalID": '' + new Date().getTime()
+        }
+    };
+};

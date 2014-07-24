@@ -17,49 +17,81 @@
 var count = 0;
 
 var jive = require("jive-sdk");
+var gitHub = require("../../../common/GitHubFacade");
+var oAuth = require("../../../common/OauthProvider");
+var tileFormatter = require("../../../common/TileFormatter");
 
-exports.task = new jive.tasks.build(
-    // runnable
-    function() {
-        jive.extstreams.findByDefinitionName( 'github-issues-active' ).then( function(instances) {
-            if ( instances ) {
-                instances.forEach( function( instance ) {
+var registeredTiles = {};
 
-                    var config = instance['config'];
-                    if ( config && config['posting'] === 'off' ) {
-                        return;
-                    }
+function addToRegisterredhash(id, repo, token, event){
+    jive.logger.info("Successfully registered: " + repo + "-"+event+":"+token);
+    if(!registeredTiles[id]){
+        registeredTiles[id] = {};
+    }
+    registeredTiles[id][event] = token;
+}
 
-                    jive.logger.debug('running pusher for ', instance.name, 'instance', instance.id );
+function setupIssueActivityFeed(instance, config, owner, repo, authOptions){
+    jive.logger.info("Attempting to register " + config.repoFullName + " issue hook");
+    return gitHub.subscribeToRepoEvent(owner, repo, gitHub.Events.Issues, authOptions,
+        function (payload) {
 
-                    count++;
+            var whoDunIt = payload.sender.login;
+            return gitHub.getUserDetails(whoDunIt,authOptions).then(function (user) {
+                var formattedData = tileFormatter.formatActivityData(
+                        user.name + " " + payload.action + " issue: " + payload.issue.title,
+                    "", user.name, user.email, payload.issue.html_url);
+                jive.extstreams.pushActivity(instance, formattedData);
+            })
 
-                    var dataToPush = {
-                        "activity":
-                        {
-                            "action":{
-                                "name":"posted",
-                                "description":"Activity " + count
-                            },
-                            "actor":{
-                                "name":"Actor Name",
-                                "email":"actor@email.com"
-                            },
-                            "object":{
-                                "type":"website",
-                                "url":"http://www.google.com",
-                                "image":"http://placehold.it/102x102",
-                                "title":"Activity " + count,
-                                "description":"Activity " + count
-                            },
-                            "externalID": '' + new Date().getTime()
-                        }
-                    };
+        }).then(function (subscriptionToken) {
+            addToRegisterredhash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.Issues)
+        })
+}
+
+function setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptions){
+    jive.logger.info("Attempting to register " + config.repoFullName + " issue comment hook");
+    return gitHub.subscribeToRepoEvent(owner, repo, gitHub.Events.IssueComment, authOptions,
+        function (payload) {
+
+            var whoDunIt = payload.sender.login;
+            return gitHub.getUserDetails(whoDunIt, authOptions).then(function (user) {
+                var formattedData = tileFormatter.formatActivityData(
+                        user.name + " commented on issue: " + payload.issue.title,
+                    payload.comment.body, user.name, user.email, payload.issue.html_url);
+                jive.extstreams.pushActivity(instance, formattedData);
+            })
+
+        }).then(function (subscriptionToken) {
+            addToRegisterredhash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.IssueComment)
+        })
+}
+
+exports.task = function () {
+    jive.extstreams.findByDefinitionName( 'github-issues-active').then(function (instances) {
+        if(instances){
+            instances.forEach(function (instance) {
+
+                var config = instance.config;
+                if ( !config || config['posting'] === 'off' || registeredTiles[instance.id]) {
+                    return;
+                }
+                var owner = config.repoOwner;
+                var repo = config.repoName;
+                var ticketID = config.ticketID;
+
+                oAuth.getOauthToken(ticketID).then(function (authOptions) {
+                    return setupIssueActivityFeed(instance, config, owner, repo, authOptions)
+                    .then(function () {
+                        return setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptions)
+                    });
+                }).catch(function (error) {
+                    jive.logger.error(error);
                 });
-            }
-        });
-    },
 
-    // interval (optional)
-    10000
-);
+
+            })
+        }
+
+    });
+}

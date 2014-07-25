@@ -5,6 +5,7 @@ with rich discussions and quick access to GitHub resources within Jive. Tiles, a
 services, web hooks, and cartridges will be used to make this experience as natural and
 powerful as possible.
 
+> Note: For architecture details and development notes for each component, please see the corresponding **developer_notes.md** in the component directory.
 
 # User Stories - General #
 

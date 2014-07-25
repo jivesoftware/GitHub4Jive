@@ -22,9 +22,13 @@ function ListItemLengthError(){
     return "List can only display 10 items";
 }
 
+function ActivityHeadlineMissing() {
+    return "Activity headline required.";
+}
 
 exports.AccordionItemLengthError = AccordionItemLengthError();
 exports.ListItemLengthError = ListItemLengthError();
+exports.ActivityHeadlineMissing = ActivityHeadlineMissing();
 
 function chop(str, maxLength, chopBeginning){
     if(chopBeginning){
@@ -121,6 +125,9 @@ exports.formatListData = function(title, items, keys){
 }
 
 exports.formatActivityData = function (headLine, description, displayName, email, url) {
+    if(!headLine || headLine == ""){
+        throw Error(ActivityHeadlineMissing());
+    }
     return {
         "activity": {
             "action": {

@@ -31,8 +31,14 @@ var specificUser = "glen-nicol";
 var repo = "GitHub4Jive";
 var issueNumber = 1;
 
-var auth = {type:"basic", username: specificUser, password: ""}
-
+var auth = {type:"basic", username: specificUser, password: "a"}
+if(!auth.password || auth.password == ""){
+    var error = "If password is null/empty then the test fixture completely fails. An exception is swallowed from the authenticate \n"+
+        "function and somehow lost in a framework. Still working on it. For now Enter valid credentials to test gitHub or \n"+
+        "bogus password and they will fail but the rest of the tests will run";
+    console.log(error)
+    throw Error(error);
+}
 
 describe("GitHubFacade", function(){
     var git = require("../../common/GitHubFacade");

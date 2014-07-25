@@ -25,7 +25,7 @@ var config = require("../jiveclientconfiguration.json");
 function GitHubInstance(auth){
     var git = new GitHubApi({version: "3.0.0"});
     if(auth){
-        git.authenticate(auth)
+        git.authenticate(auth);
     }
     return git;
 }

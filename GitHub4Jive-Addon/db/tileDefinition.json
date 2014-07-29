@@ -1,5 +1,5 @@
 {
-  "4e0a12bf-0e99-433b-9ab9-d2bd13133399": {
+  "2146030a-f19c-42d4-87d3-9e162a7cdc6d": {
     "sampleData": {
       "title": "github-commits-recent",
       "contents": [
@@ -21,10 +21,10 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-commits-recent/action",
-    "id": "4e0a12bf-0e99-433b-9ab9-d2bd13133399",
+    "id": "2146030a-f19c-42d4-87d3-9e162a7cdc6d",
     "definitionDirName": "github-commits-recent"
   },
-  "cb7e6a92-e7a0-4a75-99c8-00628b4b9145": {
+  "93e798c9-d5fe-46c5-879d-9b3852c7ae3c": {
     "sampleData": {
       "title": "github-issues-recent",
       "contents": [
@@ -46,10 +46,10 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-issues-recent/action",
-    "id": "cb7e6a92-e7a0-4a75-99c8-00628b4b9145",
+    "id": "93e798c9-d5fe-46c5-879d-9b3852c7ae3c",
     "definitionDirName": "github-issues-recent"
   },
-  "705bb0aa-023f-45b5-a729-3129990f0cce": {
+  "0e9049cd-953e-48f3-8a62-f2511e0641ad": {
     "sampleData": {
       "message": "github-project-health",
       "sections": [
@@ -86,10 +86,10 @@
       "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
-    "id": "705bb0aa-023f-45b5-a729-3129990f0cce",
+    "id": "0e9049cd-953e-48f3-8a62-f2511e0641ad",
     "definitionDirName": "github-project-health"
   },
-  "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6": {
+  "debe05c4-ba00-44de-bb47-abfd08bf72a0": {
     "sampleData": {
       "title": "github-pullrequests-recent",
       "contents": [
@@ -111,7 +111,7 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-pullrequests-recent/action",
-    "id": "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6",
+    "id": "debe05c4-ba00-44de-bb47-abfd08bf72a0",
     "definitionDirName": "github-pullrequests-recent"
   }
 }

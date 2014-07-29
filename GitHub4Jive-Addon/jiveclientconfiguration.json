@@ -1,6 +1,6 @@
 {
     "clientUrl": "http://jivedev.ryanrutan.com",
-    "port": "18090",
+    "port": "18080",
     "development": true,
 	"logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
@@ -15,5 +15,14 @@
         "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token",
         "oauth2ConsumerKey": "1443920cbbcb2fb97f06",
         "oauth2ConsumerSecret": "3701567a1f08868cdd93fe932fd62e2a2b57643e"
+    },
+    "github" : {
+        "oauth2" : {
+            "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
+            "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token",
+            "oauth2ConsumerKey": "1443920cbbcb2fb97f06",
+            "oauth2ConsumerSecret": "3701567a1f08868cdd93fe932fd62e2a2b57643e"
+        },
+        "webHookUrl" :  "/github/WebHookPortal"
     }
 }

@@ -24,14 +24,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-commits-recent/action",
-            "id": "4e0a12bf-0e99-433b-9ab9-d2bd13133399",
+            "action": "http://jivedev.ryanrutan.com:18080/github-commits-recent/action",
+            "id": "2146030a-f19c-42d4-87d3-9e162a7cdc6d",
             "definitionDirName": "github-commits-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-commits-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-commits-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {
@@ -54,14 +54,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-issues-recent/action",
-            "id": "cb7e6a92-e7a0-4a75-99c8-00628b4b9145",
+            "action": "http://jivedev.ryanrutan.com:18080/github-issues-recent/action",
+            "id": "93e798c9-d5fe-46c5-879d-9b3852c7ae3c",
             "definitionDirName": "github-issues-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-issues-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-issues-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {
@@ -100,13 +100,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "705bb0aa-023f-45b5-a729-3129990f0cce",
+            "id": "0e9049cd-953e-48f3-8a62-f2511e0641ad",
             "definitionDirName": "github-project-health",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-project-health/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-project-health/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {
@@ -129,14 +129,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/action",
-            "id": "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6",
+            "action": "http://jivedev.ryanrutan.com:18080/github-pullrequests-recent/action",
+            "id": "debe05c4-ba00-44de-bb47-abfd08bf72a0",
             "definitionDirName": "github-pullrequests-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-pullrequests-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {},
@@ -149,13 +149,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "0460a158-3721-49c0-8f85-0e88c39e4d56",
+            "id": "f5446073-a1ca-4255-b654-943e14afea26",
             "definitionDirName": "github-commits-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-commits-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-commits-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {},
@@ -168,13 +168,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "f71c86a6-d508-4935-929a-73150f13fa6f",
+            "id": "98f5370a-f4b5-4773-8e49-0e3e10e12b1a",
             "definitionDirName": "github-issues-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-issues-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-issues-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         },
         {
             "sampleData": {},
@@ -187,13 +187,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "f0297886-0ed5-45f3-833b-b1d2a752f336",
+            "id": "701aaf76-3b87-438a-8d5c-b4f03637e591",
             "definitionDirName": "github-pullrequests-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://jivedev.ryanrutan.com:18080/github-pullrequests-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
+            "register": "http://jivedev.ryanrutan.com:18080/registration"
         }
     ],
     "templates": [
@@ -215,8 +215,8 @@
     "osapps": [
         {
             "name": "GitHub4Jive",
+            "appPath": "github",
             "id": "f90877d8-b207-56a4-b21a-e5638e5c7a18",
-            "appPath": "f90877d8b20756a4b21ae5638e5c7a18",
             "url": "%serviceURL%/osapp/GitHub4Jive/app.xml"
         }
     ],

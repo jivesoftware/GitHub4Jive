@@ -6,41 +6,48 @@
                author_affiliation="Jive Software (Open Source)"
                author_email="jivedev@jivesoftware.com">
 
-    <!-- Commonly used features -->
-    <Require feature="dynamic-height" />
-    <Require feature="jive-core-v2" />
-    <Require feature="jquery-1.6" />
-    <Require feature="osapi"/>
-    <Require feature="settitle"/>
-    <Require feature="views" />
-    <Require feature="jive-core-v3" />
-    <Require feature="embedded-experiences" />
-	<Require feature="actions">  
-		<Param name="action-contributions">  
-			<![CDATA[ 
-				<action id="com.jivesoftware.profile.rtc" 
-						path="jive/actions/profile" 
-						label="Example Profile Pop-Up" 
-						url="https://developer.jivesoftware.com" 
-						icon="images/icon16.png"
-						windowSpec="left=40,top=40,width=500,height=500,toolbar=1,resizable=0"/> 
-			]]>  
+        <Link rel="Icon"       href="images/icon16.png" />
+        <Link rel="MediumIcon" href="images/icon48.png" />
+        <Link rel="LargeIcon"  href="images/icon128.png" />
+
+        <Link rel="Screenshot1" href="images/screenshot01.png" />
+        <Link rel="Screenshot2" href="images/screenshot02.png" />
+        <Link rel="Screenshot3" href="images/screenshot03.png" />
+        <Link rel="Screenshot4" href="images/screenshot04.png" />
+
+
+	    <Require feature="dynamic-height" />
+		<Require feature="settitle"/>
+		<Require feature="views" />
+        <Require feature="embedded-experiences" />
+        <Require feature="jquery-1.6"/>
+        <Require feature="osapi"/>
+        <Require feature="opensocial-data"/>
+        <Require feature="jive-core-v3"/>
+        <Require feature="jive-core-v3-resolver"/>
+        <Require feature="actions">
+            <Param name="action-contributions">            
+                <![CDATA[
+
+                    <action id="com.jivesoftware.addon.github4jive.embed.issue"
+                          path="jive/actions/rte"
+                          label="Insert GitHub Issue"
+                          view="jivedev-docs-embed"
+                          icon="images/icon16.png" />
+
+                    <action id="com.jivesoftware.addon.github4jive.place.config"
+                          path="jive/settings/places/*"
+                          label="Enable GitHub4Jive"
+                          view="github4jive-place-config" />
+
+                    <action id="com.jivesoftware.addon.github4jive.place.tab"
+                          path="jive/tabs/places/*?filter=exists(context.extprops.github4jive.repo)"
+                          label="GitHub"
+                          view="github"/>
+                          
+                ]]> 
 		</Param>  
-	</Require>  
-
-    <!-- Icons: 3 sizes, 16x16, 48x48, 128x128 -->
-    <Link rel="Icon"       href="images/icon16.png" />
-    <Link rel="MediumIcon" href="images/icon48.png" />
-    <Link rel="LargeIcon"  href="images/icon128.png" />
-
-    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
-    <!--
-    <Link rel="Screenshot1" href="images/screenshot1.png" />
-    <Link rel="Screenshot2" href="images/screenshot2.png" />
-    <Link rel="Screenshot3" href="images/screenshot3.png" />
-    <Link rel="Screenshot4" href="images/screenshot4.png" />
-    <Link rel="Screenshot5" href="images/screenshot5.png" />
-    -->
+	</Require>
 
     <!-- OAuth Services: https://developers.jivesoftware.com/community/docs/DOC-1161 -->
     <!--
@@ -82,6 +89,8 @@
 
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
+  <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
+  <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />
 
   <!--
   <Content type="html" view="home" href="home.html" preferred_height="400" />

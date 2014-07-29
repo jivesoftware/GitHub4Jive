@@ -1,6 +1,6 @@
 {
-    "clientUrl": "http://red-trigger-87-129332.usw1-2.nitrousbox.com",
-    "port": "8090",
+    "clientUrl": "http://jivedev.ryanrutan.com",
+    "port": "18090",
     "development": true,
 	"logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,

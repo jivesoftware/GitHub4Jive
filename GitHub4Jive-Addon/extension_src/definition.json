@@ -24,14 +24,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-commits-recent/action",
-            "id": "9c31dfac-55bd-4e57-bfbd-f7454392bb98",
+            "action": "http://jivedev.ryanrutan.com:18090/github-commits-recent/action",
+            "id": "4e0a12bf-0e99-433b-9ab9-d2bd13133399",
             "definitionDirName": "github-commits-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-commits-recent/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-commits-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {
@@ -54,14 +54,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-issues-recent/action",
-            "id": "474b57ae-f1d9-43a1-868a-e123ae26a67c",
+            "action": "http://jivedev.ryanrutan.com:18090/github-issues-recent/action",
+            "id": "cb7e6a92-e7a0-4a75-99c8-00628b4b9145",
             "definitionDirName": "github-issues-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-issues-recent/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-issues-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {
@@ -100,13 +100,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "cdd76b76-e4a8-4a7a-bad3-2d5da943f5a2",
+            "id": "705bb0aa-023f-45b5-a729-3129990f0cce",
             "definitionDirName": "github-project-health",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-project-health/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-project-health/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {
@@ -129,14 +129,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-pullrequests-recent/action",
-            "id": "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d",
+            "action": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/action",
+            "id": "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6",
             "definitionDirName": "github-pullrequests-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-pullrequests-recent/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {},
@@ -149,13 +149,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "1e1f62f1-9cee-4275-87d1-869684804a58",
+            "id": "0460a158-3721-49c0-8f85-0e88c39e4d56",
             "definitionDirName": "github-commits-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-commits-active/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-commits-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {},
@@ -168,13 +168,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "4667e483-1fac-4469-b8cb-a667864073a4",
+            "id": "f71c86a6-d508-4935-929a-73150f13fa6f",
             "definitionDirName": "github-issues-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-issues-active/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-issues-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         },
         {
             "sampleData": {},
@@ -187,13 +187,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "affce36c-4aee-4807-a522-45cbf9a94a43",
+            "id": "f0297886-0ed5-45f3-833b-b1d2a752f336",
             "definitionDirName": "github-pullrequests-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/github-pullrequests-active/configure",
-            "unregister": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/unregister",
-            "register": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090/registration"
+            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-active/configure",
+            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
+            "register": "http://jivedev.ryanrutan.com:18090/registration"
         }
     ],
     "templates": [

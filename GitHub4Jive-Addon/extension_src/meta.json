@@ -12,7 +12,7 @@
     "released_on": "2013-03-08T19:11:11.234Z",
     "register_url": "%serviceURL%/jive/oauth/register",
     "unregister_url": "%serviceURL%/jive/oauth/unregister",
-    "service_url": "http://red-trigger-87-129332.usw1-2.nitrousbox.com:8090",
+    "service_url": "http://jivedev.ryanrutan.com:18090",
     "redirect_url": "%serviceURL%",
     "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66"
 }

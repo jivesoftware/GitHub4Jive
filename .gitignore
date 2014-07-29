@@ -30,6 +30,7 @@ node_modules
 .idea
 atlassian-ide-plugin.xml
 GitHub4Jive.iml
+*.iml
 
 #Mac junk
 

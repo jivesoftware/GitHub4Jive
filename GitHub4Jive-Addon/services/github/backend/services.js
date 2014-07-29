@@ -4,11 +4,11 @@ var gitHubFacade = require("../../../common/GitHubFacade");
 exports.onBootstrap = function(app) {
 
     //temporary
-    var auth = {type:"basic", username:"", password: ""};
-    //need to figure out how to get repo into this context. Or maybe
-    gitHubFacade.subscribeToRepoEvent("jivesoftware", "GitHub4Jive", gitHubFacade.Events.Issues, auth, function(payload){
-        console.log(payload);
-    });
+//    var auth = {type:"basic", username:"", password: ""};
+//    //need to figure out how to get repo into this context. Or maybe
+//    gitHubFacade.subscribeToRepoEvent("jivesoftware", "GitHub4Jive", gitHubFacade.Events.Issues, auth, function(payload){
+//        console.log(payload);
+//    });
 
 
     // create a metawebhook when a jive instance registers

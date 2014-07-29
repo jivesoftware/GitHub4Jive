@@ -1,5 +1,5 @@
 {
-  "1e1f62f1-9cee-4275-87d1-869684804a58": {
+  "0460a158-3721-49c0-8f85-0e88c39e4d56": {
     "sampleData": {},
     "displayName": "github-commits-active",
     "name": "github-commits-active",
@@ -10,10 +10,10 @@
       "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
-    "id": "1e1f62f1-9cee-4275-87d1-869684804a58",
+    "id": "0460a158-3721-49c0-8f85-0e88c39e4d56",
     "definitionDirName": "github-commits-active"
   },
-  "4667e483-1fac-4469-b8cb-a667864073a4": {
+  "f71c86a6-d508-4935-929a-73150f13fa6f": {
     "sampleData": {},
     "displayName": "github-issues-active",
     "name": "github-issues-active",
@@ -24,10 +24,10 @@
       "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
-    "id": "4667e483-1fac-4469-b8cb-a667864073a4",
+    "id": "f71c86a6-d508-4935-929a-73150f13fa6f",
     "definitionDirName": "github-issues-active"
   },
-  "affce36c-4aee-4807-a522-45cbf9a94a43": {
+  "f0297886-0ed5-45f3-833b-b1d2a752f336": {
     "sampleData": {},
     "displayName": "github-pullrequests-active",
     "name": "github-pullrequests-active",
@@ -38,7 +38,7 @@
       "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
-    "id": "affce36c-4aee-4807-a522-45cbf9a94a43",
+    "id": "f0297886-0ed5-45f3-833b-b1d2a752f336",
     "definitionDirName": "github-pullrequests-active"
   }
 }

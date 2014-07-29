@@ -1,5 +1,5 @@
 {
-  "9c31dfac-55bd-4e57-bfbd-f7454392bb98": {
+  "4e0a12bf-0e99-433b-9ab9-d2bd13133399": {
     "sampleData": {
       "title": "github-commits-recent",
       "contents": [
@@ -21,10 +21,10 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-commits-recent/action",
-    "id": "9c31dfac-55bd-4e57-bfbd-f7454392bb98",
+    "id": "4e0a12bf-0e99-433b-9ab9-d2bd13133399",
     "definitionDirName": "github-commits-recent"
   },
-  "474b57ae-f1d9-43a1-868a-e123ae26a67c": {
+  "cb7e6a92-e7a0-4a75-99c8-00628b4b9145": {
     "sampleData": {
       "title": "github-issues-recent",
       "contents": [
@@ -46,10 +46,10 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-issues-recent/action",
-    "id": "474b57ae-f1d9-43a1-868a-e123ae26a67c",
+    "id": "cb7e6a92-e7a0-4a75-99c8-00628b4b9145",
     "definitionDirName": "github-issues-recent"
   },
-  "cdd76b76-e4a8-4a7a-bad3-2d5da943f5a2": {
+  "705bb0aa-023f-45b5-a729-3129990f0cce": {
     "sampleData": {
       "message": "github-project-health",
       "sections": [
@@ -86,10 +86,10 @@
       "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
-    "id": "cdd76b76-e4a8-4a7a-bad3-2d5da943f5a2",
+    "id": "705bb0aa-023f-45b5-a729-3129990f0cce",
     "definitionDirName": "github-project-health"
   },
-  "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d": {
+  "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6": {
     "sampleData": {
       "title": "github-pullrequests-recent",
       "contents": [
@@ -111,7 +111,7 @@
       "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
     },
     "action": "/github-pullrequests-recent/action",
-    "id": "104c93c1-ee64-4f23-b3c2-6b0d9a54d00d",
+    "id": "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6",
     "definitionDirName": "github-pullrequests-recent"
   }
 }

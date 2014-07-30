@@ -35,16 +35,39 @@
                           view="github4jive-issue-embed"
                           icon="images/icon16.png" />
 
-                    <action id="com.jivesoftware.addon.github4jive.place.config"
-                          path="jive/settings/places/*"
-                          label="Enable GitHub4Jive"
-                          view="github4jive-place-config" />
+                    <action id="com.jivesoftware.addon.github4jive.project.config"
+                          path="jive/settings/places/project"
+                          label="Configure GitHub4Jive"
+                          view="github4jive-place-config"
+                          icon="images/icon16.png" />
 
-                    <action id="com.jivesoftware.addon.github4jive.place.tab"
-                          path="jive/tabs/places/*?filter=exists(context.extprops.github4jive.repo)"
+                    <action id="com.jivesoftware.addon.github4jive.group.config"
+                          path="jive/settings/places/group"
+                          label="Configure GitHub4Jive"
+                          view="github4jive-place-config"
+                          icon="images/icon16.png" />
+
+                    <action id="com.jivesoftware.addon.github4jive.space.config"
+                          path="jive/settings/places/space"
+                          label="Configure GitHub4Jive"
+                          view="github4jive-place-config"
+                          icon="images/icon16.png" />
+
+                    <action id="com.jivesoftware.addon.github4jive.space.tab"
+                          path="jive/tabs/places/space?filter=exists(context.extprops.github4jiveEnabled)"
                           label="GitHub"
                           view="github4jive-place-tab" />
-                          
+
+                    <action id="com.jivesoftware.addon.github4jive.group.tab"
+                          path="jive/tabs/places/group?filter=exists(context.extprops.github4jiveEnabled)"
+                          label="GitHub"
+                          view="github4jive-place-tab" />                          
+
+                    <action id="com.jivesoftware.addon.github4jive.project.tab"
+                          path="jive/tabs/places/project?filter=exists(context.extprops.github4jiveEnabled)"
+                          label="GitHub"
+                          view="github4jive-place-tab" />
+
                 ]]> 
 		</Param>  
 	</Require>
@@ -90,8 +113,10 @@
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
+  <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />
+
 
   <!--
   <Content type="html" view="home" href="home.html" preferred_height="400" />

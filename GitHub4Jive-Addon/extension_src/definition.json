@@ -24,14 +24,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18080/github-commits-recent/action",
+            "action": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-commits-recent/action",
             "id": "2146030a-f19c-42d4-87d3-9e162a7cdc6d",
             "definitionDirName": "github-commits-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-commits-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-commits-recent/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {
@@ -54,14 +54,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18080/github-issues-recent/action",
+            "action": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-issues-recent/action",
             "id": "93e798c9-d5fe-46c5-879d-9b3852c7ae3c",
             "definitionDirName": "github-issues-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-issues-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-issues-recent/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {
@@ -104,9 +104,9 @@
             "definitionDirName": "github-project-health",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-project-health/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-project-health/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {
@@ -129,14 +129,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18080/github-pullrequests-recent/action",
+            "action": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-pullrequests-recent/action",
             "id": "debe05c4-ba00-44de-bb47-abfd08bf72a0",
             "definitionDirName": "github-pullrequests-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-pullrequests-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-pullrequests-recent/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -153,9 +153,9 @@
             "definitionDirName": "github-commits-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-commits-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-commits-active/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -172,9 +172,9 @@
             "definitionDirName": "github-issues-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-issues-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-issues-active/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         },
         {
             "sampleData": {},
@@ -191,9 +191,9 @@
             "definitionDirName": "github-pullrequests-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18080/github-pullrequests-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18080/unregister",
-            "register": "http://jivedev.ryanrutan.com:18080/registration"
+            "config": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github-pullrequests-active/configure",
+            "unregister": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/unregister",
+            "register": "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/registration"
         }
     ],
     "templates": [

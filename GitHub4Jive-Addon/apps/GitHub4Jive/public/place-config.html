@@ -3,4 +3,20 @@
 <script type="text/javascript" charset="utf-8" src="javascripts/shared.js"></script>
 <script type="text/javascript" charset="utf-8" src="javascripts/actions/place-config.js"></script>
 
+<!-- WHY IS jQUERY NOT ALREADY BEING LOADED HERE?? -->
+<!--
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+-->
+
 <h2>Place Config: GitHub4Jive</h2>
+
+<label for="github4jive-enabled">GitHub4Jive Enabled</label>
+<input id="github4jive-enabled" type="checkbox" value="true">
+
+<!-- TODO: UNHARD CODE -->
+<p>
+<a id="github4jive-github-authorize" href="https://github.com/login/oauth/authorize?client_id=344d8698d333fae6838c&scope=public_repo,user&redirect_uri=http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/github/oauth/callback&state=eyAidmlld2VySUQiIDogMTIzNH0=" target="_blank">Authorize GitHub</a>
+</p>
+
+<input id="github4jive-enable-submit" type="button" value="Save" />

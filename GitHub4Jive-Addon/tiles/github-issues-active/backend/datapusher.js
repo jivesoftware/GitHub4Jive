@@ -23,7 +23,7 @@ var tileFormatter = require("../../../common/TileFormatter");
 
 var registeredTiles = {};
 
-function addToRegisterredhash(id, repo, token, event){
+function addToRegisteredHash(id, repo, token, event){
     jive.logger.info("Successfully registered: " + repo + "-"+event+":"+token);
     if(!registeredTiles[id]){
         registeredTiles[id] = {};
@@ -38,14 +38,14 @@ function setupIssueActivityFeed(instance, config, owner, repo, authOptions){
 
             var whoDunIt = payload.sender.login;
             return gitHub.getUserDetails(whoDunIt,authOptions).then(function (user) {
+                var title =  (user.name  || user.login) + " " + payload.action + " issue: " + payload.issue.title;
                 var formattedData = tileFormatter.formatActivityData(
-                        user.name + " " + payload.action + " issue: " + payload.issue.title,
-                    "", user.name, user.email, payload.issue.html_url);
+                    title, payload.issue.body, (user.name || user.login) , user.email, payload.issue.html_url);
                 jive.extstreams.pushActivity(instance, formattedData);
             })
 
         }).then(function (subscriptionToken) {
-            addToRegisterredhash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.Issues)
+            addToRegisteredHash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.Issues)
         })
 }
 
@@ -56,42 +56,56 @@ function setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptio
 
             var whoDunIt = payload.sender.login;
             return gitHub.getUserDetails(whoDunIt, authOptions).then(function (user) {
+                var title = (user.name  || user.login) + " commented on issue: " + payload.issue.title;
                 var formattedData = tileFormatter.formatActivityData(
-                        user.name + " commented on issue: " + payload.issue.title,
-                    payload.comment.body, user.name, user.email, payload.issue.html_url);
+                    title, payload.comment.body, user.name || user.login , user.email, payload.issue.html_url);
                 jive.extstreams.pushActivity(instance, formattedData);
             })
 
         }).then(function (subscriptionToken) {
-            addToRegisterredhash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.IssueComment)
+            addToRegisteredHash(instance.id, config.repoFullName, subscriptionToken, gitHub.Events.IssueComment)
         })
 }
 
-exports.task = function () {
+function setupGitHubListeners(instance){
+    var config = instance.config;
+    if ( !config || config['posting'] === 'off' || registeredTiles[instance.id]) {
+        return;
+    }
+    var owner = config.repoOwner;
+    var repo = config.repoName;
+    var ticketID = config.ticketID;
+
+    oAuth.getOauthToken(ticketID).then(function (authOptions) {
+        return setupIssueActivityFeed(instance, config, owner, repo, authOptions)
+            .then(function () {
+                return setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptions)
+            });
+    }).catch(function (error) {
+        jive.logger.error(error);
+    });
+}
+
+exports.onBootstrap = function () {
     jive.extstreams.findByDefinitionName( 'github-issues-active').then(function (instances) {
         if(instances){
-            instances.forEach(function (instance) {
-
-                var config = instance.config;
-                if ( !config || config['posting'] === 'off' || registeredTiles[instance.id]) {
-                    return;
-                }
-                var owner = config.repoOwner;
-                var repo = config.repoName;
-                var ticketID = config.ticketID;
-
-                oAuth.getOauthToken(ticketID).then(function (authOptions) {
-                    return setupIssueActivityFeed(instance, config, owner, repo, authOptions)
-                    .then(function () {
-                        return setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptions)
-                    });
-                }).catch(function (error) {
-                    jive.logger.error(error);
-                });
-
-
-            })
+            instances.forEach(setupGitHubListeners)
         }
 
     });
 }
+
+exports.eventHandlers = [
+
+    // process tile instance whenever a new one is registered with the service
+    {
+        'event' : jive.constants.globalEventNames.NEW_INSTANCE,
+        'handler' : setupGitHubListeners
+    },
+
+    // process tile instance whenever an existing tile instance is updated
+    {
+        'event' : jive.constants.globalEventNames.INSTANCE_UPDATED,
+        'handler' : setupGitHubListeners
+    }
+];

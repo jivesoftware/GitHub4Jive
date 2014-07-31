@@ -1,12 +1,13 @@
 {
-    "clientUrl": "http://jivedev.ryanrutan.com",
-    "port": "18090",
+    "clientUrl": "http://localhost",
+    "port": "8090",
     "development": true,
 	"logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
     "gitHubWebHookUrl": "/github/WebHookPortal",
     "extensionInfo" : {
         "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66",
+        "jiveServiceSignature" : "zm8hXyh/JFyzCq3pBB5CAR9K1DY=",
         "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },

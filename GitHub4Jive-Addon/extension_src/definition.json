@@ -1,6 +1,7 @@
 {
     "integrationUser": {
-        "systemAdmin": false
+        "systemAdmin": true,
+        "jiveServiceSignature": "zm8hXyh/JFyzCq3pBB5CAR9K1DY="
     },
     "tiles": [
         {
@@ -24,14 +25,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-commits-recent/action",
-            "id": "4e0a12bf-0e99-433b-9ab9-d2bd13133399",
+            "action": "http://localhost:8090/github-commits-recent/action",
+            "id": "01172c76-3743-4513-a93e-8617cfc81786",
             "definitionDirName": "github-commits-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-commits-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-commits-recent/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {
@@ -54,14 +55,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-issues-recent/action",
-            "id": "cb7e6a92-e7a0-4a75-99c8-00628b4b9145",
+            "action": "http://localhost:8090/github-issues-recent/action",
+            "id": "e786c612-e18a-4f82-83cc-0a49ca3bfc0c",
             "definitionDirName": "github-issues-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-issues-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-issues-recent/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {
@@ -100,13 +101,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "705bb0aa-023f-45b5-a729-3129990f0cce",
+            "id": "e809bfaf-9b83-4617-a2b1-34c664eef85f",
             "definitionDirName": "github-project-health",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-project-health/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-project-health/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {
@@ -129,14 +130,14 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "action": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/action",
-            "id": "ca99ccd3-cfe6-4aa6-8078-9454c3ea1af6",
+            "action": "http://localhost:8090/github-pullrequests-recent/action",
+            "id": "6e3a1ecc-1ddb-41e2-9c4b-96fb4a28e330",
             "definitionDirName": "github-pullrequests-recent",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-recent/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-pullrequests-recent/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {},
@@ -149,13 +150,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "0460a158-3721-49c0-8f85-0e88c39e4d56",
+            "id": "0fd6d393-11ff-407a-aeb6-6179202162f5",
             "definitionDirName": "github-commits-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-commits-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-commits-active/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {},
@@ -168,13 +169,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "f71c86a6-d508-4935-929a-73150f13fa6f",
+            "id": "b5c4ff0c-ebaa-42de-9ee9-1604e744207e",
             "definitionDirName": "github-issues-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-issues-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-issues-active/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         },
         {
             "sampleData": {},
@@ -187,13 +188,13 @@
                 "48": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
                 "128": "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
             },
-            "id": "f0297886-0ed5-45f3-833b-b1d2a752f336",
+            "id": "f5fe4e52-8f99-469e-bece-ce3fdee75dcd",
             "definitionDirName": "github-pullrequests-active",
             "published": "2013-02-28T15:12:16.768-0800",
             "updated": "2013-02-28T15:12:16.768-0800",
-            "config": "http://jivedev.ryanrutan.com:18090/github-pullrequests-active/configure",
-            "unregister": "http://jivedev.ryanrutan.com:18090/unregister",
-            "register": "http://jivedev.ryanrutan.com:18090/registration"
+            "config": "http://localhost:8090/github-pullrequests-active/configure",
+            "unregister": "http://localhost:8090/unregister",
+            "register": "http://localhost:8090/registration"
         }
     ],
     "templates": [

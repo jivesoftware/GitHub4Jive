@@ -16,6 +16,7 @@
     "multipart-parser": "0.0.2",
     "q-io": "1.6.x",
     "request": "2.27.0",
-    "xml2js": "0.2.8"
+    "xml2js": "0.2.8",
+    "node-jivev3-api": "*"
   }
 }

@@ -27,11 +27,11 @@ var Q = require("q");
 chai.use(chaiAsPromised);
 
 var owner = "jivesoftware";
-var specificUser = "glen-nicol";
+var specificUser = "<<GITHUBTESTUSER>>";
 var repo = "GitHub4Jive";
 var issueNumber = 1;
 
-var auth = {type:"basic", username: specificUser, password: ""}
+var auth = {type:"basic", username: specificUser, password: "<<GITHUBTESTUSERPASS>>"}
 if(!auth.password || auth.password == ""){
     var error = "If password is null/empty then the test fixture completely fails. An exception is swallowed from the authenticate \n"+
         "function and somehow lost in a framework. Still working on it. For now Enter valid credentials to test gitHub or \n"+

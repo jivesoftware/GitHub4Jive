@@ -14,12 +14,23 @@
  *    limitations under the License.
  */
 
-function JiveOauth(accessToken){
+function JiveOauth(accessToken, refreshToken, tokenPersistenceFunction){
     this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.tokenPersistenceFunction = tokenPersistenceFunction;
 }
 
 JiveOauth.prototype.applyTo = function(url, body, headers){
-    headers.Authorization = "Bearer " + this.accessToken;
+    return {
+        'url' : url,
+        'headers' : headers,
+        'postBody': body,
+        'oauth' : {
+            'access_token' : this.accessToken,
+            'refresh_token' : this.refreshToken
+        },
+        'tokenPersistenceFunction' : this.tokenPersistenceFunction
+    };
 };
 
 module.exports = JiveOauth;

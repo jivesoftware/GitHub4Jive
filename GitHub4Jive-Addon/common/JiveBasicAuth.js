@@ -52,6 +52,12 @@ function base64Encoding(auth){
 JiveBasicAuth.prototype.applyTo = function (url, body, headers) {
     var encoding = base64Encoding(this);
     headers.Authorization = "Basic " + encoding;
+
+    return {
+        'url' : url,
+        'headers' : headers,
+        'postBody': body
+    };
 }
 
 JiveBasicAuth.prototype.headerValue = function(){

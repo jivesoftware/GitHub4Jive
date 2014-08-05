@@ -72,14 +72,15 @@ function catchErrorResponse(surround){
     });
 }
 
-function decorateWithExtPropRetrievers(content, authenticator){
+function decorateWithExtPropRetrievers(community, content, authenticator){
     content.retrieveAllExtProps = function () {
         var prop = content.resources.extprops;
         if(prop.allowed.indexOf("GET") >= 0){
             var url = prop.ref;
             var headers = {};
-            authenticator.applyTo(url, null, headers);
-            return jive.util.buildRequest(url, "GET", null, headers).then(function (response) {
+            var options = authenticator.applyTo(url, null, headers);
+            options['method'] = 'GET';
+            return jive.community.doRequest(community, options).then(function (response) {
                 return content.extProps = response.entity;
             }).catch(function (error) {
                 jive.logger.error(error);
@@ -93,12 +94,12 @@ function decorateWithExtPropRetrievers(content, authenticator){
 
 JiveApiFacade.prototype.create = function(post){
     verifyPost(post);
-    var url = communityAPIURL(this) + "contents"
-    var body = post;
+    var url = communityAPIURL(this) + "contents";
     var headers = {};
-    this.authenticator.applyTo(url,body, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "POST", post, headers).then(function (response) {
-        decorateResponseWithSuccess(response, 201)
+    var options = this.authenticator.applyTo(url,post, headers);
+    options['method'] = 'POST';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+        decorateResponseWithSuccess(response, 201);
         if(response.success){
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
@@ -110,8 +111,9 @@ JiveApiFacade.prototype.create = function(post){
 JiveApiFacade.prototype.delete = function(id){
     var url  = communityAPIURL(this) + "contents/" + id;
     var headers = {};
-    this.authenticator.applyTo(url,null, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "DELETE", null, headers).then(function (response) {
+    var options = this.authenticator.applyTo(url,null, headers);
+    options['method'] = 'DELETE';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
         return decorateResponseWithSuccess(response, 204);
     }));
 };
@@ -119,9 +121,10 @@ JiveApiFacade.prototype.delete = function(id){
 JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
     var url = communityAPIURL(this) + "messages/contents/" + discussionID;
     var headers = {};
-    this.authenticator.applyTo(url, reply, headers);
+    var options = this.authenticator.applyTo(url, reply, headers);
+    options['method'] = 'POST';
     return catchErrorResponse(
-        jive.util.buildRequest(url, "POST", reply, headers).then(function (response) {
+        jive.community.doRequest(this.community, options ).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
 
         })
@@ -135,9 +138,10 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
 //JiveApiFacade.prototype.commentOn = function (contentID, comment) {
 //    var url  = communityAPIURL(this) + "contents/" + contentID + "/comments"
 //    var headers = {};
-//    this.authenticator.applyTo(url,comment, headers);
+//    var options = this.authenticator.applyTo(url,comment, headers);
+//    options['method'] = 'POST';
 //    return catchErrorResponse(
-//        jive.util.buildRequest(url, "POST", comment, headers).then(
+//        jive.community.doRequest(this.community, options ).then(
 //            function (response) {
 //                return decorateResponseWithSuccess(response, 201);
 //
@@ -152,9 +156,10 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
 JiveApiFacade.prototype.attachProps = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
     var headers = {};
-    this.authenticator.applyTo(url, props, headers);
+    var options = this.authenticator.applyTo(url, props, headers);
+    options['method'] = 'POST';
     return catchErrorResponse(
-        jive.util.buildRequest(url, "POST", props, headers).then(function (response) {
+        jive.community.doRequest(this.community, options ).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
         })
     );
@@ -164,11 +169,13 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
     var url = communityAPIURL(this) + "extprops/" + key + "/" + value;
     var headers = {};
     var authenticator = this.authenticator;
-    authenticator.applyTo(url, null, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "GET", null, headers).then(function (response) {
+    var options = authenticator.applyTo(url, null, headers);
+    options['method'] = 'GET';
+    var community = this.community;
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
         if(response.statusCode == 200){
             response.entity.list.forEach(function (content) {
-                decorateWithExtPropRetrievers(content, authenticator);
+                decorateWithExtPropRetrievers(community, content, authenticator);
             })
             return response.entity;
         }else{

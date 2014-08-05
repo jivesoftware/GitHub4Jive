@@ -19,16 +19,18 @@ var chai = require('chai')
     , should = chai.should();
 var chaiAsPromised = require("chai-as-promised");
 var Q = require("q");
+var sinon = require('sinon');
 
 chai.use(chaiAsPromised);
 var jive = require("jive-sdk");
 var JiveFacadeLoader = require("../../common/JiveApiFacade");
 var JiveBasicLoader = require("../../common/JiveBasicAuth");
 var JiveOAuthLoader = require("../../common/JiveOauth");
-var ContentBuilder = require("../../common/JiveContentBuilder")
+var ContentBuilder = require("../../common/JiveContentBuilder");
 
-var community = {jiveUrl: ""};
-var tempOAuthToken = "";
+var community = {jiveUrl: "http://localhost:8080"};
+var tempOAuthToken = jive.util.guid();
+var tempOAuthRefreshToken = jive.util.guid();
 var basic = new JiveBasicLoader("admin", "admin");
 
 function createContent(jiveFacade, type) {
@@ -46,10 +48,47 @@ describe("JiveApiFacade", function () {
         should.exist(jiveFacade);
     });
 
+    beforeEach(function() {
+        jive = require("jive-sdk");
+        jive.context.persistence =  new jive.persistence.memory();
+
+        this.sandbox = sinon.sandbox.create();
+        this.sandbox.inject(this);
+    });
+
+    afterEach(function() {
+        this.sandbox.restore();
+    });
 
     var createdID;
     describe("#create", function () {
         it("should return an object with an id and then be able to delete it", function () {
+            var contentID = 1000;
+            this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
+                // test basic auth
+                if ( headers['Authorization'] !== basic.applyTo(null, null, {})['headers']['Authorization'] ) {
+                    return Q.reject({ 'statusCode': 400 });
+                }
+
+                // if post, then return entity for contentID 1000 (expected by the test)
+                if ( method === 'POST' ) {
+                    return Q.resolve({
+                        'statusCode' : 201,
+                        'entity' : {
+                            'resources' : {
+                                'self' : {
+                                    'ref' : community.jiveUrl + '/api/core/v3/contents/' + contentID
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    return Q.resolve({
+                        'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
+                    });
+                }
+            });
+
             return createContent(jiveFacade, "discussion").then(function (response) {
                 response.should.have.property("success").and.be.true;
                 response.should.have.property("apiID");
@@ -65,8 +104,67 @@ describe("JiveApiFacade", function () {
 
     describe("#attachProps", function () {
         it("should return true when complete", function () {
-            var oAuth = new JiveOAuthLoader(tempOAuthToken);
+            var oAuth = new JiveOAuthLoader(tempOAuthToken ,tempOAuthRefreshToken);
             var oAuthFacade = new JiveFacadeLoader(community,oAuth);
+
+            this.stub(jive.community, "findByCommunity").returns(Q(community));
+
+            // simulate what the Jive server is expected to return
+            var contentID = 1000;
+            this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
+                // test basic auth
+                if ( headers['Authorization'] !== 'Bearer ' + tempOAuthToken ) {
+                    return Q.reject({ 'statusCode': 400 });
+                }
+
+                // if post, then return entity for contentID 1000 (expected by the test)
+                if ( method === 'POST' ) {
+                    return Q.resolve({
+                        'statusCode' : 201,
+                        'entity' : {
+                            'resources' : {
+                                'self' : {
+                                    'ref' : community.jiveUrl + '/api/core/v3/contents/' + contentID
+                                }
+                            }
+                        }
+                    });
+                } else if ( method === 'DELETE' ) {
+                    return Q.resolve({
+                        'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
+                    });
+                } else if ( method === 'GET' ) {
+                    if ( url.indexOf(community.jiveUrl + '/api/core/v3/extprops/gitID/1234') == 0 ) {
+                        return Q.resolve({
+                            'statusCode' : 200,
+                            'entity' : {
+                                'list': [
+                                    {
+                                        'resources' : {
+                                            'extprops' : {
+                                                'allowed' : ['GET'],
+                                                'ref' : community.jiveUrl + '/api/core/v3/contents/' + contentID
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        });
+                    }
+                    if ( url.indexOf(community.jiveUrl+ '/api/core/v3/contents/' + contentID ) == 0 ) {
+                        return Q.resolve({
+                            'statusCode' : 200,
+                            'entity' : {
+                                'resources' : {
+                                    'self' : {
+                                        'ref' : community.jiveUrl + '/api/core/v3/contents/' + contentID
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
 
             return createContent(oAuthFacade, "discussion").then(function (response) {
                 var contentID = response.apiID;
@@ -75,11 +173,11 @@ describe("JiveApiFacade", function () {
                     response.success.should.be.true;
                     return oAuthFacade.getByExtProp("gitID", 1234).then(function (response) {
                         return Q.all(response.list.map(function (content) {
-                            content.should.have.property("retrieveAllExtProps").and.be.a("function");
-                            return content.retrieveAllExtProps().then(function (props) {
-                                Object.keys(props).length.should.be.above(0);
-                            })
-                        })).then(function () {
+                                content.should.have.property("retrieveAllExtProps").and.be.a("function");
+                                return content.retrieveAllExtProps().then(function (props) {
+                                    Object.keys(props).length.should.be.above(0);
+                                })
+                            })).then(function () {
                             return oAuthFacade.delete(contentID).then(function (response) {
                                 response.statusCode.should.equal(204);
                             });
@@ -93,6 +191,32 @@ describe("JiveApiFacade", function () {
 
     describe("#replyToDiscussion", function () {
         it("should return response when done", function () {
+            var contentID = 1000;
+            this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
+                // test basic auth
+                if ( headers['Authorization'] !== basic.applyTo(null, null, {})['headers']['Authorization'] ) {
+                    return Q.reject({ 'statusCode': 400 });
+                }
+
+                // if post, then return entity for contentID 1000 (expected by the test)
+                if ( method === 'POST' ) {
+                    return Q.resolve({
+                        'statusCode' : 201,
+                        'entity' : {
+                            'resources' : {
+                                'self' : {
+                                    'ref' : community.jiveUrl + '/api/core/v3/contents/' + contentID
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    return Q.resolve({
+                        'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
+                    });
+                }
+            });
+
             return createContent(jiveFacade, "discussion").then(function (response) {
                 var contentID = response.apiID;
                 var builder = new ContentBuilder();
@@ -105,7 +229,7 @@ describe("JiveApiFacade", function () {
 
     });
 
-//    describe.only("#commentOn", function () {
+//    describe("#commentOn", function () {
 //        function TestContentTypeComments(contentType) {
 //            var builder = new ContentBuilder();
 //            var comment = builder.comment().body("").build();
@@ -133,3 +257,4 @@ describe("JiveApiFacade", function () {
 //        });
 //    })
 });
+

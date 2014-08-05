@@ -3,7 +3,8 @@
     "jive-testing-framework": "*",
     "q": "*",
     "chai" : "*",
-    "chai-as-promised" : "*"
+    "chai-as-promised" : "*",
+    "sinon" : "*"
   },
   "devDependencies": {
     "should": "^4.0.4"

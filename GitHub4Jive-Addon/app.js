@@ -54,6 +54,15 @@ var startServer = function () {
 // if one is not provided, it assumes that [app root]/jiveclientconfiguration.json file exists.
 jive.service.init(app)
 
+.then( function() {
+    console.log('Setting Up Server for Pretty Output...');
+
+    app.configure(function () {
+        app.locals.pretty = true;
+    });
+
+})
+
 // 2. autowire all available definitions in /tiles; see explanation below.
 .then( function() { return jive.service.autowire(); } )
 

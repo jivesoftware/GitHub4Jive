@@ -1,20 +1,28 @@
 {
+<<<<<<< HEAD
     "clientUrl": "http://localhost",
+=======
+    "clientUrl": "REPLACE_ME",
+>>>>>>> ryanrutan-master
     "port": "8090",
     "development": true,
-	"logLevel": "DEBUG",
+    "logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
-    "gitHubWebHookUrl": "/github/WebHookPortal",
     "extensionInfo" : {
         "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66",
         "jiveServiceSignature" : "<<<GET THIS FROM YOUR JIVE INSTANCE>>>",
         "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },
-    "oauth2-github": {
-        "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
-        "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token",
-        "oauth2ConsumerKey": "1443920cbbcb2fb97f06",
-        "oauth2ConsumerSecret": "3701567a1f08868cdd93fe932fd62e2a2b57643e"
+    "github" : {
+        "oauth2" : {
+            "clientOAuth2CallbackUrl" : "/github/oauth/callback",
+            "oauth2ConsumerKey": "REPLACE_ME",
+            "oauth2ConsumerSecret": "REPLACE_ME",
+            "oauth2Scope": "public_repo,user",
+            "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
+            "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token"
+        },
+        "webHookUrl" :  "/github/WebHookPortal"
     }
 }

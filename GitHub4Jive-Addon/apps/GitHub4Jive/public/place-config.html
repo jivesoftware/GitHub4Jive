@@ -5,12 +5,12 @@
 
 <h2>Place Config: GitHub4Jive</h2>
 
-<label for="github4jive-enabled">GitHub4Jive Enabled</label>
-<input id="github4jive-enabled" type="checkbox" value="true">
-
-<!-- TODO: UNHARD CODE -->
 <p>
-<a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+  <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+  <div id="github4jive-github-authorize-success" style="display: none;">
+    <span>GitHub Authorized - OK</span>
+  </div>
 </p>
 
+<input type="hidden" id="github-authorize-token">
 <input id="github4jive-enable-submit" type="button" value="Save" />

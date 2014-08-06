@@ -25,12 +25,13 @@ var errorResponse = function( res, code, error ){
 // like storing access token for the viewer
 
 myOauth.fetchOAuth2Conf = function() {
-    jive.logger.debug("Retreiving GitHub OAuth2 Configuration...");
+    jive.logger.debug("fetchOAuth2Conf ...");
     return jive.service.options['github']['oauth2'];
 };
 
 
 myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse, callback ) {
+    jive.logger.debug("oauth2SuccessCallback ...");
     jive.logger.debug('State', state);
     jive.logger.debug('GitHub Response: ', originServerAccessTokenResponse['entity']);
   
@@ -39,9 +40,7 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
       token: originServerAccessTokenResponse['entity']
     };
   
-    tokenStore.save('gitHubAccessTokens', 
-                    state['viewerID'], context)
-    .then( function() {
+    tokenStore.save('gitHubAccessTokens', state['viewerID'], context).then( function() {
         callback(context);
     });
 };
@@ -57,7 +56,7 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
  * @param res
  */
 myOauth.oauth2Callback = function(req, res ) {
-    jive.logger.debug("overridden oauth2Callback ...");
+    jive.logger.debug("oauth2Callback ...");
   
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
@@ -135,6 +134,7 @@ myOauth.oauth2Callback = function(req, res ) {
 
 myOauth.redirectHtmlTxt = "<html> <head> <body> <p> <strong>userID</strong> : {{{userID}}}<br/><strong>accessToken</strong>: {{{token.access_token}}}</p><p>TODO: NEED TO DO A NICE CLEAN POST-TOKEN REDIRECT ... see: gitHubAccessTokens for token details </p> </body> </html>";
 
+// note:  changes merged into core jive-sdk on GitHub, when cutting new version...remove this method.
 /**
  * @param oauth2Conf
  * @param callback
@@ -142,14 +142,25 @@ myOauth.redirectHtmlTxt = "<html> <head> <body> <p> <strong>userID</strong> : {{
  * @param extraAuthParams
  */
 myOauth.buildAuthorizeUrlResponseMap = function (oauth2Conf, callback, context, extraAuthParams) {
-    jive.logger.debug("overridden buildAuthorizeUrlResponseMap ...");
-
+    jive.logger.debug("buildAuthorizeUrlResponseMap ...");
+  
+    var redirectUri = oauth2Conf['clientOAuth2CallbackUrl'];
+  
+    if (redirectUri.substring(0,1) == "/") {
+       redirectUri = jive.service.serviceURL() + redirectUri;
+    } // end if
+    
+    jive.logger.debug(JSON.stringify(context));
+  
     var url = oauth2Conf['originServerAuthorizationUrl'] + "?" +
-        "state=" + jive.util.base64Encode(JSON.stringify({ "viewerID" : 1234})) +
-        "&redirect_uri=" + encodeURIComponent(oauth2Conf['clientOAuth2CallbackUrl']) +
+        "state=" + jive.util.base64Encode(JSON.stringify(context)) +
+        "&redirect_uri=" + encodeURIComponent(redirectUri) +
         "&client_id=" + oauth2Conf['oauth2ConsumerKey'] +
-        "&response_type=" + "code" +
-        "&scope=user,public_repo";
+        "&response_type=" + "code";
+  
+    if (oauth2Conf['oauth2Scope']) {
+        url += "&scope=" + encodeURIComponent(oauth2Conf['oauth2Scope']);
+    } // end if
 
     if (extraAuthParams) {
         var extraAuthStr = '';
@@ -161,10 +172,37 @@ myOauth.buildAuthorizeUrlResponseMap = function (oauth2Conf, callback, context, 
 
         url += extraAuthStr;
     }
+  
+    jive.logger.debug('\t url='+url);
 
     return {
         'url': url
     };
+};
+
+// note:  changes merged into core jive-sdk on GitHub, when cutting new version...remove this method.
+myOauth.buildOauth2CallbackObject = function (oauth2Conf, code, extraParams) {
+   
+  //changes merged into core jive-sdk, 
+  var redirectUri = oauth2Conf['clientOAuth2CallbackUrl'];
+  
+    if (redirectUri.substring(0,1) == "/") {
+       redirectUri = jive.service.serviceURL() + redirectUri;
+    } // end if
+  
+    var postObject = {
+        'grant_type': 'authorization_code',
+        'redirect_uri': redirectUri,
+        'client_id': oauth2Conf['oauth2ConsumerKey'],
+        'client_secret': oauth2Conf['oauth2ConsumerSecret'],
+        'code': code
+    };
+
+    if (extraParams) {
+        postObject = util._extend(postObject, extraParams);
+    }
+
+    return postObject;
 };
 
 myOauth.getTokenStore = function() {

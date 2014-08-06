@@ -1,7 +1,7 @@
 var service = require('./service_impl.js');
 
 exports.authorizeUrl = {
-    'path' : '/github/oauth/authorizeUrl',
+    'path' : '/github/oauth/authorize',
     'verb' : 'get',
     'route': service.authorizeUrl.bind(service)
 };

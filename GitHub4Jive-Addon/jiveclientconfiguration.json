@@ -1,5 +1,4 @@
 {
-    "clientUrl": "http://localhost",
     "clientUrl": "REPLACE_ME",
     "port": "8090",
     "development": true,

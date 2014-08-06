@@ -27,7 +27,7 @@ function GitHubInstance(auth){
     console.log(auth);
     var git = new GitHubApi({version: "3.0.0"});
     if(auth){
-        git.authenticate(auth)
+        git.authenticate(auth);
     }
     return git;
 }

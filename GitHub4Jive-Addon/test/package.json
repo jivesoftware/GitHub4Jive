@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "jive-testing-framework": "*",
-    "q": "*"
+    "q": "*",
+    "chai" : "*",
+    "chai-as-promised" : "*",
+    "sinon" : "*"
   },
   "devDependencies": {
     "should": "^4.0.4"

@@ -79,4 +79,50 @@ describe("TileFormatter", function(){
             });
         });
     });
+
+    describe("#formatActivityData", function () {
+        it("should return object with activity, action, actor, object, and externalID", function () {
+            var formatted = formatter.formatActivityData("a");
+            formatted.should.have.property("activity");
+            formatted.activity.should.have.property("action");
+            formatted.activity.should.have.property("actor");
+            formatted.activity.should.have.property("object");
+            formatted.activity.should.have.property("externalID")
+        });
+        it("should put a headline in the object as title", function () {
+            var headline = "007 kills Dr. No!";
+            var formatted = formatter.formatActivityData(headline);
+            formatted.activity.object.title.should.equal(headline);
+        });
+
+        it("should throw if no headline is present", function () {
+            expect(function () {
+                formatter.formatActivityData();
+            }).to.throw(formatter.ActivityHeadlineMissing);
+        })
+
+        it("should put a description in the object as description", function () {
+            var desc = "He did it by... I can't remember";
+            var formatted = formatter.formatActivityData("a", desc);
+            formatted.activity.object.description.should.equal(desc);
+        });
+
+        it("should put name and email into actor", function () {
+            var actorName = "Sean Connery";
+            var email = "sean.connery.mi6.com";
+            var formatted = formatter.formatActivityData("a", "", actorName, email);
+            formatted.activity.actor.name.should.equal(actorName);
+            formatted.activity.actor.name.should.equal(actorName);
+        });
+
+        it("should put url into object as url", function () {
+            var url = "a";
+            var formatted = formatter.formatActivityData("a","", "","", url);
+            formatted.activity.object.url.should.equal(url);
+        });
+
+        it("should put dateTime in externalID", function () {
+            (formatter.formatActivityData("a").activity.externalID - new Date()).should.be.below(1000);
+        })
+    })
 });

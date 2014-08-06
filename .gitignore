@@ -32,6 +32,10 @@ atlassian-ide-plugin.xml
 GitHub4Jive.iml
 *.iml
 
+#add-on db otherwise it will always be merging
+
+db
+
 #Mac junk
 
 .DS_Store

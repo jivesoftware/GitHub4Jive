@@ -15,12 +15,16 @@
  */
 
 var jive = require("jive-sdk");
+var q = require("q");
 
-function processTileInstance(instance) {
+function processTileInstance(instance, data) {
     var statusNames = [ "Poor", "Fair", "Good", "Excellent", "Outstanding" ];
     jive.logger.debug('running pusher for ', instance.name, 'instance', instance.id);
 
     var level = Number(instance.config.level);
+  
+    //TODO: CONVERT data => dataToPush
+  
     var dataToPush = {
         data: {
             "message": "Simple Gauge",
@@ -34,15 +38,90 @@ function processTileInstance(instance) {
 }
 
 function pushData() {
-
-    jive.tiles.findByDefinitionName( 'github-project-health' ).then( function(instances) {
-        if ( instances ) {
-            instances.forEach( function( instance ) {
-                processTileInstance(instance);
-            });
-        }
+  
+  loadAnalyticsData().then(
+    function(data) {
+      jive.tiles.findByDefinitionName( 'github-project-health' ).then( function(instances) {
+          if ( instances ) {
+              instances.forEach( function( instance ) {
+                  processTileInstance(instance,data);
+              });
+          }
+      });
+    },
+    function(errResponse) {
+      //TODO:
     });
-}
+} // end pushData
+
+function loadAnalyticsData() {
+  var deferred = q.defer();
+
+  var analyticsConfig = jive.service.options['jive']['analytics'];
+  var analyticsClientID = analyticsConfig['clientID'];
+  var analyticsClientSecret = analyticsConfig['clientSecret'];
+  var analyticsServer = analyticsConfig['server'];
+  
+  /*******************************************************/
+  function getAccessToken() {
+    var deferredToken = q.defer();
+    
+    var apiURL = 'https://'+analyticsServer+'/analytics/v1/auth/login?clientId='+ analyticsClientID+'&clientSecret='+analyticsClientSecret;
+
+    jive.util.buildRequest(apiURL,'POST').then(
+      //*** SUCCESS ***
+      function(response) {
+        deferredToken.resolve(response['entity']['body']);
+      },
+      //*** ERROR ***
+      function(response) {
+        deferredToken.reject(response['entity']['error']);
+      }
+    );
+
+    return deferredToken.promise;
+  };
+  
+  /*******************************************************/
+  function getResults(accessToken) {
+
+    var deferredResults = q.defer();
+    var apiURL = 'https://'+analyticsServer+'/analytics/v1/export'+analyticsConfig['query'];
+
+    var headers = { Authorization : accessToken };
+
+    jive.util.buildRequest(apiURL,'GET',null,headers,null).then(
+      //*** SUCCESS ***
+      function(response) {
+        deferredResults.resolve(response);
+      },
+      //*** ERROR ***
+      function(response) {
+        deferredResults.reject(response);
+      }
+    );
+
+    return deferredResults.promise;
+  };
+  
+  getAccessToken().then(
+    function(accessToken) {
+      return getResults(accessToken);
+    } // end function
+  ).then(
+    function(response) {
+      if (response.results.entity && response.results.entity.body) {
+        console.log(data.results.entity.body);
+        deferred.resolve(data.results.entity.body);
+      } else {
+        console.log('Error Retrieving Analytics Information');
+        deferred.reject(response);
+      } // end if
+    } // end function
+  );
+  
+  return deferred.promise;
+} // end loadAnalyticsData
 
 function createSections(numSections) {
     var sections = [];
@@ -79,11 +158,11 @@ function getSectionColor(secIndex, numSections) {
 }
 
 /**
- * Schedules the tile update task to automatically fire every 10 seconds
+ * Schedules the tile update task to automatically fire every 1 hour
  */
 exports.task = [
     {
-        'interval' : 10000,
+        'interval' : 60000,
         'handler' : pushData
     }
 ];

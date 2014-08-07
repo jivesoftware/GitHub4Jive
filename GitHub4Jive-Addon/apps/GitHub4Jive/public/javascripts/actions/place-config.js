@@ -35,7 +35,7 @@ var app = {
     console.log('initjQuery ...');
     $('#github4jive-github-authorize').click(function() {
 
-        //TODO: UN-HARD CODE
+        //TODO: UN-HARD CODE BY PUTTING INTO APP-DATA DURING APP INSTALLATION
         var BACKEND_HOST = "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090";
 
         osapi.http.get({
@@ -60,8 +60,11 @@ var app = {
 
                 osapi.jive.corev3.resolveContext(context, function(result){
                         result.content.getExtProps().execute(function( props ) {
-                                var enabled = "true" ===  props.content.github4jiveEnabled;
-                                $("#github4jive-enabled").prop("checked", enabled);
+                              if ("true" ===  props.content.github4jiveEnabled) {
+                                console.log('initializing UI for already configured place');
+                              } else {
+                                console.log('initializing UI for UNconfigured place');
+                              }
                         });
                 });
                 console.log('gadget:'+$("#github4jive-enable-submit").size());
@@ -71,8 +74,10 @@ var app = {
                                 console.log('resolveContext callback');
                                 if(result.content){
                                         console.log('context has content callback');
+                                        //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
                                         result.content.createExtProps({
-                                                "github4jiveEnabled": $("#github4jive-enabled").is(':checked')
+                                                "github4jiveEnabled": true,
+                                                "github4jiveAccessToken": $("#github-authorize-token").val()
                                         }).execute(function (resp) {
                                                 console.log('resp: {'+JSON.stringify(resp)+'}');
                                                 osapi.jive.core.container.closeApp();

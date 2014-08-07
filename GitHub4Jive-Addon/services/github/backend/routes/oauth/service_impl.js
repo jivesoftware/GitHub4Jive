@@ -35,6 +35,8 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
     jive.logger.debug('State', state);
     jive.logger.debug('GitHub Response: ', originServerAccessTokenResponse['entity']);
   
+    state = JSON.parse(state);
+  
     var context = {
       userID : state['viewerID'],
       token: originServerAccessTokenResponse['entity']
@@ -94,14 +96,10 @@ myOauth.oauth2Callback = function(req, res ) {
         errorResponse(res, 500, error);
         return;
       }
-
-      var redirectHtml = mustache.render(myOauth.redirectHtmlTxt, context);
-    
-      jive.logger.debug(redirectHtml);
-
       res.status(200);
-      res.set({'Content-Type': 'text/html'});
-      res.send(redirectHtml);
+      res.set({'Content-Type': 'application/json'});
+      res.send(context);
+//      res.render('oauth-callback.html',context);
   };
   
   var oauth2SuccessCallback = myOauth.oauth2SuccessCallback;
@@ -131,8 +129,6 @@ myOauth.oauth2Callback = function(req, res ) {
   
 
 };
-
-myOauth.redirectHtmlTxt = "<html> <head> <body> <p> <strong>userID</strong> : {{{userID}}}<br/><strong>accessToken</strong>: {{{token.access_token}}}</p><p>TODO: NEED TO DO A NICE CLEAN POST-TOKEN REDIRECT ... see: gitHubAccessTokens for token details </p> </body> </html>";
 
 // note:  changes merged into core jive-sdk on GitHub, when cutting new version...remove this method.
 /**

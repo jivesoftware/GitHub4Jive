@@ -9,8 +9,14 @@
         "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },
+    "jive" : {
+        "analytics" : {
+            "clientID" : "REPLACE_ME",
+            "clientSecret" : "REPLACE_ME"
+        }
+    },
     "github" : {
-        "oauth2" : {
+    `    "oauth2" : {
             "clientOAuth2CallbackUrl" : "/github/oauth/callback",
             "oauth2ConsumerKey": "REPLACE_ME",
             "oauth2ConsumerSecret": "REPLACE_ME",

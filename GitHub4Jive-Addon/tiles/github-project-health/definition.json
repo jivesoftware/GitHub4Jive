@@ -31,8 +31,8 @@
     "description" : "github-project-health",
     "style" : "GAUGE",
     "icons" : {
-        "16" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
-        "48" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png",
-        "128" : "https://community.jivesoftware.com/servlet/JiveServlet/showImage/102-99994-1-1023036/j.png"
+        "16" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-16.png",
+        "48" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-48.png",
+        "128" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-128.png"
     }
 }

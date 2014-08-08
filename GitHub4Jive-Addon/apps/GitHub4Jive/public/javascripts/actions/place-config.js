@@ -33,16 +33,18 @@ var app = {
   
   initjQuery : function() {
     console.log('initjQuery ...');
+    
     $('#github4jive-github-authorize').click(function() {
 
-        //TODO: UN-HARD CODE BY PUTTING INTO APP-DATA DURING APP INSTALLATION
+        //TODO: UN-HARD CODE BY PUTTING INTO APP-DATA DURING APP INSTALLATIONgit
         var BACKEND_HOST = "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090";
 
         osapi.http.get({
           href: BACKEND_HOST+'/github/oauth/authorize?viewerID='+app.currentViewerID,
           format: 'json',
           headers: {"Content-Type":["application/json"]},
-          'authz': 'signed'
+          noCache: true,
+          authz: 'signed'
         }).execute(function(res) {
           if(res.status >= 200 && res.status <=299 && res.content.url) {
             window.open(res.content.url, "GitHubAuthorize", "toolbar=yes, scrollbars=yes, resizable=yes, top=500, left=500, width=400, height=400");

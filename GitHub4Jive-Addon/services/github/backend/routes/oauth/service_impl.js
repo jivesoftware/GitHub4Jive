@@ -97,9 +97,9 @@ myOauth.oauth2Callback = function(req, res ) {
         return;
       }
       res.status(200);
-      res.set({'Content-Type': 'application/json'});
-      res.send(context);
-//      res.render('oauth-callback.html',context);
+//      res.set({'Content-Type': 'application/json'});
+//      res.send(context);
+      res.render('oauth-callback.html',context);
   };
   
   var oauth2SuccessCallback = myOauth.oauth2SuccessCallback;

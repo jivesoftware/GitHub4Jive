@@ -31,10 +31,10 @@ var supportedContent = {
  */
 
 function JiveApiFacade(community, authDecorator){
-    if(!community.jiveUrl || !(community.jiveUrl instanceof "string")){
+    if(!community.jiveUrl || !(community.jiveUrl instanceof Function)){
         throw Error("Invalid Jive url in community");
     }
-    if(!authDecorator.applyTo || !(authDecorator.applyTo instanceof "function")){
+    if(!authDecorator.applyTo || !(authDecorator.applyTo instanceof Function)){
         throw Error("Invalid Jive authenticator");
     }
     this.community = community;

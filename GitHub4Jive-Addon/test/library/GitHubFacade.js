@@ -27,23 +27,16 @@ var Q = require("q");
 chai.use(chaiAsPromised);
 
 var owner = "jivesoftware";
-var specificUser = "JiveTester";
 var repo = "GitHub4Jive";
 var issueNumber = 1;
 
-var auth = {type:"basic", username: specificUser, password: "GitHub4Jive"}
-if(!auth.password || auth.password == ""){
-    var error = "If password is null/empty then the test fixture completely fails. An exception is swallowed from the authenticate \n"+
-        "function and somehow lost in a framework. Still working on it. For now Enter valid credentials to test gitHub or \n"+
-        "bogus password and they will fail but the rest of the tests will run";
-    console.log(error)
-    throw Error(error);
-}
+var auth = require("./GitHubUserAuth.json")
+var specificUser = auth.username;
 
-describe("GitHubFacade", function(){
+function GitHubFacadeTests(){
     var git = require("../../common/GitHubFacade");
     it("should not be null", function(){
-            should.exist(git);
+        should.exist(git);
     });
 
     describe("#isAuthenticated", function(){
@@ -66,10 +59,10 @@ describe("GitHubFacade", function(){
 
     describe("#getChangeList", function(){
         /*
-        * Below is an example of the Chai as Promised fluent assertions. To test multiple assertions in a
-        * single test you must wrap it in Q.all so that all the resulting promises are collected into one
-        * to be returned to Mocha.
-        * */
+         * Below is an example of the Chai as Promised fluent assertions. To test multiple assertions in a
+         * single test you must wrap it in Q.all so that all the resulting promises are collected into one
+         * to be returned to Mocha.
+         * */
         it("should return an array of objects", function(){
             var changeListPromise = git.getChangeList(owner, repo, auth);
             return Q.all([
@@ -80,9 +73,9 @@ describe("GitHubFacade", function(){
             ]);
         });
         /*
-        * Below is an example of using a tradition then interface of promises to use normal Chai assertions on
-        * the data that is retrieved from the promise.
-        * */
+         * Below is an example of using a tradition then interface of promises to use normal Chai assertions on
+         * the data that is retrieved from the promise.
+         * */
         it("should have commitMessage and changes fields and changes should have fileName", function(){
             var changeListPromise = git.getChangeList(owner, repo, auth);
             return changeListPromise.then(function(changeList){
@@ -99,17 +92,17 @@ describe("GitHubFacade", function(){
         it("should contain an entry for all repositories the owner can push to.", function(){
             var repositoriesPromise = git.getCompleteRepositoryListForUser(specificUser, auth);
             return Q.all([
-            repositoriesPromise.should.eventually.be.an("array"),
-            repositoriesPromise.should.eventually.have.length.above(0),
-            repositoriesPromise.then(function(repos){
-                repos.forEach(function(repo){
-                    //checking for url correctness
-                    repo.should.have.property("name").and.not.contain(" ");
-                    repo.should.have.property("owner").and.not.contain(" ");
-                    repo.should.have.property("fullName").and.not.contain(" ");
+                repositoriesPromise.should.eventually.be.an("array"),
+                repositoriesPromise.should.eventually.have.length.above(0),
+                repositoriesPromise.then(function(repos){
+                    repos.forEach(function(repo){
+                        //checking for url correctness
+                        repo.should.have.property("name").and.not.contain(" ");
+                        repo.should.have.property("owner").and.not.contain(" ");
+                        repo.should.have.property("fullName").and.not.contain(" ");
+                    })
                 })
-            })
-                ]);
+            ]);
         });
     });
 
@@ -134,11 +127,11 @@ describe("GitHubFacade", function(){
         it("should return an array of objects", function(){
             var issueCommentsPromise = git.getIssueComments(owner, repo, issueNumber, auth);
             return issueCommentsPromise.then(function(comments){
-                    comments.should.be.an("array"),
+                comments.should.be.an("array"),
                     comments.should.have.length.above(0),
                     comments[0].should.have.property("body");
-                    comments[0].should.have.property("user");
-                });
+                comments[0].should.have.property("user");
+            });
 
         });
     });
@@ -203,4 +196,18 @@ describe("GitHubFacade", function(){
             return expect(function(){git.unSubscribeFromRepoEvent("");}).to.throw();
         });
     });
-});
+}
+if(!auth.password || auth.password == ""){
+    var error = "If password is null/empty then the test fixture completely fails. An exception is swallowed from the authenticate \n"+
+        "function and somehow lost in a framework. Still working on it. For now Enter valid credentials to test gitHub or \n"+
+        "bogus password and they will fail but the rest of the tests will run";
+    console.log(error)
+    describe.skip("GitHubFacade", function(){
+        GitHubFacadeTests();
+    });
+}else{
+    describe("GitHubFacade", function(){
+        GitHubFacadeTests();
+    });
+}
+

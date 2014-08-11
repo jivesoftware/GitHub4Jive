@@ -31,7 +31,7 @@ var supportedContent = {
  */
 
 function JiveApiFacade(community, authDecorator){
-    if(!community.jiveUrl || !(community.jiveUrl instanceof Function)){
+    if(!community.jiveUrl || !(typeof community.jiveUrl === "string")){
         throw Error("Invalid Jive url in community");
     }
     if(!authDecorator.applyTo || !(authDecorator.applyTo instanceof Function)){

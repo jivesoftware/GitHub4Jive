@@ -72,7 +72,7 @@ describe("JiveApiFacade", function () {
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -83,7 +83,7 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 }
@@ -119,7 +119,7 @@ describe("JiveApiFacade", function () {
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -130,12 +130,12 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else if ( method === 'DELETE' ) {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 } else if ( method === 'GET' ) {
                     if ( url.indexOf(community.jiveUrl + '/api/core/v3/extprops/gitID/1234') == 0 ) {
-                        return Q.resolve({
+                        return Q({
                             'statusCode' : 200,
                             'entity' : {
                                 'list': [
@@ -152,7 +152,7 @@ describe("JiveApiFacade", function () {
                         });
                     }
                     if ( url.indexOf(community.jiveUrl+ '/api/core/v3/contents/' + contentID ) == 0 ) {
-                        return Q.resolve({
+                        return Q({
                             'statusCode' : 200,
                             'entity' : {
                                 'resources' : {
@@ -200,7 +200,7 @@ describe("JiveApiFacade", function () {
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -211,7 +211,7 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else {
-                    return Q.resolve({
+                    return Q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 }

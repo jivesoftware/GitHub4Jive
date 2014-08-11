@@ -240,11 +240,11 @@ exports.getCompleteRepositoryListForUser = function(user, authOptions){
             return Q.all(orgs.map(function(org){
                 return getOrgsRepositories(git, org.login);
             })).then(function(orgRepos){
-                return repos.concat(orgRepos[0]);
+                return orgRepos.length > 0 ? repos.concat(orgRepos[0]) : repos;
             }).then(function(completeRepos){
-                return completeRepos.map(function(repo){
+                return completeRepos.length > 0 ?  completeRepos.map(function(repo){
                     return {"name":repo.name,"owner": repo.owner.login, "fullName": repo.owner.login + "/" + repo.name};
-                });
+                }) : completeRepos;
             });
         })
     });

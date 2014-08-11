@@ -22,7 +22,21 @@ var supportedContent = {
     DOCUMENT: "document"
 }
 
+/*
+ * Creates an API interface for a specific Jive Community
+ * @param object community used to get url of Jive instance. Object must have JiveUrl property
+ * @param object authDecorator This authenticator must have an applyTo function that
+ * takes the url, body, and headers of a request and provides authentication for Jive by modifying those objects
+ * @return object JiveApiFacade object
+ */
+
 function JiveApiFacade(community, authDecorator){
+    if(!community.jiveUrl || !(community.jiveUrl instanceof "string")){
+        throw Error("Invalid Jive url in community");
+    }
+    if(!authDecorator.applyTo || !(authDecorator.applyTo instanceof "function")){
+        throw Error("Invalid Jive authenticator");
+    }
     this.community = community;
     this.authenticator = authDecorator;
     this.supportedContent = supportedContent;
@@ -72,14 +86,15 @@ function catchErrorResponse(surround){
     });
 }
 
-function decorateWithExtPropRetrievers(content, authenticator){
+function decorateWithExtPropRetrievers(community, content, authenticator){
     content.retrieveAllExtProps = function () {
         var prop = content.resources.extprops;
         if(prop.allowed.indexOf("GET") >= 0){
             var url = prop.ref;
             var headers = {};
-            authenticator.applyTo(url, null, headers);
-            return jive.util.buildRequest(url, "GET", null, headers).then(function (response) {
+            var options = authenticator.applyTo(url, null, headers);
+            options['method'] = 'GET';
+            return jive.community.doRequest(community, options).then(function (response) {
                 return content.extProps = response.entity;
             }).catch(function (error) {
                 jive.logger.error(error);
@@ -91,14 +106,20 @@ function decorateWithExtPropRetrievers(content, authenticator){
     }
 }
 
+/*
+ * Create new content in the Jive community
+ * @param object post Jive API payload to create content. JiveContentBuilder makes this easy.
+ * @return promise promise Use .then(function(result){}); to process return asynchronously
+ */
+
 JiveApiFacade.prototype.create = function(post){
     verifyPost(post);
-    var url = communityAPIURL(this) + "contents"
-    var body = post;
+    var url = communityAPIURL(this) + "contents";
     var headers = {};
-    this.authenticator.applyTo(url,body, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "POST", post, headers).then(function (response) {
-        decorateResponseWithSuccess(response, 201)
+    var options = this.authenticator.applyTo(url,post, headers);
+    options['method'] = 'POST';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+        decorateResponseWithSuccess(response, 201);
         if(response.success){
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
@@ -107,21 +128,36 @@ JiveApiFacade.prototype.create = function(post){
     }));
 };
 
+/*
+ * Delete content form the Jive community by its reference
+ * @param string id The content id to be deleted.
+ * @return promise promise Use .then(function(result){}); to process return asynchronously
+ */
 JiveApiFacade.prototype.delete = function(id){
     var url  = communityAPIURL(this) + "contents/" + id;
     var headers = {};
-    this.authenticator.applyTo(url,null, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "DELETE", null, headers).then(function (response) {
+    var options = this.authenticator.applyTo(url,null, headers);
+    options['method'] = 'DELETE';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
         return decorateResponseWithSuccess(response, 204);
     }));
 };
 
+/*
+ * Reply to a discussion using that discussions ID and a reply payload
+ * as described by the Jive API. Use JiveContentBuilder Message to create easily.
+ * @param string discussionID The reference for the discussion to reply to
+ * @param object reply Jive API payload for a discussion message. JiveContentBuilder Message will make this easy.
+ * @return promise promise Use .then(function(result){}); to process return asynchronously
+ *
+ */
 JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
     var url = communityAPIURL(this) + "messages/contents/" + discussionID;
     var headers = {};
-    this.authenticator.applyTo(url, reply, headers);
+    var options = this.authenticator.applyTo(url, reply, headers);
+    options['method'] = 'POST';
     return catchErrorResponse(
-        jive.util.buildRequest(url, "POST", reply, headers).then(function (response) {
+        jive.community.doRequest(this.community, options ).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
 
         })
@@ -135,9 +171,10 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
 //JiveApiFacade.prototype.commentOn = function (contentID, comment) {
 //    var url  = communityAPIURL(this) + "contents/" + contentID + "/comments"
 //    var headers = {};
-//    this.authenticator.applyTo(url,comment, headers);
+//    var options = this.authenticator.applyTo(url,comment, headers);
+//    options['method'] = 'POST';
 //    return catchErrorResponse(
-//        jive.util.buildRequest(url, "POST", comment, headers).then(
+//        jive.community.doRequest(this.community, options ).then(
 //            function (response) {
 //                return decorateResponseWithSuccess(response, 201);
 //
@@ -149,26 +186,42 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
 //    );
 //}
 
+/*
+ * Attach external properties to a piece of content
+ * @param string parentID The content ID for the content to attach properties to
+ * @param object props All fields will be converted to properties
+ * @return promise promise Use .then(function(result){}); to process return asynchronously
+ */
 JiveApiFacade.prototype.attachProps = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
     var headers = {};
-    this.authenticator.applyTo(url, props, headers);
+    var options = this.authenticator.applyTo(url, props, headers);
+    options['method'] = 'POST';
     return catchErrorResponse(
-        jive.util.buildRequest(url, "POST", props, headers).then(function (response) {
+        jive.community.doRequest(this.community, options ).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
         })
     );
 };
 
+/*
+ * Retrieve a list of object by external property and value
+ * @param string key The external property to query on
+ * @param string value The value of the external property to look for
+ * @return promise promise Use .then(function(result){}); to process return asynchronously
+ */
+
 JiveApiFacade.prototype.getByExtProp= function (key, value) {
     var url = communityAPIURL(this) + "extprops/" + key + "/" + value;
     var headers = {};
     var authenticator = this.authenticator;
-    authenticator.applyTo(url, null, headers);
-    return catchErrorResponse( jive.util.buildRequest(url, "GET", null, headers).then(function (response) {
+    var options = authenticator.applyTo(url, null, headers);
+    options['method'] = 'GET';
+    var community = this.community;
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
         if(response.statusCode == 200){
             response.entity.list.forEach(function (content) {
-                decorateWithExtPropRetrievers(content, authenticator);
+                decorateWithExtPropRetrievers(community, content, authenticator);
             })
             return response.entity;
         }else{

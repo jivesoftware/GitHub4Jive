@@ -36,9 +36,15 @@ function verify(builder) {
     }
 }
 
+/*
+ * Verify and create the content object. Has optional callback function to make chaining similar objects easier.
+ * @param function onBuild Callback to send created object to facilitate easier chaining
+ * @return object if onBuild is supplied the builder is returned to facilitate chaining. Else
+ * created object is returned.
+ */
 JiveContentBuilder.prototype.build = function(onBuild){
     verify(this);
-    if(onBuild){
+    if(onBuild && onBuild instanceof Function ){
         onBuild(JSON.parse(JSON.stringify(this.content)));
         return this;
     }else{
@@ -46,91 +52,176 @@ JiveContentBuilder.prototype.build = function(onBuild){
     }
 };
 
+/*
+ * Reset the builder to its default state clearing all changes.
+ * @return object the builder in its default state
+ */
 JiveContentBuilder.prototype.reset = function () {
     this.content = {content:{type:"text/html"}};
     return this;
 }
 
+/*
+ * Set the content type to document
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.document = function(){
     this.content.type = "document";
     return this;
 };
 
+/*
+ * Sets the content type to discussion
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.discussion = function(){
     this.content.type = "discussion";
     return this;
 };
 
+/*
+ * Sets the content type to comment
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.comment = function(){
     this.content.type = "comment";
     return this;
 };
 
+/*
+ * Sets the content type to message
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.message = function(){
     this.content.type = "message";
     return this;
 };
 
+/*
+ * Sets the content type to file
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.file = function(){
     this.content.type = "file";
     return this;
 };
 
+/*
+ * Sets the content type to poll
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.poll = function(){
     this.content.type = "poll";
     return this;
 };
 
+/*
+ * Sets the content type to post
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.post = function(){
     this.content.type = "post";
     return this;
 };
 
+/*
+ * Sets the content type to favorite
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.favorite = function(){
     this.content.type = "favorite";
     return this;
 };
 
+/*
+ * Sets the content type to type
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.task = function(){
     this.content.type = "task";
     return this;
 };
 
+/*
+ * Sets the content type to update
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.update = function(){
     this.content.type = "update";
     return this;
 };
 
+/*
+ * Sets the content's subject line. Not required for all content types.
+ * @param string subject The subject line
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.subject = function(subject){
     this.content.subject = subject;
     return this;
 };
 
+/*
+ * Sets the content's text body.
+ * @param string body The body of the content
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.body = function(body){
     this.content.content.text = body;
     return this;
 };
 
+/*
+ * Sets the content's body type. Defaults to text/html.
+ * @param string type The MIME type of the body
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.bodyType = function(type){
     this.content.content.type = type;
     return this;
 };
 
+/*
+ * Sets the parent reference to create object in hierarchy.
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.parent = function(parentURI){
     this.content.parent = parentURI;
     return this;
 };
 
+/*
+ * Sets the parent reference to create object in hierarchy. Helper for Content items. Include id only.
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.parentContent = function (parentID) {
     this.content.parent = "/contents/"+parentID;
     return this;
-}
+};
 
+/*
+ * Sets the parent reference to create object in hierarchy. Helper for items in a place. Include id only.
+ * @return object JiveContentBuilder
+ */
+JiveContentBuilder.prototype.parentPlace = function (parentID) {
+    this.content.parent = "/places/"+parentID;
+    return this;
+};
+
+/*
+ * Sets the visibility of the object to all. This is the default.
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.all = function(){
     this.content.visibility = "all";
     return this;
 };
 
+/*
+ * Sets the visibility of the object to people. A list of users is required. NOT TESTED
+ * @param array users Array of usernames to allow access
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.people = function(users){
     if(!users || users.length < 1){
         throw Error(MISSING_USERS);
@@ -140,6 +231,11 @@ JiveContentBuilder.prototype.people = function(users){
     return this;
 };
 
+/*
+ * Sets the visibility of the object to a place. the uri of that place is required
+ * @param string placeURI The uri of the place that should have access
+ * @return object JiveContentBuilder
+ */
 JiveContentBuilder.prototype.place = function (placeURI) {
     if(!placeURI || placeURI.length < 1){
         throw Error(MISSING_PARENT);

@@ -228,7 +228,56 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
             return decorateResponseWithSuccess(response, 200);
         }
     }));
-}
+};
+
+JiveApiFacade.prototype.markFinal = function(contentID){
+    var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
+    var headers = {};
+    var body = {"outcomeType" : {"id":2}};
+    var options = this.authenticator.applyTo(url, body, headers);
+    options['method'] = 'POST';
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
+        return decorateResponseWithSuccess(response, 201);
+    }));
+};
+
+JiveApiFacade.prototype.getOutcomes = function(contentID){
+    var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
+    var headers = {};
+    var options = this.authenticator.applyTo(url, null, headers);
+    options['method'] = 'GET';
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
+        return decorateResponseWithSuccess(response, 200);
+    }));
+};
+
+JiveApiFacade.prototype.unMarkFinal = function(contentID){
+    var community = this.community;
+    var url = communityAPIURL(this) + "outcomes/" ;
+    var authenticator = this.authenticator;
+    return this.getOutcomes(contentID).then(function (outcomes) {
+
+        var outcomeId = null;
+        outcomes.entity.list.forEach(function (outcome) {
+            if(outcome.outcomeType.name == "finalized"){
+                outcomeId = outcome.id;
+                return false;
+            }
+        });
+        if(outcomeId == null){//was not marked final return successful
+            return {success: true};
+        }
+        url += outcomeId;
+        var headers = {};
+        var options = authenticator.applyTo(url, null, headers);
+        options['method'] = 'DELETE';
+        return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
+            return decorateResponseWithSuccess(response, 204);
+        }));
+    });
+
+
+};
 
 
 module.exports = JiveApiFacade;

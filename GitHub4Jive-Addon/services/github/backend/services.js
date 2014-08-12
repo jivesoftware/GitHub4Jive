@@ -6,6 +6,12 @@ var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var JiveOauth = require("../../../common/JiveOauth");
 
 
+function getDiscussionForIssue(jiveApi, issueId){
+    return jiveApi.getByExtProp("GitHub4Jive_IssueId", issueId).then(function (contents) {
+        return contents.list[0];
+    });
+}
+
 function setupRepoEventHandlers(community, jiveAuthenticator, placeID, owner, repo, gitHubToken){
     var auth = {"type": "oauth", "token":gitHubToken};
     var japi = new JiveFacade(community, jiveAuthenticator);
@@ -14,42 +20,46 @@ function setupRepoEventHandlers(community, jiveAuthenticator, placeID, owner, re
         if(gitData.action === "created") {
             var builder = new JiveContentBuilder();
             var content = builder.discussion()
-                .parent("/places/" + placeID)
+                .parentPlace(placeID)
                 .subject(gitData.issue.title)
                 .body(gitData.issue.body)
                 .build();
             japi.create(content).then(function (contentResponse) {
                 var contentID = contentResponse.apiID;
                 //attach ext props to get discussion later
-                return japi.attachProps(contentID, {"gitUniqueIssue": gitData.issue.id});
+                return japi.attachProps(contentID, {
+                    "GitHub4Jive_IssueId": gitData.issue.id,
+                    "GitHub4Jive_IssueNumber": gitData.issue.number//may not be correct field name
+                });
             });
 
         }else if(gitData.action === "opened"){
-            //unfinalize discussion
+            getDiscussionForIssue(japi, gitData.issue.id).then(function (discussion) {
+                japi.unMarkFinal(discussion.id);
+            });
         }else if(gitData.action === "closed"){
-            //finalize discussion
+            getDiscussionForIssue(japi, gitData.issue.id).then(function (discussion) {
+                japi.markFinal(discussion.id);
+            });
         }
 
 
     }).then(function () {
         return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
 
-            japi.getByExtProp("gitUniqueIssue", gitData.issue.id).then(function (contents) {
-                var discussion = contents.list[0]; // should never be creating multiple contents with an issue
+            getDiscussionForIssue(japi, gitData.issue.id).then(function (discussion) {
                 var builder = new JiveContentBuilder();
                 var comment = builder.message()
                     .body(gitData.comment.body)
                     .build();
                 japi.replyToDiscussion(discussion.id, comment).then(function (response) {
-                    if(!response.success){
-                        jive.logger.error("Error creating comment on "+ discussion.subject);
+                    if (!response.success) {
+                        jive.logger.error("Error creating comment on " + discussion.subject);
                     }
                 })
             }).catch(function (error) {
                 jive.logger.error(error);
-            })
-
-            
+            });
         });
     });
 
@@ -62,38 +72,50 @@ exports.onBootstrap = function(app) {
  * use that id to retrieve the stored access token from persistence to authenticate with github
  */
 
-    //gonna need to sign service anyways. Otherwise we can't query for places based on ext property
-    var communities = [];
-    communities.forEach(function (community) {
-        var serviceToken = "";
-        var servAuth = new JiveOauth(serviceToken)
-        var japi = new JiveFacade(community, servAuth);
-
-        japi.getByExtProp("GitHub4Jive-Enabled", "true").then(function (places) {
-            Q.all(places.map(function (place) {
-                return place.retrieveAllExtProps().then(function (extProps) {
-
-                    var repoOwner = extProps.repoOwner;
-                    var repo = extProps.repo;
-
-                    var usersJiveToken = "";
-                    var usersGitHubToken = "";
-                    var onBehalfOf = new JiveOauth(usersJiveToken);
-
-                    return setupRepoEventHandlers(community,onBehalfOf, place.id,repoOwner, repo,usersGitHubToken);
-                });
-                    }
-                )
-                ).then(function (subscriptionPromises) {
-                    //do something when all are done
-                });
-
-            });
-    })
 
 
+    var places = [];
+    places.forEach(function (linked) {
+        var place = linked.placeID;
+        var repo = linked.repo;
+        var repoOwner = linked.repoOwner;
+        var jiveToken = linked.jive.token;
+        var jiveRefresh = linked.jive.refresh;
+        var gitHubToken = linked.git.token;
+        var jiveurl = linked.jiveUrl;
+        var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function () {
+
+        });
+        setupRepoEventHandlers({jiveUrl:jiveurl }, jiveAuth,place, repoOwner, repo, gitHubToken);
+    });
 
 
+//gonna need to sign service anyways. Otherwise we can't query for places based on ext property
+//    var communities = [];
+//    communities.forEach(function (community) {
+//        var serviceToken = "";
+//        var servAuth = new JiveOauth(serviceToken)
+//        var japi = new JiveFacade(community, servAuth);
+//
+//        japi.getByExtProp("GitHub4Jive_Enabled", "true").then(function (places) {
+//            Q.all(places.map(function (place) {
+//                return place.retrieveAllExtProps().then(function (extProps) {
+//
+//                    var repoOwner = extProps.GitHub4Jive_RepoOwner;
+//                    var repo = extProps.GitHub4Jive_Repo;
+//
+//                    var usersJiveToken = "";
+//                    var usersGitHubToken = "";
+//                    var onBehalfOf = new JiveOauth(usersJiveToken);
+//
+//                    return setupRepoEventHandlers(community,onBehalfOf, place.id,repoOwner, repo,usersGitHubToken);
+//                });
+//            })).then(function (subscriptionPromises) {
+//                    //do something when all are done
+//            });
+//
+//        });
+//    })
 
 };
 

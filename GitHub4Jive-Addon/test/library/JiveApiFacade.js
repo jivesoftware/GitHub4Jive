@@ -221,13 +221,51 @@ describe("JiveApiFacade", function () {
                 var contentID = response.apiID;
                 var builder = new ContentBuilder();
                 var message = builder.message().body("DSAFDFDS").build();
-                jiveFacade.replyToDiscussion(contentID, message).then(function (response) {
+                return jiveFacade.replyToDiscussion(contentID, message).then(function (response) {
                     return jiveFacade.delete(contentID);
                 })
             });
         });
 
     });
+
+    describe("#markFinal", function () {
+        it("should return an outcome object", function () {
+
+            return createContent(jiveFacade, "discussion").then(function (response) {
+                var contentID = response.apiID;
+                return jiveFacade.markFinal(contentID).then(function (response) {
+                    response.success.should.be.true;
+                    response.entity.should.be.an("object");
+                    response.entity.id.should.be.above(0);
+
+                    jiveFacade.getOutcomes(contentID).then(function (outcomes) {
+                        outcomes.entity.list.length.should.be.above(0);
+                        outcomes.entity.list[0].id.should.be.above(0);
+                        return jiveFacade.delete(contentID);
+                    })
+
+
+                })
+            });
+        })
+    });
+
+    describe("#unMarkFinal", function () {
+        it("should return success and remove the final outcome", function () {
+            return createContent(jiveFacade, "discussion").then(function (response) {
+                var contentID = response.apiID;
+                return jiveFacade.markFinal(contentID).then(function (response) {
+                    response.success.should.be.true;
+                    return jiveFacade.unMarkFinal(contentID).then(function (response) {
+                        response.success.should.be.true;
+                        return jiveFacade.delete(contentID);
+                    })
+
+                })
+            });
+        })
+    })
 
 //    describe("#commentOn", function () {
 //        function TestContentTypeComments(contentType) {

@@ -1,27 +1,21 @@
-/* GitHub4Jive cartridge for Jive Anywhere (page content script)
+/* Github cartridge for Jive Anywhere (page content script)
 
    PageModuleContext, JCommon and $ are provided by the module manager
 */
 
 this.getPreviewData = function (params, sendResponse) {
-    var data = new Object();
-    	
-    data.url = document.location.href;
-    data.searchTimestamp = new Date().toString();
-    data.searchTerm = document.title.substring(0,(document.title.indexOf(' - ')));
-    data.results = [];
-    
-    /*** LOAD RESULTS ***/
-    $('li.g').each(function() {
-    	var result = {};
-    	result.title = $(this).find('h3.r a').text();
-    	result.url = $(this).find('h3.r a').attr('href');
-    	result.description = $(this).find('span.st').text();
-    	
-    	if (result.title && result.url) {
-			data.results.push(result);
-		} // end if
-    });
-    
-    sendResponse(data);
+    var issue = new Object();
+    if ($('.js-issue-title').length) {
+        issue.title = $(".js-issue-title").text();
+    }
+    else {
+        issue.title = $('meta[property="og:title"]').attr('content');
+    }
+    var authorObj = $(".flex-table-item-primary .author");
+    issue.author = authorObj.text();
+    issue.authorUrl = "https://github.com" + authorObj.attr("href");
+    issue.url = document.location.href;
+    issue.issueNumber = $(".gh-header-number").text();
+    issue.description = $(".comment-body:first").text();
+    sendResponse(issue);
 };

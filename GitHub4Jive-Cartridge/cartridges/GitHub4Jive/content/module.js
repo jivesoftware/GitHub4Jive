@@ -1,42 +1,49 @@
-/* GitHub4Jive module for Jive Anywhere
+/* Github module for Jive Anywhere
 
    ModuleContext, JCommon and $ are provided by the module manager
-   Recommended URL filter: www.google.com
+   Recommended URL filter: github.com
 */
 
 this.minimumRequiredVersion = 2.1;
 
 this.init = function () {
-   // Compile markup as named templates to be used by onGetPreviewData later
-   var html = '<strong>GitHub4Jive</strong>';
-   $.templates({
-      github4JivePageDataTemplate : html
-   });
+    // prepare preview template, compile markup as named templates
+    var pageDataTemplate = ModuleContext.getResourceFile("GithubPageDataTemplate.html");
+
+    $.templates({
+        githubPageDataTemplate: pageDataTemplate
+    });
 };
 
-// Display the defect ID of the site in the community tab
+this.onGetPreviewData = function (openGraphMetadata, isFinal, customValues, callback) {
+    // extract fields by invoking getPreviewData() on pagescript.js
+    ModuleContext.runPageScript("getPreviewData", null, function (pageData) {
+        // render preview template using extracted data and predefined GithubPageDataTemplate.html
+        var html = $.render.githubPageDataTemplate(pageData);
+        callback(html);
+    });
+};
+
+this.onGetUrlSearchResults = function (searchData, callback) {
+    var issue = extractIssueTitle();
+        
+    // search results by querying issue name
+    var query = "\"" + issue + "\"";
+    ModuleContext.connectionContexts.activeConnection.clientFacade.search(query, searchData.offset, searchData.limit, searchData.sortBy, searchData.isAscending, callback);
+};
+
 this.onGetModuleUI = function (callback) {
-    var moduleUiInfo = { defaultTabId: 0, tabs: [{ title: "GitHub4Jive" }, {}] };
+    var moduleUiInfo = { defaultTabId: 0, tabs: [{ title: extractIssueTitle() }, {}] };
     callback(moduleUiInfo);
 };
 
 
-// Generates preview data when submitting a new discussion instead of the default OpenGraph
-this.onGetPreviewData = function (openGraphMetadata, isFinal, customValues, callback) {
-
-   // Extracting page data by invoking a page helper function on pagescript.js
-   ModuleContext.runPageScript("getPreviewData", null, function (pageData) {
-   
-      // Use the LinkedInPageDataTemplate.html template to generate html markup
-      var html = $.render.googleSearchResultsPageDataTemplate(pageData);
-
-      // Pass the html back to the module manager
-      callback(html);
-   });
+var extractIssueTitle = function () {
+    var title = ModuleContext.pageInfo.title;
+    if (title.indexOf("\u00B7") > 0) {
+        return $.trim(title.substring(0, title.indexOf("\u00B7")));
+    }
+    else {
+        return title;
+    }
 };
-
-//// Normalizes the URL to include the search term
-//this.onGetNormalizedSearchUrl = function(url) {
-//	console.log(url);
-//	return document.location.href;
-//};

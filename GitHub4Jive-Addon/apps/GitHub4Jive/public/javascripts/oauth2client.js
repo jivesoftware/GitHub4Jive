@@ -77,72 +77,26 @@ function OAuth2ServerFlow( options ) {
     };
 
     return {
-        launch: function() {
+        launch: function(options) {
 
-            jive.tile.onOpen(function(config, options ) {
+//             gadgets.window.adjustHeight();
+            if ( typeof config === "string" ) {
+                config = JSON.parse(config);
+            }
 
-                gadgets.window.adjustHeight();
-                if ( typeof config === "string" ) {
-                    config = JSON.parse(config);
-                }
+            // state
+            var identifiers = jive.tile.getIdentifiers();
+            var viewerID = options['viewerID'];
+            var oauth2CallbackUrl = jive.tile.getOAuth2CallbackUrl();
+            var jiveTenantID = gadgets.config.get()['jive-opensocial-ext-v1']['jiveTenantID'];
 
-                // state
-                var identifiers = jive.tile.getIdentifiers();
-                var viewerID = identifiers['viewer'];   // user ID
-                var ticket = config["ticketID"]; // may or may not be there
-                var oauth2CallbackUrl = jive.tile.getOAuth2CallbackUrl();
-                var jiveTenantID = gadgets.config.get()['jive-opensocial-ext-v1']['jiveTenantID'];
+            if ( onLoadCallback ) {
+                onLoadCallback( {}, identifiers );
+            }
 
-                if ( onLoadCallback ) {
-                    onLoadCallback( config, identifiers );
-                }
-
-                if ( ticketURL ) {
-                    //
-                    // check ticket state
-                    // since a ticket endpoint was provided
-                    //
-                    osapi.http.get({
-                        'href' :  serviceHost + ticketURL + '?' + (
-                            ticket ? ('ticketID=' + ticket) : ('viewerID=' + viewerID + "&ts=" + new Date().getTime())
-                        ),
-                        'format' : 'json',
-                        'authz': authz,
-                        'noCache': true
-                    }).execute( function( response ) {
-                        if ( response.status >= 400 && response.status <= 599 ) {
-                            if (ticketErrorCallback) {
-                                ticketErrorCallback(response);
-                            }
-                            return;
-                        }
-
-                        var data = response.content;
-                        if ( data.status === 'ok' ) {
-                            // ticket is still ok
-                            // skip authentication
-                            ticket = data.ticketID;
-                            if ( !ticket ) {
-                                doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
-                            } else {
-                                oauth2SuccessCallback();
-                            }
-                        } else {
-                            // ticket is not ok
-                            // proceed with authentication
-                            doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
-                        }
-                    });
-
-                } else {
-                    // proceed with authentication since
-                    // there is no ticket endpoint to check for
-                    // origin server access token validity.
-                    doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
-                }
-
-            });
+            doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
         }
+
     };
 
 }

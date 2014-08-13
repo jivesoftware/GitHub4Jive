@@ -25,6 +25,8 @@
         <Require feature="opensocial-data"/>
         <Require feature="jive-core-v3"/>
         <Require feature="jive-core-v3-resolver"/>
+        <Require feature="jive-lightweight-tile-api"/>
+        <Require feature="oauthpopup"/>
         <Require feature="actions">
             <Param name="action-contributions">            
                 <![CDATA[

@@ -35,10 +35,10 @@ function doIt( host ) {
 
         // set up a query to get this user's list of repositories
         osapi.http.get({
-            'href' : host + '/example-github/user/repos?' +
+            'href' : host + '/github/user/repos?' +
                 'id=' + ticketID +
                 "&ts=" + new Date().getTime() +
-                "&ticketID=" + ticketID,
+                "&place=" + ticketID,
                 //"&query=" + query,
             'format' : 'json',
             'authz': 'signed'

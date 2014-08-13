@@ -10,6 +10,9 @@
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },
     "jive" : {
+        "oauth2": {
+            "clientOAuth2CallbackUrl": "/jive/oauth/callback"
+        },
         "analytics" : {
             "server" : "api.jivesoftware.com",
             "clientID" : "REPLACE_ME",

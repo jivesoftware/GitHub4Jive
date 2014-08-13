@@ -9,7 +9,7 @@ var myOauth = Object.create(sdkInstance);
 
 module.exports = myOauth;
 
-var tokenStore = jive.service.persistence();
+var tokenStore = require("../../../../../common/PlaceStore");
 
 var errorResponse = function( res, code, error ){
     res.status(code);
@@ -34,15 +34,18 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
     jive.logger.debug("oauth2SuccessCallback ...");
     jive.logger.debug('State', state);
     jive.logger.debug('GitHub Response: ', originServerAccessTokenResponse['entity']);
-  
+
     state = JSON.parse(state);
-  
-    var context = {
+    var placeRef = state.context.place;
+
+    var toStore = {"github": {
       userID : state['viewerID'],
       token: originServerAccessTokenResponse['entity']
-    };
-  
-    tokenStore.save('gitHubAccessTokens', state['viewerID'], context).then( function() {
+    }};
+
+
+
+    tokenStore.saveToken( placeRef, toStore).then( function() {
         callback(context);
     });
 };

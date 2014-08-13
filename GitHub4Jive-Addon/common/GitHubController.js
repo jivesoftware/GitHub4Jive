@@ -22,6 +22,7 @@
 var https = require("https");
 var url = require('url');
 
+var placeStore = require("./PlaceStore");
 var oAuth = require('./OauthProvider');
 var gitHubFacade = require("./GitHubFacade");
 
@@ -36,6 +37,12 @@ function ErrorResponse(res,error){
 function SplitRepo(fullname){
     var parts = fullname.split("/");
     return {owner: parts[0], repo: parts[1]};
+}
+
+function getGitHubOauthTokenForPlace(placeUrl){
+    return placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
+        return {"type": "oauth", "token":linked.github.token.access_token};
+    })
 }
 
 exports.isAuthenticated = function(req, res){
@@ -70,10 +77,9 @@ exports.isAuthenticated = function(req, res){
 exports.getUserRepos = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
-    var query = queryPart["query"];
-    var ticketID = queryPart["ticketID"];
+    var placeUrl = queryPart["place"];
 
-    oAuth.getOauthToken(ticketID).then(function(authOptions){
+    getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.getCurrentUser(authOptions).then(function(user){
             var username = user.login;
             return gitHubFacade.getCompleteRepositoryListForUser(username, authOptions).then(function(repos){

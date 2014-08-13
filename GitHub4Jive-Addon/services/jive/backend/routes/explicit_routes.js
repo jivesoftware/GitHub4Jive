@@ -1,5 +1,6 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
+var jiveController = require("./JiveController")
 
 exports.getWebhooksLog = {
     'path' : '/webhooks/jive',
@@ -56,3 +57,9 @@ exports.postWebhooks = {
         res.end( JSON.stringify( { } ) );
     }
 };
+
+exports.placeCurrentConfig = {
+    'verb' : 'get',
+    'path' : '/jive/place/isConfigured',
+    'route' : jiveController.placeCurrentConfig
+}

@@ -44,7 +44,7 @@ function JiveApiFacade(community, authDecorator){
 
 var MISSING_CONTENT_TYPE = "Missing type field.";
 var MISSING_CONTENT ="Missing content field.";
-var INCOMPLETE_CONTENT = "Incomplete content. Missing type or text field";
+var INCOMPLETE_CONTENT_TEXT_TYPE = "Incomplete content. Missing text type field";
 var MISSING_SUBJECT = "Missing subject field.";
 function UnsupportedContentType(type){
     return "Unsupported Content Type: " + type + ".";
@@ -61,8 +61,8 @@ function verifyPost(post){
     if(!post.content){
         throw Error(MISSING_CONTENT);
     }
-    if(!post.content.type || !post.content.text){
-        throw Error(INCOMPLETE_CONTENT);
+    if(!post.content.type){
+        throw Error(INCOMPLETE_CONTENT_TEXT_TYPE);
     }
     if(!post.subject){
         throw Error(MISSING_SUBJECT);
@@ -229,6 +229,22 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
         }
     }));
 };
+
+JiveApiFacade.prototype.getAllExtProps = function (uri) {
+    var url = communityAPIURL(this) + uri;
+    var headers = {};
+    var options = this.authenticator.applyTo(url, null, headers);
+    options["method"] = "GET";
+    var community = this.community;
+    var authenticator = this.authenticator;
+    return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
+        decorateWithExtPropRetrievers(community,response.entity, authenticator);
+        return response.entity.retrieveAllExtProps();
+    }, function (error) {
+        console.log(error);
+    }));
+
+}
 
 JiveApiFacade.prototype.markFinal = function(contentID){
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";

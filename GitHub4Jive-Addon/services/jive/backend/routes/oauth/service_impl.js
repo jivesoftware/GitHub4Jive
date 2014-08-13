@@ -7,27 +7,30 @@ var myOauth = Object.create(sdkInstance);
 
 module.exports = myOauth;
 
-var tokenStore = jive.service.persistence();
+var placeStore = require("../../../../../common/PlaceStore");
 
 /////////////////////////////////////////////////////////////
 // overrides jive-sdk/routes/oauth.js to do something useful,
 // like storing access token for the viewer
 
 myOauth.fetchOAuth2Conf = function() {
-    return jive.service.options['oauth2-webhooks'];
+    return jive.service.options['jive']["oauth2"];
 };
 
 myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse, callback ) {
     console.log('State', state);
     console.log('originServerAccessTokenResponse', originServerAccessTokenResponse);
-    tokenStore.save('tokens', state['viewerID'], {
-        ticket : state['viewerID'],
-        accessToken: originServerAccessTokenResponse['entity']
-    }).then( function() {
+
+    var placeRef = state.context.place;
+
+    var toStore = {};
+    toStore.jive = originServerAccessTokenResponse.entity;
+    toStore.jive.userID =  state['viewerID']
+    placeStore.saveToken(placeRef, toStore).then( function() {
         callback({'ticket': state['viewerID'] });
     });
 };
 
 myOauth.getTokenStore = function() {
-    return tokenStore;
+    return placeStore;
 };

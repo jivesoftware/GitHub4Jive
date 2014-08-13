@@ -1,4 +1,5 @@
 var service = require('./service_impl.js');
+var gitHubController = require("../../../../../common/GitHubController");
 
 exports.authorizeUrl = {
     'path' : '/github/oauth/authorize',
@@ -12,3 +13,8 @@ exports.oauth2Callback = {
     'route': service.oauth2Callback.bind(service)
 };
 
+exports.repositoryListForUser = {
+    'verb' : 'get',
+    'path' : '/github/user/repos',
+    'route' : gitHubController.getUserRepos
+}

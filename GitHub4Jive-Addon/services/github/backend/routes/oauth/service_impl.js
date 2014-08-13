@@ -43,10 +43,8 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
       token: originServerAccessTokenResponse['entity']
     }};
 
-
-
     tokenStore.saveToken( placeRef, toStore).then( function() {
-        callback(context);
+        callback(toStore.github);
     });
 };
 

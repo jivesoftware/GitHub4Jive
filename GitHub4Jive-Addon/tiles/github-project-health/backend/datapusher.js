@@ -38,26 +38,31 @@ function processTileInstance(instance, data) {
 }
 
 function pushData() {
-  
-  loadAnalyticsData().then(
-    function(data) {
-      jive.tiles.findByDefinitionName( 'github-project-health' ).then( function(instances) {
-          if ( instances ) {
-              instances.forEach( function( instance ) {
-                  processTileInstance(instance,data);
-              });
-          }
-      });
-    },
-    function(errResponse) {
-      //TODO:
-    });
+    if(AnalyticsConfiguration()) {
+        loadAnalyticsData().then(
+            function (data) {
+                jive.tiles.findByDefinitionName('github-project-health').then(function (instances) {
+                    if (instances) {
+                        instances.forEach(function (instance) {
+                            processTileInstance(instance, data);
+                        });
+                    }
+                });
+            },
+            function (errResponse) {
+                //TODO:
+            });
+    }
 } // end pushData
+
+function AnalyticsConfiguration(){
+    return jive.service.options['jive']['analytics'];
+}
 
 function loadAnalyticsData() {
   var deferred = q.defer();
 
-  var analyticsConfig = jive.service.options['jive']['analytics'];
+  var analyticsConfig = AnalyticsConfiguration();
   var analyticsClientID = analyticsConfig['clientID'];
   var analyticsClientSecret = analyticsConfig['clientSecret'];
   var analyticsServer = analyticsConfig['server'];

@@ -183,7 +183,6 @@ var app = {
 
             });
 
-            console.log('gadget:' + $("#github4jive-enable-submit").size());
             $("#github4jive-enable-submit").click(function () {
                 console.log('clicked');
                 osapi.jive.corev3.resolveContext(context, function (result) {
@@ -205,6 +204,15 @@ var app = {
                         }).execute(function (resp) {
                             console.log('resp: {' + JSON.stringify(resp) + '}');
                             osapi.jive.core.container.closeApp();
+                        });
+
+                        osapi.http.post({
+                            'href': host + "/github/place/trigger?" +
+                                "&place=" + encodeURIComponent(place.resources.self.ref),
+                            'format': 'json',
+                            'authz': 'signed'
+                        }).execute(function (response) {
+                            console.log(response);
                         });
                     }
                 });

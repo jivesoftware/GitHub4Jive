@@ -20,7 +20,7 @@ var Q = require("q");
 var supportedContent = {
     DISCUSSION: "discussion",
     DOCUMENT: "document"
-}
+};
 
 /*
  * Creates an API interface for a specific Jive Community
@@ -46,6 +46,10 @@ var MISSING_CONTENT_TYPE = "Missing type field.";
 var MISSING_CONTENT ="Missing content field.";
 var INCOMPLETE_CONTENT_TEXT_TYPE = "Incomplete content. Missing text type field";
 var MISSING_SUBJECT = "Missing subject field.";
+
+/**
+ * @return {string}
+ */
 function UnsupportedContentType(type){
     return "Unsupported Content Type: " + type + ".";
 }
@@ -82,6 +86,9 @@ function decorateResponseWithSuccess(res, correctStatus){
 function catchErrorResponse(surround){
     return surround.catch(function (response) {
         response.success = false;
+        try {
+            response.error = response.details.entity;
+        }catch(e){}
         return response;
     });
 }
@@ -123,7 +130,7 @@ JiveApiFacade.prototype.create = function(post){
         if(response.success){
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
-        };
+        }
         return response;
     }));
 };
@@ -133,7 +140,7 @@ JiveApiFacade.prototype.create = function(post){
  * @param string id The content id to be deleted.
  * @return promise promise Use .then(function(result){}); to process return asynchronously
  */
-JiveApiFacade.prototype.delete = function(id){
+JiveApiFacade.prototype.destroy = function(id){
     var url  = communityAPIURL(this) + "contents/" + id;
     var headers = {};
     var options = this.authenticator.applyTo(url,null, headers);
@@ -222,7 +229,7 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
         if(response.statusCode == 200){
             response.entity.list.forEach(function (content) {
                 decorateWithExtPropRetrievers(community, content, authenticator);
-            })
+            });
             return response.entity;
         }else{
             return decorateResponseWithSuccess(response, 200);
@@ -238,13 +245,16 @@ JiveApiFacade.prototype.getAllExtProps = function (uri) {
     var community = this.community;
     var authenticator = this.authenticator;
     return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
-        decorateWithExtPropRetrievers(community,response.entity, authenticator);
-        return response.entity.retrieveAllExtProps();
-    }, function (error) {
-        console.log(error);
-    }));
+        decorateResponseWithSuccess(response, 200);
+        if(response.success){
+            decorateWithExtPropRetrievers(community,response.entity, authenticator);
+            return response.entity.retrieveAllExtProps();
+        }else{
+            return response;
+        }
 
-}
+    }));
+};
 
 JiveApiFacade.prototype.markFinal = function(contentID){
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";

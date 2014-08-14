@@ -1,98 +1,98 @@
 var jive = require('jive-sdk');
 var Q = require("q");
-var gitHubFacade = require("../../../common/GitHubFacade");
+var https = require("https");
+var url = require('url');
+
 var JiveFacade = require("../../../common/JiveApiFacade");
-var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var JiveOauth = require("../../../common/JiveOauth");
+var StrategyBuilder = require("./StrategySetBuilder");
 var placeStore = require("../../../common/PlaceStore");
 
+//This can be moved into functions below if we need to dynamically configure events.
+// They will need to be saved into the linkedPlaces array for teardown. Everyone gets the same for now though.
+var builder = new StrategyBuilder();
+var stratSet = builder.issues().issueComments().build();
 
-function getDiscussionForIssue(jiveApi, issueId){
-    return jiveApi.getByExtProp("github4jiveIssueId", issueId).then(function (contents) {
-        return contents.list[0];
+function linkedPlaceSkeleton(linked, action){
+    var place = linked.placeID;
+    var jiveToken = linked.jive.access_token;
+    var jiveRefresh = linked.jive.refresh_token;
+    var gitHubToken = linked.github.token.access_token;
+    var jiveUrl = linked.jiveUrl;
+    var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
+        jive.logger.debug(newTokens);
+    });
+    return jive.community.findByJiveURL(jiveUrl).then(function (community) {
+        var japi = new JiveFacade(community, jiveAuth);
+        japi.getAllExtProps("places/" + place).then(function (extprops) {
+
+            var repo = extprops.github4jiveRepo;
+            var repoOwner = extprops.github4jiveRepoOwner;
+
+            if(!repo || !repoOwner){
+                jive.logger.error("Missing repo information for "+ jiveUrl + "/api/core/v3/places/" + place)
+            }else{
+                var setupOptions = {
+                    jiveApi: japi,
+                    placeID: place,
+                    owner: repoOwner,
+                    repo: repo,
+                    gitHubToken: gitHubToken,
+                    placeUrl: linked.placeUrl
+                };
+                return action(setupOptions);
+            }
+        })
     });
 }
 
-function setupRepoEventHandlers(jiveApi, placeID, owner, repo, gitHubToken){
-    var auth = {"type": "oauth", "token":gitHubToken};
+function setUpLinkedPlace(linked){
+    return linkedPlaceSkeleton(linked, stratSet.setup);
+}
 
-    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
-        jive.logger.debug(gitData);
-        if(gitData.action === "opened") {
-            var builder = new JiveContentBuilder();
-            var content = builder.discussion()
-                .parentPlace(placeID)
-                .subject("[" + owner + "/" + repo +"-" + gitData.issue.number + "] " + gitData.issue.title)
-                .body(gitData.issue.body)
-                .build();
-            jiveApi.create(content).then(function (contentResponse) {
-                var contentID = contentResponse.apiID;
-                //attach ext props to get discussion later
-                return jiveApi.attachProps(contentID, {
-                    "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number//may not be correct field name
-                });
-            });
+function teardownLinkedPlace(linked) {
+    return linkedPlaceSkeleton(linked, stratSet.teardown);
+}
 
-        }else if(gitData.action === "reopened"){
-            getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.unMarkFinal(discussion.id);
+var linkedPlaces;
+
+exports.onBootstrap = function() {
+    placeStore.getAllPlaces().then(function (places) {
+        linkedPlaces = places;
+        linkedPlaces.forEach(setUpLinkedPlace);
+    });
+};
+
+exports.onConfigurationChange = function(req, res){
+    var url_parts = url.parse(req.url, true);
+    var queryPart = url_parts.query;
+    var placeUrl = queryPart["place"];
+
+    placeStore.getPlaceByUrl(placeUrl).then(function (newLinkedPlace) {
+        var tempCollection = [];
+        var toTeardown;
+        linkedPlaces.forEach(function (place) {
+            if(place.placeUrl !== newLinkedPlace.placeUrl){
+                tempCollection.push(place);
+            }else{//found it
+                toTeardown = place;
+            }
+        });
+        tempCollection.push(newLinkedPlace);
+        linkedPlaces = tempCollection;
+        if(toTeardown) {
+            return teardownLinkedPlace(toTeardown).then(function () {
+                setUpLinkedPlace(newLinkedPlace);
             });
-        }else if(gitData.action === "closed"){
-            getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.markFinal(discussion.id);
-            });
+        }else{
+            return setUpLinkedPlace(newLinkedPlace);
         }
 
-
-    }).then(function () {
-        return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
-
-            getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                var builder = new JiveContentBuilder();
-                var comment = builder.message()
-                    .body(gitData.comment.body)
-                    .build();
-                jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
-                    if (!response.success) {
-                        jive.logger.error("Error creating comment on " + discussion.subject);
-                        jive.logger.error(response);
-                    }
-                })
-            }).catch(function (error) {
-                jive.logger.error(error);
-            });
-        });
+    }).catch(function (error) {
+        jive.logger.error(error);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(false));
     });
-
-}
-
-exports.onBootstrap = function(app) {
-
-    placeStore.getAllPlaces().then(function (places) {
-        places.forEach(function (linked) {
-            var place = linked.placeID;
-            var jiveToken = linked.jive.access_token;
-            var jiveRefresh = linked.jive.refresh_token;
-            var gitHubToken = linked.github.token.access_token;
-            var jiveUrl = linked.jiveUrl;
-            var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function () {
-
-            });
-            jive.community.findByJiveURL(jiveUrl).then(function (community) {
-                var japi = new JiveFacade(community, jiveAuth);
-                japi.getAllExtProps("places/" + place).then(function (extprops) {
-
-                    var repo = extprops.github4jiveRepo;
-                    var repoOwner = extprops.github4jiveRepoOwner;
-
-                    setupRepoEventHandlers(japi, place, repoOwner, repo, gitHubToken);
-                })
-            })
-
-
-        });
-
-    });
-}
-
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(true));
+};

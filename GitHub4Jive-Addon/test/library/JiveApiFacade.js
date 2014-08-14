@@ -93,7 +93,7 @@ describe("JiveApiFacade", function () {
                 response.should.have.property("success").and.be.true;
                 response.should.have.property("apiID");
                 createdID = response.apiID;
-                return jiveFacade.delete(createdID).then(function (response) {
+                return jiveFacade.destroy(createdID).then(function (response) {
                     response.statusCode.should.equal(204);
                 });
             }).catch(function (error) {
@@ -178,7 +178,7 @@ describe("JiveApiFacade", function () {
                                     Object.keys(props).length.should.be.above(0);
                                 })
                             })).then(function () {
-                            return oAuthFacade.delete(contentID).then(function (response) {
+                            return oAuthFacade.destroy(contentID).then(function (response) {
                                 response.statusCode.should.equal(204);
                             });
                         });
@@ -222,7 +222,7 @@ describe("JiveApiFacade", function () {
                 var builder = new ContentBuilder();
                 var message = builder.message().body("DSAFDFDS").build();
                 return jiveFacade.replyToDiscussion(contentID, message).then(function (response) {
-                    return jiveFacade.delete(contentID);
+                    return jiveFacade.destroy(contentID);
                 })
             });
         });
@@ -242,7 +242,7 @@ describe("JiveApiFacade", function () {
                     jiveFacade.getOutcomes(contentID).then(function (outcomes) {
                         outcomes.entity.list.length.should.be.above(0);
                         outcomes.entity.list[0].id.should.be.above(0);
-                        return jiveFacade.delete(contentID);
+                        return jiveFacade.destroy(contentID);
                     })
 
 
@@ -259,13 +259,13 @@ describe("JiveApiFacade", function () {
                     response.success.should.be.true;
                     return jiveFacade.unMarkFinal(contentID).then(function (response) {
                         response.success.should.be.true;
-                        return jiveFacade.delete(contentID);
+                        return jiveFacade.destroy(contentID);
                     })
 
                 })
             });
         })
-    })
+    });
 
 //    describe("#commentOn", function () {
 //        function TestContentTypeComments(contentType) {
@@ -277,7 +277,7 @@ describe("JiveApiFacade", function () {
 //                return jiveFacade.commentOn(content, comment).then(function (response) {
 //                    response.success.should.be.true;
 //                }).done(function () {
-//                    return jiveFacade.delete(content).then(function (res) {
+//                    return jiveFacade.destroy(content).then(function (res) {
 //                        res.success.should.be.true;
 //                    });
 //                });

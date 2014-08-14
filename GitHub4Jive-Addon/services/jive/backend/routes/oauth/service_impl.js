@@ -25,8 +25,8 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
 
     var toStore = {};
     toStore.jive = originServerAccessTokenResponse.entity;
-    toStore.jive.userID =  state['viewerID']
-    placeStore.saveToken(placeRef, toStore).then( function() {
+    toStore.jive.userID =  state['viewerID'];
+    placeStore.save(placeRef, toStore).then( function() {
         callback({'ticket': state['viewerID'] });
     });
 };

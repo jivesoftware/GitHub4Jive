@@ -50,7 +50,7 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
       token: token
     }};
 
-    tokenStore.saveToken( placeRef, toStore).then( function() {
+    tokenStore.save( placeRef, toStore).then( function() {
         callback({'ticket': tokenID });
     });
 };

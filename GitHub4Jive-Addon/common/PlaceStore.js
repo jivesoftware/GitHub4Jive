@@ -18,7 +18,7 @@ var jive = require("jive-sdk");
 
 var store = jive.service.persistence();
 
-exports.saveToken = function(placeUrl, token){
+exports.save = function(placeUrl, token){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
@@ -31,17 +31,18 @@ exports.saveToken = function(placeUrl, token){
 
         record.jiveUrl =  domainTokens.join(delimitter);
         record.placeID =  tokens[tokens.length -1];
+        record.placeUrl = placeUrl;
         return store.save("tokens", placeUrl, record).then(function(){
             return record;
-        });;
+        });
     })
 };
 
 exports.getAllPlaces = function(){
     return store.find("tokens");
-}
+};
 
 
 exports.getPlaceByUrl = function(placeUrl){
     return store.findByID("tokens", placeUrl);
-}
+};

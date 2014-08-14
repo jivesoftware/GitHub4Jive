@@ -13,11 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+var jive = require("jive-sdk");
 
 function JiveOauth(accessToken, refreshToken, tokenPersistenceFunction){
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    this.tokenPersistenceFunction = tokenPersistenceFunction;
+    this.tokenPersistenceFunction =
+        tokenPersistenceFunction ?
+        tokenPersistenceFunction :
+            function (newTokens, community){
+                jive.logger.warn("New access/refresh tokens are not being stored for "+community.jiveUrl+ "!")
+            };
 }
 
 JiveOauth.prototype.applyTo = function(url, body, headers){

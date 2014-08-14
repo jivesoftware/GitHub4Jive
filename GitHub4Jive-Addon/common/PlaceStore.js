@@ -15,8 +15,10 @@
  */
 
 var jive = require("jive-sdk");
-
+var Q = require("q");
 var store = jive.service.persistence();
+var JiveApi = require("./JiveApiFacade");
+var JiveOauth = require("./JiveOauth");
 
 exports.save = function(placeUrl, token){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
@@ -38,11 +40,38 @@ exports.save = function(placeUrl, token){
     })
 };
 
+function pullExternalPropertiesIn(self,linked){
+    if(!linked.github.repoOwner || !linked.github.repo){
+        //cache repo information
+        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var jauth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token);
+            var japi = new JiveApi(community, jauth);
+            return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {
+                linked.github.repo = extprops.github4jiveRepo;
+                linked.github.repoOwner = extprops.github4jiveRepoOwner;
+                var githubReplacement = {"github": linked.github};
+                return self.save(linked.placeUrl, githubReplacement);
+            })
+        });
+
+    }else{
+        return linked;
+    }
+}
+
 exports.getAllPlaces = function(){
-    return store.find("tokens");
+    var self = this;
+    return store.find("tokens").then(function (linkedPlaces) {
+        return Q.all(linkedPlaces.map(function (linked) {
+            return pullExternalPropertiesIn(self, linked);
+        }));
+    });
 };
 
 
 exports.getPlaceByUrl = function(placeUrl){
-    return store.findByID("tokens", placeUrl);
+    var self = this;
+    return store.findByID("tokens", placeUrl).then(function (linked) {
+        return pullExternalPropertiesIn(self,linked);
+    });
 };

@@ -19,31 +19,26 @@ function linkedPlaceSkeleton(linked, action){
     var jiveRefresh = linked.jive.refresh_token;
     var gitHubToken = linked.github.token.access_token;
     var jiveUrl = linked.jiveUrl;
+    var repo = linked.github.repo;
+    var repoOwner = linked.github.repoOwner;
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
         jive.logger.debug(newTokens);
     });
-    return jive.community.findByJiveURL(jiveUrl).then(function (community) {
-        var japi = new JiveFacade(community, jiveAuth);
-        japi.getAllExtProps("places/" + place).then(function (extprops) {
 
-            var repo = extprops.github4jiveRepo;
-            var repoOwner = extprops.github4jiveRepoOwner;
+    if(!repo || !repoOwner){
+        jive.logger.error("Missing repo information for "+ linked.placeUrl)
+    }else{
+        var setupOptions = {
+            jiveApi: japi,
+            placeID: place,
+            owner: repoOwner,
+            repo: repo,
+            gitHubToken: gitHubToken,
+            placeUrl: linked.placeUrl
+        };
+        return action(setupOptions);
+    }
 
-            if(!repo || !repoOwner){
-                jive.logger.error("Missing repo information for "+ jiveUrl + "/api/core/v3/places/" + place)
-            }else{
-                var setupOptions = {
-                    jiveApi: japi,
-                    placeID: place,
-                    owner: repoOwner,
-                    repo: repo,
-                    gitHubToken: gitHubToken,
-                    placeUrl: linked.placeUrl
-                };
-                return action(setupOptions);
-            }
-        })
-    });
 }
 
 function setUpLinkedPlace(linked){

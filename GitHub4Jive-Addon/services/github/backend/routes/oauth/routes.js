@@ -17,4 +17,10 @@ exports.repositoryListForUser = {
     'verb' : 'get',
     'path' : '/github/user/repos',
     'route' : gitHubController.getUserRepos
-}
+};
+
+exports.IssuesForPlace = {
+    'verb' : 'get',
+    'path' : '/github/place/issues',
+    'route' : gitHubController.getPlaceIssues
+};

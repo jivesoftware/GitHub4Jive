@@ -24,6 +24,10 @@ exports.placeCurrentConfig = function (req, res) {
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
 
+    if(!placeUrl || placeUrl === ""){
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify("Specify place api url"));
+    }
     placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
         var clientSideConfig = {github: false, jive: false};
         try{
@@ -42,5 +46,8 @@ exports.placeCurrentConfig = function (req, res) {
         }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(clientSideConfig));
+    }).catch(function (error) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(error));
     })
 }

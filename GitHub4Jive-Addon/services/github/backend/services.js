@@ -24,21 +24,23 @@ function linkedPlaceSkeleton(linked, action){
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
         jive.logger.debug(newTokens);
     });
-
-    if(!repo || !repoOwner){
-        jive.logger.error("Missing repo information for "+ linked.placeUrl)
-    }else{
-        var setupOptions = {
-            jiveApi: japi,
-            placeID: place,
-            owner: repoOwner,
-            repo: repo,
-            gitHubToken: gitHubToken,
-            placeUrl: linked.placeUrl
-        };
-        return action(setupOptions);
-    }
-
+    return jive.community.findByJiveURL(jiveUrl).then(function (community) {
+        var japi = new JiveFacade(community, jiveAuth);
+        if (!repo || !repoOwner) {
+            jive.logger.error("Missing repo information for " + linked.placeUrl)
+        }
+        else {
+            var setupOptions = {
+                jiveApi: japi,
+                placeID: place,
+                owner: repoOwner,
+                repo: repo,
+                gitHubToken: gitHubToken,
+                placeUrl: linked.placeUrl
+            };
+            return action(setupOptions);
+        }
+    });
 }
 
 function setUpLinkedPlace(linked){

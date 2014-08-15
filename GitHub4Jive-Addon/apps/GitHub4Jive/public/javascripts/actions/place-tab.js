@@ -3,4 +3,74 @@ gadgets.util.registerOnLoadHandler(function() {
 
   // resize app window to fit content
   // gadgets.window.adjustHeight();
+
+
 });
+
+var place, previousRepo;
+var jiveDone = false;
+var githubDone = false;
+
+var app = {
+
+    currentView: gadgets.views.getCurrentView().getName(),
+    currentViewerID: -1,
+    initGadget: function () {
+        console.log('initGadget ...');
+
+        gadgets.actions.updateAction({
+            id: "com.jivesoftware.addon.github4jive.group.tab",
+            callback: app.handleContext
+        });
+
+        gadgets.actions.updateAction({
+            id: "com.jivesoftware.addon.github4jive.project.tab",
+            callback: app.handleContext
+        });
+
+        gadgets.actions.updateAction({
+            id: "com.jivesoftware.addon.github4jive.space.tab",
+            callback: app.handleContext
+        });
+    },
+
+    initjQuery: function () {
+        console.log('initjQuery ...');
+        gadgets.window.adjustHeight(250);
+    },
+
+    handleContext: function (context) {
+        console.log('handleContext ...');
+
+        if (context && context.jive) {
+
+            osapi.jive.corev3.resolveContext(context, function (result) {
+                place = result.content;
+
+                osapi.http.get({
+                    'href': host + '/github/place/issues?' +
+                        "&place=" + encodeURIComponent(place.resources.self.ref),
+                    //"&query=" + query,
+                    'format': 'json',
+                    'authz': 'signed'
+                }).execute(function (response) {
+
+                    $("#DUMP").append(response);
+
+                });
+
+
+            });
+        };
+    }
+};
+
+gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget));
+
+$(function () {
+    app.initjQuery();
+});
+
+
+
+

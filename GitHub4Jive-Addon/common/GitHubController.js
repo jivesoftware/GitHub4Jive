@@ -27,7 +27,6 @@ var oAuth = require('./OauthProvider');
 var gitHubFacade = require("./GitHubFacade");
 
 
-
 function ErrorResponse(res,error){
     console.log(error);
     res.writeHead(502, { 'Content-Type': 'application/json' });
@@ -78,6 +77,10 @@ exports.getUserRepos = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
+    if(!placeUrl || placeUrl === ""){
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify("Specify place api url"));
+    }
 
     getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.getCurrentUser(authOptions).then(function(user){
@@ -91,6 +94,21 @@ exports.getUserRepos = function(req, res){
         ErrorResponse(res, error);
     });
 };
+
+exports.getPlaceIsues = function (req, res) {
+    var queryParams = url.parse(req.url, true).query;
+    var place = queryParams.placeUrl;
+
+    placeStore.getPlaceByUrl(place).then(function (linked) {
+        var auth = {"type":"oauth","token": linked.github.token.access_token};
+        gitHubFacade.getRepositoryIssues(linked.github.repoOwner,linked.github.repo,auth).then(function (issues) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(issues) );
+        })
+    }).catch(function (error) {
+        ErrorResponse(res,error);
+    })
+}
 
 exports.getIssueComments = function(req, res){
     var queryParams = url.parse(req.url, true).query;

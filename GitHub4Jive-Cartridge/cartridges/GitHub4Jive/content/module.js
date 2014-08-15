@@ -25,11 +25,10 @@ this.onGetPreviewData = function (openGraphMetadata, isFinal, customValues, call
 };
 
 this.onGetUrlSearchResults = function (searchData, callback) {
-    var issue = extractIssueTitle();
-        
-    // search results by querying issue name
-    var query = "\"" + issue + "\"";
-    ModuleContext.connectionContexts.activeConnection.clientFacade.search(query, searchData.offset, searchData.limit, searchData.sortBy, searchData.isAscending, callback);
+    ModuleContext.runPageScript("getSearchQuery", null, function (queryData) {
+        var query = "\"" + queryData.query + "\"";
+        ModuleContext.connectionContexts.activeConnection.clientFacade.search(query, searchData.offset, searchData.limit, searchData.sortBy, searchData.isAscending, callback);
+    });
 };
 
 this.onGetModuleUI = function (callback) {

@@ -15,7 +15,25 @@ this.getPreviewData = function (params, sendResponse) {
     issue.author = authorObj.text();
     issue.authorUrl = "https://github.com" + authorObj.attr("href");
     issue.url = document.location.href;
-    issue.issueNumber = $(".gh-header-number").text();
+    issue.issueNumber = getIssueNumber();
+    issue.issueTag = getIssueTag();
     issue.description = $(".comment-body:first").text();
     sendResponse(issue);
 };
+
+this.getSearchQuery = function (params, sendResponse) {
+    sendResponse({ "query" : getIssueTag() });
+}
+
+function getIssueNumber () {
+    var issueNumner = "";
+    if ($(".gh-header-number").length) {
+        issueNumber = $(".gh-header-number").text().substring(1);
+    }
+    return issueNumber;
+}
+
+function getIssueTag () {
+    var repositoryName = $('meta[property="og:title"]').attr('content');
+    return "["+repositoryName+"-"+getIssueNumber()+"]";
+}

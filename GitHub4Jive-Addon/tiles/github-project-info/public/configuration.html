@@ -2,16 +2,19 @@
 <head>
 <link rel="stylesheet" href="stylesheets/shared.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="stylesheets/actions/place-config.css" type="text/css" media="screen" />
-<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/shared.js"></script>
-<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/coreapi-context-resolver-v3.js"></script>
-<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/oauth2client.js"></script>
-<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/main.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/oauth2client.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
 </head>
 <body>
 <script>
     host = "{{{host}}}";
     $(function () {
         app.initjQuery();
+        $("#github4jive-enable-submit").click(function () {
+            jive.tile.close();
+            gadgets.window.adjustHeight(300);
+        });
     });
 </script>
 <h2>Place Config: GitHub4Jive</h2>
@@ -36,8 +39,6 @@
     <p>
         Repo: <select id="projectList"></select>
     </p>
-    <input type="hidden" id="github-authorize-token">
-    <input type="hidden" id="jive-authorize-token">
     <input id="github4jive-enable-submit" type="button" value="Save" />
 </div>
 

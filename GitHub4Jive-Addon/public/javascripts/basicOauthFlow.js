@@ -141,8 +141,6 @@ var app = {
                         githubDone = true;
                         $('#github4jive-github-authorize').slideUp('fast');
                         $('#github4jive-github-authorize-success').slideDown('fast', ProceedWhenReady);
-                        $('#github4jive-github-token').val(ticketID);
-
                     }
                 });
 
@@ -151,7 +149,6 @@ var app = {
                         jiveDone = true;
                         $('#github4jive-jive-authorize').slideUp('fast');
                         $('#github4jive-jive-authorize-success').slideDown('fast', ProceedWhenReady);
-                        $('#github4jive-jive-token').val(ticketID);
                     }
                 });
 
@@ -165,7 +162,6 @@ var app = {
                     }
 
                     //double check server side configuration with ext props
-                    debugger;
                     osapi.http.get({
                         'href': host + '/jive/place/isConfigured?' +
                             "&ts=" + new Date().getTime() +
@@ -175,7 +171,6 @@ var app = {
                         'authz': 'signed'
                     }).execute(function (response) {
                             var config = response.content;
-                            debugger;
                             githubDone = config.github;
                             jiveDone = config.jive;
 
@@ -208,7 +203,7 @@ var app = {
             });
 
             $("#github4jive-enable-submit").click(function () {
-                console.log('clicked');
+                console.log('Saving GitHub4Jive Repository Information');
                 osapi.jive.corev3.resolveContext(context, function (result) {
                     console.log('resolveContext callback');
                     if (result.content) {
@@ -221,13 +216,10 @@ var app = {
 
                         result.content.createExtProps({
                             "github4jiveEnabled": true,
-                            "github4jiveGitHubAccessToken": $("#github4jive-github-token").val(),
-                            "github4jiveJiveAccessToken": $("github4jive-jive-token").val(),
                             "github4jiveRepo": repoName,
                             "github4jiveRepoOwner": owner
                         }).execute(function (resp) {
                             console.log('resp: {' + JSON.stringify(resp) + '}');
-                            osapi.jive.core.container.closeApp();
                         });
 
                         osapi.http.post({

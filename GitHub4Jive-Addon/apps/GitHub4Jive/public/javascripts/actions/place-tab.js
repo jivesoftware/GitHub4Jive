@@ -8,8 +8,20 @@ gadgets.util.registerOnLoadHandler(function() {
 });
 
 var place, previousRepo;
-var jiveDone = false;
-var githubDone = false;
+
+// register a listener for embedded experience context
+opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
+    var data = opensocial.data.getDataContext().getDataSet(key);
+
+    console.log("==== registerListener ====");
+    console.log("embedded context:", data);
+
+    // setup incoming embedded context
+    $('#incoming_embedded_context').val(JSON.stringify(data, null, 2));
+
+    // seed outgoing
+    $("#outgoing_selection").val(JSON.stringify(outgoing, null, 2));
+});
 
 var app = {
 

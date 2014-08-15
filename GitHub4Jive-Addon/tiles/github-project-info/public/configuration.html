@@ -1,33 +1,49 @@
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/style.css">
-    <script type="text/javascript" src="{{{host}}}/javascripts/jquery-1.8.3.js"></script>
-    <script type="text/javascript" src="{{{host}}}/javascripts/oauth2client.js"></script>
-    <script type="text/javascript" src="{{{host}}}/github-project-info/javascripts/main.js"></script>
-    <script type="text/javascript">
-      $(function() {
-        app.initjQuery('{{{host}}}');
-      });
-    </script>
+<link rel="stylesheet" href="stylesheets/shared.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/actions/place-config.css" type="text/css" media="screen" />
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/shared.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/coreapi-context-resolver-v3.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/oauth2client.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{{host}}}/github-project-info/javascripts/main.js"></script>
 </head>
-
 <body>
+<script>
+    host = "{{{host}}}";
+    $(function () {
+        app.initjQuery();
+    });
+</script>
+<h2>Place Config: GitHub4Jive</h2>
 
-<div id="j-card-authentication" class="j-card" style='display: none'>
-    <p>The remote system (GitHub) requires you to grant access before proceeding.</p>
-    <button class="btn btn-primary" id="oauth">Grant Access</button>
-</div>
-
-<div id="j-card-configuration" class="j-card" style="...">
-    <div class="container-fluid">
-    <h4>GitHub Project Activity Stream Configuration</h4>
+<div id="j-card-authentication" class="j-card" >
+    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
     <p>
-        Repo:  <select id="repoList"></select>
-    </p>
-    <button class="btn btn-primary" id="btn_submit">Submit</button>
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+    <div id="github4jive-jive-authorize-success" style="display: none;">
+        <span>Jive Authorized - OK</span>
     </div>
+    </p>
+    <p>
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+    <div id="github4jive-github-authorize-success" style="display: none;">
+        <span>GitHub Authorized - OK</span>
+    </div>
+    </p>
 </div>
 
+<div id="j-card-configuration" class="j-card" style="display: none;">
+    <p>
+        Repo: <select id="projectList"></select>
+    </p>
+    <input type="hidden" id="github-authorize-token">
+    <input type="hidden" id="jive-authorize-token">
+    <input id="github4jive-enable-submit" type="button" value="Save" />
+</div>
 
+<hr/>
 </body>
 </html>
+
+
+

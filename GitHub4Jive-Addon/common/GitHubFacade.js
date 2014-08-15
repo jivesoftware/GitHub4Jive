@@ -22,6 +22,8 @@ var config = require("../jiveclientconfiguration.json");
 
 /********************* Private Functions **************************/
 
+var GITHUB_EVENT_URL = config.clientUrl + ":" + config.port + config.github.webHookUrl;
+
 function GitHubInstance(auth){
 
     console.log(auth);
@@ -73,7 +75,7 @@ var repoHooks = {};
 function createGitHubHook(git,owner, repo, events){
     return deferredTemplate( git.repos.createHook,
         {"user": owner, "repo": repo, "name": "web",
-            "config": JSON.stringify( { "url": config.clientUrl + ":" + config.port +  config.github.webHookUrl, "content_type": "json"}),
+            "config": JSON.stringify( { "url":  GITHUB_EVENT_URL, "content_type": "json"}),
             "events": events,
             "active": true
         });
@@ -87,7 +89,7 @@ function deletePreviousHooks(git,owner, repo){
     return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo}).then(function(hooks){
         var hooksDeleting = [];
         hooks.forEach(function(hook){
-            if(hook.name == "web"){
+            if(hook.config.url == GITHUB_EVENT_URL){
                 hooksDeleting.push(deleteRepoHook(git, owner, repo, hook.id));
             }
         });
@@ -361,8 +363,9 @@ exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, hand
     }
     var git = GitHubInstance(authOptions);
     return subscribeTo(git, owner, repo, gitEvent, handler).catch(function (error) {
+        console.log(authOptions);
         jive.logger.error(  owner + "/" + repo + ": " + error.message);
-        return error;
+        throw error;
     });
 };
 
@@ -388,14 +391,19 @@ exports.unSubscribeFromRepoEvent = function(token, authOptions){
             var unregisterAction;
             var r = extractRepoParts(path.hook);
             var git = GitHubInstance(authOptions);
-            if (currentEvents.length == 0) {
-                unregisterAction = deleteRepoHook(git, r.owner, r.repo, repo.key);
+            return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
+                    if (currentEvents.length != 0) {
+                        return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
+                            repo.key = hookResponse.id;
+                            return true;
+                        });
+                    }else{
+                        if(Object.keys(repo.events).length == 0){
+                            delete repoHooks[path.hook];
+                        }
+                    }
+                });
             }
-            else {//
-                unregisterAction = createGitHubHook(git, r.owner, r.repo, currentEvents);
-            }
-            return unregisterAction;
-        }
     }
     return Q.delay(0).then(function(){return true;});//sorry for the hack. Makes the interface consistent when mixing asynchronous code
 };

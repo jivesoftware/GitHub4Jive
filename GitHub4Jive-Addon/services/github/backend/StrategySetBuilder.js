@@ -18,28 +18,48 @@ var issues = require("./IssueStrategy");
 var issueComments = require("./IssueCommentStrategy");
 var Q = require("q");
 
+var TokenPool = require("./EventTokenPool");
+
+
+
 function StrategySetBuilder() {
     this.strategies = [];
 }
 
-function strategySetSkeleton(strategies, index, options, action){
+function tokenKey(strategy,options){
+    return options.placeUrl + "_" + strategy.name;
+}
+
+function setupStrategies(strategies,index, options, tokenPool){
     if(index < strategies.length) {
-        return strategies[index++][action](options)
+        var strategy = strategies[index];
+        return strategy.setup(options)
+            .then(function (token) {
+                tokenPool.addToken(tokenKey(strategy, options), token);
+                return setupStrategies(strategies,++index, options, tokenPool);
+            })
             .catch(function (error) {
                 jive.logger.error(error);
-            }).done(function () {
-                return strategySetSkeleton(strategies,index, options, action);
             });
     }
     return Q.delay(0);
 }
 
-function setupStrategies(strategies, options){
-    return strategySetSkeleton(strategies, 0, options, "setup");
-}
+function teardownStrategies(strategies,index, options, tokenPool){
 
-function teardownStrategies(strategies, options){
-    return strategySetSkeleton(strategies, 0, options, "teardown");
+    if(index < strategies.length) {
+        var strategy = strategies[index];
+        options.eventToken = tokenPool.getByKey(tokenKey(strategy, options));
+        return strategy.teardown(options)
+            .then(function () {
+                    tokenPool.removeTokenBykey(tokenKey(strategy,options));
+                    return teardownStrategies(strategies,++index, options, tokenPool);
+            })
+            .catch(function (error) {
+                jive.logger.error(error);
+            });
+    }
+    return Q.delay(0);
 }
 
 /*
@@ -54,18 +74,19 @@ StrategySetBuilder.prototype.build = function () {
     this.strategies.forEach(function (strat) {
         strategies.push(strat);
     });
+    var tokenPool = new TokenPool();
     return {setup: function(options){
-            if(strategies.length) {
-                return setupStrategies(strategies, options);
-            }},
+                return setupStrategies(strategies,0, options, tokenPool);
+            },
             teardown: function (options) {
-                if(strategies.length) {
-                    return teardownStrategies(strategies, options);
-                }
+                return teardownStrategies(strategies,0, options, tokenPool);
             }
-
-
     }
+};
+
+StrategySetBuilder.prototype.reset = function () {
+    this.strategies = [];
+    return this;
 };
 
 StrategySetBuilder.prototype.issues = function(){

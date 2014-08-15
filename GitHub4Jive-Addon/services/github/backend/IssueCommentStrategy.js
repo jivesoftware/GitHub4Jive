@@ -21,7 +21,13 @@ var helpers = require("./helpers");
 
 var tokens = {};
 
-exports.setup = function(setupOptions) {
+var strategyBase = require("./EventStrategyBase");
+var issueCommentStrategy = Object.create(strategyBase);
+module.exports = issueCommentStrategy;
+
+issueCommentStrategy.name = "IssueComments";
+
+issueCommentStrategy.setup = function(setupOptions) {
 
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
@@ -44,15 +50,6 @@ exports.setup = function(setupOptions) {
         }).catch(function (error) {
             jive.logger.error(error);
         });
-    }).then(function (token) {
-        tokens[setupOptions.placeUrl] = token;
     });
 
-};
-
-exports.teardown = function (teardownOptions) {
-    var token = tokens[teardownOptions.placeUrl];
-    return gitHubFacade.unSubscribeFromRepoEvent(token).then(function () {
-        delete tokens[teardownOptions.placeUrl];
-    });
 };

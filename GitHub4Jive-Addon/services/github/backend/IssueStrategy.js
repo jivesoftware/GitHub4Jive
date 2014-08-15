@@ -14,14 +14,22 @@
  *    limitations under the License.
  */
 var jive = require("jive-sdk");
-var gitHubFacade = require("../../../common/GitHubFacade");
-var JiveContentBuilder = require("../../../common/JiveContentBuilder");
-var helpers = require("./helpers");
 var Q = require("q");
 
-var tokens = {};
+var gitHubFacade = require("../../../common/GitHubFacade");
+var JiveContentBuilder = require("../../../common/JiveContentBuilder");
+var TokenPool = require("./EventTokenPool");
+var helpers = require("./helpers");
 
-exports.setup = function(setupOptions){
+var tokens = new TokenPool();
+
+var strategyBase = require("./EventStrategyBase");
+var issueStrategy = Object.create(strategyBase);
+module.exports = issueStrategy;
+
+issueStrategy.name = "Issue";
+
+issueStrategy.setup = function(setupOptions){
 
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
@@ -56,17 +64,5 @@ exports.setup = function(setupOptions){
                 jiveApi.markFinal(discussion.id);
             });
         }
-
-
-    }).then(function (token) {
-        tokens[setupOptions.placeUrl] = token;
-    });
-};
-
-exports.teardown = function(teardownOptions){
-
-    var token = tokens[teardownOptions.placeUrl];
-    return gitHubFacade.unSubscribeFromRepoEvent(token).then(function () {
-        delete tokens[teardownOptions.placeUrl];
     });
 };

@@ -8,10 +8,9 @@ var JiveOauth = require("../../../common/JiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
 var placeStore = require("../../../common/PlaceStore");
 
-//This can be moved into functions below if we need to dynamically configure events.
-// They will need to be saved into the linkedPlaces array for teardown. Everyone gets the same for now though.
+
 var builder = new StrategyBuilder();
-var stratSet = builder.issues().issueComments().build();
+var stratSetScaffolding = builder.issues().issueComments();
 
 function linkedPlaceSkeleton(linked, action){
     var place = linked.placeID;
@@ -24,6 +23,8 @@ function linkedPlaceSkeleton(linked, action){
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
         jive.logger.debug(newTokens);
     });
+
+
     return jive.community.findByJiveURL(jiveUrl).then(function (community) {
         var japi = new JiveFacade(community, jiveAuth);
         if (!repo || !repoOwner) {
@@ -43,12 +44,17 @@ function linkedPlaceSkeleton(linked, action){
     });
 }
 
+function decorateLinkedPlaceWithStategies(linked) {
+    linked.setupStrategies = stratSetScaffolding.build();
+}
+
 function setUpLinkedPlace(linked){
-    return linkedPlaceSkeleton(linked, stratSet.setup);
+    decorateLinkedPlaceWithStategies(linked);
+    return linkedPlaceSkeleton(linked, linked.setupStrategies.setup);
 }
 
 function teardownLinkedPlace(linked) {
-    return linkedPlaceSkeleton(linked, stratSet.teardown);
+    return linkedPlaceSkeleton(linked, linked.setupStrategies.teardown);
 }
 
 var linkedPlaces;

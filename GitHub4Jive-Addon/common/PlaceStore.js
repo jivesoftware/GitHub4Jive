@@ -20,7 +20,7 @@ var store = jive.service.persistence();
 var JiveApi = require("./JiveApiFacade");
 var JiveOauth = require("./JiveOauth");
 
-exports.save = function(placeUrl, token){
+exports.save = function(placeUrl, token, dontStamp){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
@@ -34,14 +34,28 @@ exports.save = function(placeUrl, token){
         record.jiveUrl =  domainTokens.join(delimitter);
         record.placeID =  tokens[tokens.length -1];
         record.placeUrl = placeUrl;
+        record.invalidCache = !dontStamp;
         return store.save("tokens", placeUrl, record).then(function(){
             return record;
         });
     })
 };
 
+exports.invalidateCache = function(placeUrl){
+    if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
+        throw Error("Invalid Place");
+    }
+    return store.findByID("tokens", placeUrl).then(function (found) {
+        var record = found || {};
+        record.invalidCache = true;
+        return store.save("tokens", placeUrl, record).then(function(){
+            return record;
+        });
+    })
+}
+
 function pullExternalPropertiesIn(self,linked){
-    if(!linked.github.repoOwner || !linked.github.repo){
+    if(!linked.github.repoOwner || !linked.github.repo || linked.invalidCache){
         //cache repo information
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
             var jauth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token);
@@ -50,7 +64,7 @@ function pullExternalPropertiesIn(self,linked){
                 linked.github.repo = extprops.github4jiveRepo;
                 linked.github.repoOwner = extprops.github4jiveRepoOwner;
                 var githubReplacement = {"github": linked.github};
-                return self.save(linked.placeUrl, githubReplacement);
+                return self.save(linked.placeUrl, githubReplacement, true);
             })
         });
 

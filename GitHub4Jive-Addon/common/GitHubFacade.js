@@ -196,6 +196,10 @@ function extractRepoParts(repo) {
  * @return promise promise: Use .then(function(result){}); to process return asynchronously
  */
 
+exports.createOauthObject = function (token) {
+    return {"type": "oauth", "token": token};
+}
+
 exports.isAuthenticated = function(authOptions){
     var git = GitHubInstance(authOptions);
     return deferredTemplate(git.user.get,{}).then( function( user){
@@ -226,6 +230,11 @@ exports.getChangeList = function(owner, repo, authOptions, upTo){
         }));
     });
 };
+
+exports.getRepository = function (owner, repo, authOptions) {
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.repos.get,{"user": owner, "repo": repo});
+}
 
 /*
  * Retrieve a list of all the repositories a user has access to

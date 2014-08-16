@@ -71,7 +71,7 @@ exports.onConfigurationChange = function(req, res){
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
 
-    placeStore.getPlaceByUrl(placeUrl).then(function (newLinkedPlace) {
+    placeStore.invalidateCache(placeUrl).then(function (newLinkedPlace) {
         var tempCollection = [];
         var toTeardown;
         linkedPlaces.forEach(function (place) {
@@ -94,8 +94,8 @@ exports.onConfigurationChange = function(req, res){
     }).catch(function (error) {
         jive.logger.error(error);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(false));
+        res.end(JSON.stringify({success:false}));
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(true));
+    res.end(JSON.stringify({success:true}));
 };

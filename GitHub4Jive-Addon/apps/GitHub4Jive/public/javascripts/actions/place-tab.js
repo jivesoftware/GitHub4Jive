@@ -7,7 +7,7 @@ gadgets.util.registerOnLoadHandler(function() {
 
 });
 
-var place, previousRepo;
+var place;
 
 // register a listener for embedded experience context
 opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
@@ -16,11 +16,7 @@ opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', f
     console.log("==== registerListener ====");
     console.log("embedded context:", data);
 
-    // setup incoming embedded context
-    $('#incoming_embedded_context').val(JSON.stringify(data, null, 2));
 
-    // seed outgoing
-    $("#outgoing_selection").val(JSON.stringify(outgoing, null, 2));
 });
 
 var app = {
@@ -54,7 +50,7 @@ var app = {
     handleContext: function (context) {
         console.log('handleContext ...');
 
-        if (context && context.jive) {
+        if (context) {
 
             osapi.jive.corev3.resolveContext(context, function (result) {
                 place = result.content;
@@ -62,7 +58,6 @@ var app = {
                 osapi.http.get({
                     'href': host + '/github/place/issues?' +
                         "&place=" + encodeURIComponent(place.resources.self.ref),
-                    //"&query=" + query,
                     'format': 'json',
                     'authz': 'signed'
                 }).execute(function (response) {

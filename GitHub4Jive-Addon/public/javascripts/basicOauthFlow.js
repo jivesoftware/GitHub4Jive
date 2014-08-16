@@ -204,9 +204,8 @@ var app = {
 
             $("#github4jive-enable-submit").click(function () {
                 console.log('Saving GitHub4Jive Repository Information');
-                osapi.jive.corev3.resolveContext(context, function (result) {
-                    console.log('resolveContext callback');
-                    if (result.content) {
+
+                    if (place) {
                         console.log('context has content callback');
                         //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
                         var fullName = $("#projectList option:selected").text();
@@ -214,25 +213,24 @@ var app = {
                         var owner = parts[0];
                         var repoName = parts[1];
 
-                        result.content.createExtProps({
+                        place.createExtProps({
                             "github4jiveEnabled": true,
                             "github4jiveRepo": repoName,
                             "github4jiveRepoOwner": owner
                         }).execute(function (resp) {
-                            console.log('resp: {' + JSON.stringify(resp) + '}');
+                            console.log("External Properties:",resp);
                         });
 
                         osapi.http.post({
                             'href': host + "/github/place/trigger?" +
-                                "&place=" + encodeURIComponent(place.resources.self.ref),
+                                "place=" + encodeURIComponent(place.resources.self.ref),
                             'format': 'json',
                             'authz': 'signed'
                         }).execute(function (response) {
-                            console.log(response);
+                            console.log("Trigger server config update: " ,response);
                         });
                     }
                 });
-            });
         }
     }
 };

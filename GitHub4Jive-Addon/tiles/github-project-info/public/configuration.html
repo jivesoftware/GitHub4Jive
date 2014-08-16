@@ -11,9 +11,11 @@
     host = "{{{host}}}";
     $(function () {
         app.initjQuery();
-        $("#github4jive-enable-submit").click(function () {
-            jive.tile.close();
-            gadgets.window.adjustHeight(300);
+        jive.tile.onOpen(function(config, options ) {
+            $("#github4jive-enable-submit").click(function () {
+                jive.tile.close(config, {});
+                gadgets.window.adjustHeight(300);
+            });
         });
     });
 </script>

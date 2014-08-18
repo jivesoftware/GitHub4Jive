@@ -95,9 +95,9 @@ exports.getUserRepos = function(req, res){
     });
 };
 
-exports.getPlaceIsues = function (req, res) {
+exports.getPlaceIssues = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
-    var place = queryParams.placeUrl;
+    var place = queryParams.place;
 
     placeStore.getPlaceByUrl(place).then(function (linked) {
         var auth = {"type":"oauth","token": linked.github.token.access_token};

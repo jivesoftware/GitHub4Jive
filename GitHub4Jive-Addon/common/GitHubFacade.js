@@ -290,9 +290,9 @@ exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo)
  * @param upTo Number of issues to retrieve up to 100. Default is 30.
  * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
-exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
+exports.getRepositoryIssues = function(owner, repo, authOptions, upTo, state){
     var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo, "per_page" : upTo});
+    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo, "state": (state || "all"), "per_page" : upTo});
 };
 
 /*
@@ -385,35 +385,36 @@ exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, hand
  */
 exports.unSubscribeFromRepoEvent = function(token, authOptions){
     var path = findPathToHandler(token);
-    if(path) {
-        var repo = repoHooks[path.hook];
-        var event = repo.events[path.event];
-
-        var handler = event.handlers.splice(path.handler, 1)[0];
-
-        if (event.handlers.length == 0) {
-            if (!(delete repo.events[path.event])) {
-                throw Error("Unable to unregister hook event.");
-            }
-
-            var currentEvents = currentSubscribedEvents(repo);
-            var unregisterAction;
-            var r = extractRepoParts(path.hook);
-            var git = GitHubInstance(authOptions);
-            return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
-                    if (currentEvents.length != 0) {
-                        return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
-                            repo.key = hookResponse.id;
-                            return true;
-                        });
-                    }else{
-                        if(Object.keys(repo.events).length == 0){
-                            delete repoHooks[path.hook];
-                        }
-                    }
-                });
-            }
+    if(!path) {
+        throw Error("Invalid Handler Token");
     }
+    var repo = repoHooks[path.hook];
+    var event = repo.events[path.event];
+
+    var handler = event.handlers.splice(path.handler, 1)[0];
+
+    if (event.handlers.length == 0) {
+        if (!(delete repo.events[path.event])) {
+            throw Error("Unable to unregister hook event.");
+        }
+
+        var currentEvents = currentSubscribedEvents(repo);
+        var unregisterAction;
+        var r = extractRepoParts(path.hook);
+        var git = GitHubInstance(authOptions);
+        return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
+                if (currentEvents.length != 0) {
+                    return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
+                        repo.key = hookResponse.id;
+                        return true;
+                    });
+                }else{
+                    if(Object.keys(repo.events).length == 0){
+                        delete repoHooks[path.hook];
+                    }
+                }
+            });
+        }
     return Q.delay(0).then(function(){return true;});//sorry for the hack. Makes the interface consistent when mixing asynchronous code
 };
 

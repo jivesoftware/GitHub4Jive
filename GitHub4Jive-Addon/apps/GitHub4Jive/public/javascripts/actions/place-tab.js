@@ -9,37 +9,12 @@ gadgets.util.registerOnLoadHandler(function() {
 
 var place;
 
-// register a listener for embedded experience context
-opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
-    var data = opensocial.data.getDataContext().getDataSet(key);
-
-    console.log("==== registerListener ====");
-    console.log("embedded context:", data);
-
-
-});
-
 var app = {
 
     currentView: gadgets.views.getCurrentView().getName(),
     currentViewerID: -1,
     initGadget: function () {
         console.log('initGadget ...');
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.group.tab",
-            callback: app.handleContext
-        });
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.project.tab",
-            callback: app.handleContext
-        });
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.space.tab",
-            callback: app.handleContext
-        });
     },
 
     initjQuery: function () {
@@ -57,13 +32,28 @@ var app = {
 
                 osapi.http.get({
                     'href': host + '/github/place/issues?' +
-                        "&place=" + encodeURIComponent(place.resources.self.ref),
+                        "&place=" + encodeURIComponent(place.resources.self.ref) +
+                        "&ts="+ new Date().getTime(),
                     'format': 'json',
                     'authz': 'signed'
                 }).execute(function (response) {
+                    var data;
+                    if(response.status < 200 || response.status >= 300 || response.error){
+                        data = response.error;
+                    }else{
+                        data = response.content;
+                        var table = $("#DUMP");
+                        $.each(data,function (idx, issue) {
+                            var number = issue.number;
+                            var title = issue.title;
+                            var state = issue.state;
 
-                    $("#DUMP").append(response);
+                            var row = "<tr><td>"+number+"</td><td>"+title+"</td><td>"+state+"</td></tr>";
+                            table.append(row);
+                        })
+                    }
 
+                    gadgets.window.adjustHeight();
                 });
 
 
@@ -71,6 +61,11 @@ var app = {
         };
     }
 };
+
+osapi.jive.core.container.getLaunchContext(function(resp){
+    app.handleContext(resp.jive.content);
+
+});
 
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget));
 

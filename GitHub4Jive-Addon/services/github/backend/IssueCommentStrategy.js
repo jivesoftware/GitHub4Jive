@@ -32,7 +32,7 @@ issueCommentStrategy.setup = function(setupOptions) {
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
-    var auth = {"type": "oauth", "token": setupOptions.gitHubToken};
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
 

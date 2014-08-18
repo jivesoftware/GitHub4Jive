@@ -33,6 +33,11 @@ function ErrorResponse(res,error){
     res.end(JSON.stringify(error));
 }
 
+function contentResponse(res, content){
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(content));
+}
+
 function SplitRepo(fullname){
     var parts = fullname.split("/");
     return {owner: parts[0], repo: parts[1]};
@@ -40,7 +45,7 @@ function SplitRepo(fullname){
 
 function getGitHubOauthTokenForPlace(placeUrl){
     return placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
-        return {"type": "oauth", "token":linked.github.token.access_token};
+        return gitHubFacade.createOauthObject(linked.github.token.access_token);
     })
 }
 
@@ -65,8 +70,7 @@ exports.isAuthenticated = function(req, res){
 
     oAuth.getOauthToken(ticketID).then(function(authOptions){
         return gitHubFacade.isAuthenticated(authOptions).then(function(authenticated){
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(authenticated));
+            contentResponse(res, authenticated);
         });
     }).catch(function(error){
         ErrorResponse(res, error);
@@ -86,8 +90,7 @@ exports.getUserRepos = function(req, res){
         return gitHubFacade.getCurrentUser(authOptions).then(function(user){
             var username = user.login;
             return gitHubFacade.getCompleteRepositoryListForUser(username, authOptions).then(function(repos){
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(repos) );
+                contentResponse(res, repos);
             });
         });
     }).catch(function(error){
@@ -100,10 +103,9 @@ exports.getPlaceIssues = function (req, res) {
     var place = queryParams.place;
 
     placeStore.getPlaceByUrl(place).then(function (linked) {
-        var auth = {"type":"oauth","token": linked.github.token.access_token};
+        var auth = gitHubFacade.createOauthObject( linked.github.token.access_token);
         gitHubFacade.getRepositoryIssues(linked.github.repoOwner,linked.github.repo,auth).then(function (issues) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(issues) );
+            contentResponse(res, issues);
         })
     }).catch(function (error) {
         ErrorResponse(res,error);
@@ -118,8 +120,7 @@ exports.getIssueComments = function(req, res){
 
     oAuth.getOauthToken(ticketID).then(function(authOption){
         return gitHubFacade.getIssueComments(repo.owner, repo.repo, issueNumber, authOption).then(function(comments){
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(comments));
+            contentResponse(res, comments);
         });
     }).catch(function(error){
         ErrorResponse(res, error);
@@ -135,8 +136,7 @@ exports.changeIssueState = function(req, res){
 
     oAuth.getOauthToken(ticketID).then(function(authOptions){
         return gitHubFacade.changeIssueState(repo.owner, repo.repo, issueNumber, state, authOptions).then(function(confirmation){
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(confirmation));
+            contentResponse(res, confirmation);
         })
     }).catch(function(error){
         ErrorResponse(res, error);
@@ -153,8 +153,7 @@ exports.newComment = function(req, res){
 
     oAuth.getOauthToken(ticketID).then(function(authOptions){
         return gitHubFacade.addNewComment(repo.owner, repo.repo, issueNumber, comment, authOptions).then(function(confirmation){
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(confirmation));
+            contentResponse(res, confirmation);
         });
     }).catch(function(error){
         ErrorResponse(res, error);

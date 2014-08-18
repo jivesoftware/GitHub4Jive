@@ -35,7 +35,7 @@ issueStrategy.setup = function(setupOptions){
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
     var placeID = setupOptions.placeID;
-    var auth = {"type": "oauth", "token":setupOptions.gitHubToken};
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
         jive.logger.debug(gitData);

@@ -26,6 +26,6 @@ exports.setup = function(setupOptions) {
 
 exports.teardown = function(teardownOptions){
     var token = teardownOptions.eventToken;
-    var auth = {"type": "oauth", "token":teardownOptions.gitHubToken};
+    var auth = gitHubFacade.createOauthObject(teardownOptions.gitHubToken);
     return gitHubFacade.unSubscribeFromRepoEvent(token,auth);
 };

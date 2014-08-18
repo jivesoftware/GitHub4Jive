@@ -1,7 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" href="stylesheets/shared.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="stylesheets/actions/place-config.css" type="text/css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/style.css">
 <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
 <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/oauth2client.js"></script>
 <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
@@ -12,11 +11,13 @@
     $(function () {
         app.initjQuery();
         jive.tile.onOpen(function(config, options ) {
-            $("#github4jive-enable-submit").click(function () {
+            $(document).bind("github4jiveAuthDone",function (e, etype) {
                 jive.tile.close(config, {});
                 gadgets.window.adjustHeight(300);
             });
+
         });
+
     });
 </script>
 <h2>Place Config: GitHub4Jive</h2>

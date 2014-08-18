@@ -205,30 +205,29 @@ var app = {
             $("#github4jive-enable-submit").click(function () {
                 console.log('Saving GitHub4Jive Repository Information');
 
-                    if (place) {
-                        console.log('context has content callback');
-                        //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
-                        var fullName = $("#projectList option:selected").text();
-                        var parts = fullName.split("/");
-                        var owner = parts[0];
-                        var repoName = parts[1];
-
-                        result.content.createExtProps({
-                            "github4jiveEnabled": true,
-                            "github4jiveRepo": repoName,
-                            "github4jiveRepoOwner": owner
-                        }).execute(function (resp) {
-                            console.log('resp: {' + JSON.stringify(resp) + '}');
-                            osapi.http.post({
-                                'href': host + "/github/place/trigger?" +
-                                    "&place=" + encodeURIComponent(place.resources.self.ref),
-                                'format': 'json',
-                                'authz': 'signed'
-                            }).execute(function (response) {
-                                console.log(response);
-                            });
-                        });
-                    }
+                console.log('context has content callback');
+                //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
+                var fullName = $("#projectList option:selected").text();
+                var parts = fullName.split("/");
+                var owner = parts[0];
+                var repoName = parts[1];
+                place.createExtProps({
+                    "github4jiveEnabled": true,
+                    "github4jiveRepo": repoName,
+                    "github4jiveRepoOwner": owner
+                }).execute(function (resp) {
+                    console.log('resp: {' + JSON.stringify(resp) + '}');
+                    osapi.http.post({
+                        'href': host + "/github/place/trigger?" +
+                            "ts=" + new Date().getTime() +
+                            "&place=" + encodeURIComponent(place.resources.self.ref),
+                        'format': 'json',
+                        'authz': 'signed'
+                    }).execute(function (response) {
+                        console.log(response);
+                        $(document).trigger("github4jiveAuthDone");
+                    });
+                });
                 });
         }
     }

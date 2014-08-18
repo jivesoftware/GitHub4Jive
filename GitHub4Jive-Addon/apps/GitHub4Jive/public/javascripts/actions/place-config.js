@@ -144,7 +144,7 @@ var app = {
                     //double check server side configuration with ext props
                     osapi.http.get({
                         'href': host + '/jive/place/isConfigured?' +
-                            "&ts=" + new Date().getTime() +
+                            "ts=" + new Date().getTime() +
                             "&place=" + encodeURIComponent(place.resources.self.ref),
                         //"&query=" + query,
                         'format': 'json',
@@ -184,18 +184,14 @@ var app = {
             });
 
             $("#github4jive-enable-submit").click(function () {
-                console.log('clicked');
-                osapi.jive.corev3.resolveContext(context, function (result) {
-                    console.log('resolveContext callback');
-                    if (result.content) {
-                        console.log('context has content callback');
+
                         //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
                         var fullName = $("#projectList option:selected").text();
                         var parts = fullName.split("/");
                         var owner = parts[0];
                         var repoName = parts[1];
 
-                        result.content.createExtProps({
+                        place.createExtProps({
                             "github4jiveEnabled": true,
                             "github4jiveRepo": repoName,
                             "github4jiveRepoOwner": owner
@@ -203,6 +199,7 @@ var app = {
                             console.log('resp: {' + JSON.stringify(resp) + '}');
                             osapi.http.post({
                                 'href': host + "/github/place/trigger?" +
+                                    "ts=" + new Date().getTime() +
                                     "&place=" + encodeURIComponent(place.resources.self.ref),
                                 'format': 'json',
                                 'authz': 'signed'
@@ -210,8 +207,7 @@ var app = {
                                 console.log(response);
                                 osapi.jive.core.container.closeApp();
                             });
-                        });
-                    }
+
                 });
             });
         }

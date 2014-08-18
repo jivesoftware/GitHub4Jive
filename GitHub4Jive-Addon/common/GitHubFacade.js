@@ -193,7 +193,7 @@ function extractRepoParts(repo) {
 /*
  * Test the authentication object
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
 exports.createOauthObject = function (token) {
@@ -213,7 +213,7 @@ exports.isAuthenticated = function(authOptions){
  * @param repo Repo name, not full name with owner
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of commits to retrieve. Defaults to 5
- * @return promise promise -> {commitMessage: string, changes: [{fileName: string}]}) Use .then(function(result){}; to process return asynchronously
+ * @return {Promise} promise -> {commitMessage: string, changes: [{fileName: string}]}) Use .then(function(result){}; to process return asynchronously
  */
 exports.getChangeList = function(owner, repo, authOptions, upTo){
     var git = GitHubInstance(authOptions);
@@ -240,7 +240,7 @@ exports.getRepository = function (owner, repo, authOptions) {
  * Retrieve a list of all the repositories a user has access to
  * @param user Name of the user to get list for
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getCompleteRepositoryListForUser = function(user, authOptions){
     var git = GitHubInstance(authOptions);
@@ -261,7 +261,7 @@ exports.getCompleteRepositoryListForUser = function(user, authOptions){
 /*
  * Retrieve the currently authenticated user
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getCurrentUser = function(authOptions){
     var git = GitHubInstance(authOptions);
@@ -275,7 +275,7 @@ exports.getCurrentUser = function(authOptions){
  * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of comments to retrieve up to 100. Default is 30.
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
     var git = GitHubInstance(authOptions);
@@ -288,7 +288,7 @@ exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo)
  * @param repo Repo name, not full name with owner
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of issues to retrieve up to 100. Default is 30.
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
     var git = GitHubInstance(authOptions);
@@ -299,7 +299,7 @@ exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
  * Retrieve a user's details
  * @param user Username of user
  * @param authOptions OPTIONAL object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
 exports.getUserDetails = function(user, authOptions){
@@ -333,7 +333,7 @@ exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions
  * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
  * @param newComment String the content of the new comment to be made. Must not be empty.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptions){
     if(!newComment || newComment === "") {
@@ -353,7 +353,7 @@ exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptio
  * @param gitEvent The GitHub event that this handler should respond to. Possible values are defined on the Events member
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param handler Callback function. Passed raw GitHub payload on event.
- * @return  promise promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
+ * @return  {Promise} promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
  */
 exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, handler){
     if(!owner){
@@ -381,7 +381,7 @@ exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, hand
 /*
  * UnRegister an event handler from GitHub.
  * @param token Use the token returned from the promise of subscribeToRepoEvent to unsubscribe handler
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.unSubscribeFromRepoEvent = function(token, authOptions){
     var path = findPathToHandler(token);
@@ -420,7 +420,7 @@ exports.unSubscribeFromRepoEvent = function(token, authOptions){
 /*
  * Remove all outstanding GitHub events that were previously registered.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.RemoveAllWebHooks = function(authOptions){
     var git = GitHubInstance(authOptions);
@@ -437,7 +437,7 @@ exports.RemoveAllWebHooks = function(authOptions){
  * Currently web hooks are created looking for the url set in jiveClientConfiguration.json by gitHubWebHookUrl. This url must be used to capture the GitHub Payloads.
  * @param eventType String must be either "ping" or one of the events in the Events member
  * @param eventData GitHub Payload body
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
 exports.notifyNewGitHubHookInfo = function(eventType, eventData){

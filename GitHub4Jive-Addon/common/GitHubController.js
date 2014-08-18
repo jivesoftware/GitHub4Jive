@@ -21,10 +21,14 @@
 
 var https = require("https");
 var url = require('url');
+var Q = require("q");
 
 var placeStore = require("./PlaceStore");
 var oAuth = require('./OauthProvider');
 var gitHubFacade = require("./GitHubFacade");
+var jiveDecorator = require("./JiveDecorators");
+var JiveApi = require("./JiveApiFacade");
+var JiveAuth = require("./JiveOauth");
 
 
 function ErrorResponse(res,error){
@@ -105,7 +109,22 @@ exports.getPlaceIssues = function (req, res) {
     placeStore.getPlaceByUrl(place).then(function (linked) {
         var auth = gitHubFacade.createOauthObject( linked.github.token.access_token);
         gitHubFacade.getRepositoryIssues(linked.github.repoOwner,linked.github.repo,auth).then(function (issues) {
-            contentResponse(res, issues);
+            if(issues.length){
+                 return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+                    var jAuth = new JiveAuth(linked.jive.access_token, linked.jive.refresh_token, function () {
+                        //fill in refresh scheme
+                    });
+                    var japi = new JiveApi(community, jAuth);
+                    Q.all(issues.map(function (issue) {
+                        return jiveDecorator.decorateIssueWithJiveContent(japi, linked.github.repoOwner, linked.github.repo, issue);
+                    })).then(function (decIssues) {
+                        contentResponse(res, decIssues);
+                    })
+                });
+                }else{
+                    contentResponse(res, issues);
+                }
+
         })
     }).catch(function (error) {
         ErrorResponse(res,error);

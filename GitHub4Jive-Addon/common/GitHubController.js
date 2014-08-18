@@ -116,7 +116,7 @@ exports.getPlaceIssues = function (req, res) {
                     });
                     var japi = new JiveApi(community, jAuth);
                     Q.all(issues.map(function (issue) {
-                        return jiveDecorator.decorateIssueWithJiveContent(japi, linked.github.repoOwner, linked.github.repo, issue);
+                        return jiveDecorator.decorateIssueWithJiveContent(japi, issue);
                     })).then(function (decIssues) {
                         contentResponse(res, decIssues);
                     })

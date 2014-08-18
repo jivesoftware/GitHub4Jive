@@ -13,15 +13,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-var jvie = require("jive-sdk");
+var jive = require("jive-sdk");
 
-exports.decorateIssueWithJiveContent = function (jiveApi,owner, repo, issue) {
+exports.decorateIssueWithJiveContent = function (jiveApi, issue) {
     if(!issue.number){
         throw Error("Invalid Issue");
     }
-    return jiveApi.getByExtProp("github4jiveIssueId",owner + "_" + repo + "_"+issue.number).then(function (found) {
+    return jiveApi.getByExtProp("github4jiveIssueId",issue.number).then(function (found) {
         if(found.list.length != 1){
-            jive.logger.debug(owner+"/" + repo +" issue: " + issue.number + "has no linked content or more than 1");
+            jive.logger.debug("Issue: " + issue.number + "has no linked content or more than 1");
         }else{
             issue.jiveContentLink = found.list[0];
         }

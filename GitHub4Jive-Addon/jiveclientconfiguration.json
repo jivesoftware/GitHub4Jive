@@ -1,5 +1,5 @@
 {
-    "clientUrl": "http://localhost",
+    "clientUrl": "REPLACE_ME",
     "port": "8090",
     "development": true,
     "logLevel": "DEBUG",
@@ -12,13 +12,18 @@
     "jive" : {
         "oauth2": {
             "clientOAuth2CallbackUrl": "/jive/oauth/callback"
+        },
+        "analytics" : {
+            "server" : "api.jivesoftware.com",
+            "clientID" : "REPLACE_ME",
+            "clientSecret" : "REPLACE_ME"
         }
     },
     "github" : {
         "oauth2" : {
             "clientOAuth2CallbackUrl" : "/github/oauth/callback",
-            "oauth2ConsumerKey": "521d4dc71a965c7cf14a",
-            "oauth2ConsumerSecret": "4789cf855b79d63916614101f4b91a21e7592759",
+            "oauth2ConsumerKey": "REPLACE_ME",
+            "oauth2ConsumerSecret": "REPLACE_ME",
             "oauth2Scope": "public_repo,user",
             "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
             "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token"

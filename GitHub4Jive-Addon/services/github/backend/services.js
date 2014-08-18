@@ -21,7 +21,12 @@ function linkedPlaceSkeleton(linked, action){
     var repo = linked.github.repo;
     var repoOwner = linked.github.repoOwner;
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
-        jive.logger.debug(newTokens);
+        jive.logger.info("Refreshing Jive tokens for: "+ linked.placeUrl);
+        linked.jive.access_token = newTokens.access_token;
+        linked.jive.refresh_token = newTokens.refresh_token;
+        linked.jive.expires_in = newTokens.expires_in;
+        jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
+        return placeStore.save(linked.placeUrl,{jive:linked.jive});
     });
 
 

@@ -38,8 +38,8 @@ issueStrategy.setup = function(setupOptions){
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
-        jive.logger.debug(gitData);
         if(gitData.action === "opened") {
+            jive.logger.info("New Issue! Creating a discussion for it.");
             var builder = new JiveContentBuilder();
             var content = builder.discussion()
                 .parentPlace(placeID)

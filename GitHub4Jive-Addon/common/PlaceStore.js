@@ -20,13 +20,28 @@ var store = jive.service.persistence();
 var JiveApi = require("./JiveApiFacade");
 var JiveOauth = require("./JiveOauth");
 
-exports.save = function(placeUrl, token, dontStamp){
+function recursiveOverwrite(record,newObject){
+    if (typeof(newObject) === "object" || typeof newObject === "array") {
+        for(var m in newObject) {
+            if(record[m]){
+                recursiveOverwrite(record[m], newObject[m]);
+            }
+            record[m] = newObject[m];
+        }
+
+    }else{
+        record = newObject;
+    }
+
+}
+
+exports.save = function(placeUrl, newObject, dontStamp){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
     return store.findByID("tokens", placeUrl).then(function (found) {
         var record = found || {};
-        for(var m in token){record[m] = token[m];} //overwrite old members or add new ones
+        recursiveOverwrite(record, newObject);
         var delimitter = "/";
         var tokens = placeUrl.split(delimitter);
         var domainTokens = tokens.slice(0, 3);
@@ -45,12 +60,9 @@ exports.invalidateCache = function(placeUrl){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
-    return store.findByID("tokens", placeUrl).then(function (found) {
-        var record = found || {};
-        record.invalidCache = true;
-        return store.save("tokens", placeUrl, record).then(function(){
-            return record;
-        });
+    var self = this;
+    return self.save(placeUrl).then(function (record) {
+        return pullExternalPropertiesIn(self, record);
     })
 }
 

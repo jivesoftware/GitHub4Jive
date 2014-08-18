@@ -22,11 +22,8 @@ function linkedPlaceSkeleton(linked, action){
     var repoOwner = linked.github.repoOwner;
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
         jive.logger.info("Refreshing Jive tokens for: "+ linked.placeUrl);
-        linked.jive.access_token = newTokens.access_token;
-        linked.jive.refresh_token = newTokens.refresh_token;
-        linked.jive.expires_in = newTokens.expires_in;
         jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
-        return placeStore.save(linked.placeUrl,{jive:linked.jive});
+        return placeStore.save(linked.placeUrl,{jive:newTokens});
     });
 
 
@@ -34,6 +31,7 @@ function linkedPlaceSkeleton(linked, action){
         var japi = new JiveFacade(community, jiveAuth);
         if (!repo || !repoOwner) {
             jive.logger.error("Missing repo information for " + linked.placeUrl)
+
         }
         else {
             var setupOptions = {

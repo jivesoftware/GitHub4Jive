@@ -197,22 +197,19 @@ var app = {
 
                         result.content.createExtProps({
                             "github4jiveEnabled": true,
-                            "github4jiveGitHubAccessToken": $("#github4jive-github-token").val(),
-                            "github4jiveJiveAccessToken": $("github4jive-jive-token").val(),
                             "github4jiveRepo": repoName,
                             "github4jiveRepoOwner": owner
                         }).execute(function (resp) {
                             console.log('resp: {' + JSON.stringify(resp) + '}');
-                            osapi.jive.core.container.closeApp();
-                        });
-
-                        osapi.http.post({
-                            'href': host + "/github/place/trigger?" +
-                                "&place=" + encodeURIComponent(place.resources.self.ref),
-                            'format': 'json',
-                            'authz': 'signed'
-                        }).execute(function (response) {
-                            console.log(response);
+                            osapi.http.post({
+                                'href': host + "/github/place/trigger?" +
+                                    "&place=" + encodeURIComponent(place.resources.self.ref),
+                                'format': 'json',
+                                'authz': 'signed'
+                            }).execute(function (response) {
+                                console.log(response);
+                                osapi.jive.core.container.closeApp();
+                            });
                         });
                     }
                 });

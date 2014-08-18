@@ -213,21 +213,20 @@ var app = {
                         var owner = parts[0];
                         var repoName = parts[1];
 
-                        place.createExtProps({
+                        result.content.createExtProps({
                             "github4jiveEnabled": true,
                             "github4jiveRepo": repoName,
                             "github4jiveRepoOwner": owner
                         }).execute(function (resp) {
-                            console.log("External Properties:",resp);
-                        });
-
-                        osapi.http.post({
-                            'href': host + "/github/place/trigger?" +
-                                "place=" + encodeURIComponent(place.resources.self.ref),
-                            'format': 'json',
-                            'authz': 'signed'
-                        }).execute(function (response) {
-                            console.log("Trigger server config update: " ,response);
+                            console.log('resp: {' + JSON.stringify(resp) + '}');
+                            osapi.http.post({
+                                'href': host + "/github/place/trigger?" +
+                                    "&place=" + encodeURIComponent(place.resources.self.ref),
+                                'format': 'json',
+                                'authz': 'signed'
+                            }).execute(function (response) {
+                                console.log(response);
+                            });
                         });
                     }
                 });

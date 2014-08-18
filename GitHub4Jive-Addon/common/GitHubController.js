@@ -18,7 +18,7 @@
 /*
  * This module should only contain login pertaining to client calls into Github through OSAPI
  */
-
+var jive = require("jive-sdk")
 var https = require("https");
 var url = require('url');
 var Q = require("q");

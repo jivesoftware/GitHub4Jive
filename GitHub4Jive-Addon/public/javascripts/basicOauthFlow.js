@@ -2,13 +2,16 @@ var place, previousRepo;
 var jiveDone = false;
 var githubDone = false;
 
-
-
+function placeUrl(){
+    return place.resources.self.ref;
+}
 
 function AllAuthorized() {
     $("#j-card-authentication").hide();
     $("#j-card-configuration").show();
-    gadgets.window.adjustHeight(350);  // do this here in case the pre-auth callback above wasn't called
+    $("#j-card-action").show();
+    $(document).trigger("github4jiveAuthorized");
+    gadgets.window.adjustHeight();  // do this here in case the pre-auth callback above wasn't called
 
     // set up a query to get this user's list of repositories
     osapi.http.get({
@@ -46,6 +49,13 @@ function ProceedWhenReady() {
     }
 }
 
+var onLoadCallback = function (config, identifiers) {
+    onLoadContext = {
+        config: config,
+        identifiers: identifiers
+    };
+};
+
 function setupOAuthFor(system, successCallBack) {
     var ticketErrorCallback = function () {
         console.log('ticketErrorCallback error');
@@ -60,7 +70,10 @@ function setupOAuthFor(system, successCallBack) {
     };
 
     var onLoadCallback = function (config, identifiers) {
-        console.log("onLoadCallback");
+        onLoadContext = {
+            config: config,
+            identifiers: identifiers
+        };
     };
 
     var authorizeUrl = host + '/' + system + '/oauth/authorize';
@@ -76,7 +89,7 @@ function setupOAuthFor(system, successCallBack) {
         onLoadCallback: onLoadCallback,
         authorizeUrl: authorizeUrl,
         jiveOAuth2Dance: system === "jive",
-        context: {"place": place.resources.self.ref}
+        context: {"place": placeUrl()}
     }).launch({'viewerID': viewerID});
 }
 
@@ -86,47 +99,11 @@ var app = {
     currentViewerID: -1,
     initGadget: function () {
         console.log('initGadget ...');
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.group.config",
-            callback: app.handleContext
-        });
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.project.config",
-            callback: app.handleContext
-        });
-
-        gadgets.actions.updateAction({
-            id: "com.jivesoftware.addon.github4jive.space.config",
-            callback: app.handleContext
-        });
-
-        jive.tile.onOpen(function(config, options ) {
-            gadgets.window.adjustHeight();
-
-            if ( typeof config === "string" ) {
-                config = JSON.parse(config);
-            }
-
-            var json = config || {
-                "startSequence": "1"
-            };
-
-            // prepopulate the sequence input dialog
-            $("#start_sequence").val( json["startSequence"]);
-
-            $("#btn_submit").click( function() {
-                config["startSequence"] = $("#start_sequence").val();
-                jive.tile.close(config, {} );
-                gadgets.window.adjustHeight(300);
-            });
-        });
     },
 
     initjQuery: function () {
         console.log('initjQuery ...');
-        gadgets.window.adjustHeight(250);
+        gadgets.window.adjustHeight();
     },
 
     handleContext: function (context) {
@@ -165,7 +142,7 @@ var app = {
                     osapi.http.get({
                         'href': host + '/jive/place/isConfigured?' +
                             "&ts=" + new Date().getTime() +
-                            "&place=" + encodeURIComponent(place.resources.self.ref),
+                            "&place=" + encodeURIComponent(placeUrl()),
                         //"&query=" + query,
                         'format': 'json',
                         'authz': 'signed'
@@ -220,12 +197,12 @@ var app = {
                     osapi.http.post({
                         'href': host + "/github/place/trigger?" +
                             "ts=" + new Date().getTime() +
-                            "&place=" + encodeURIComponent(place.resources.self.ref),
+                            "&place=" + encodeURIComponent(placeUrl()),
                         'format': 'json',
                         'authz': 'signed'
                     }).execute(function (response) {
                         console.log(response);
-                        $(document).trigger("github4jiveAuthDone");
+                        $(document).trigger("github4jiveConfigDone");
                     });
                 });
                 });
@@ -240,7 +217,6 @@ gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget)
 // register a listener for embedded experience context
 opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
     var data = opensocial.data.getDataContext().getDataSet(key);
-
 
     var resolverTransform = data.container;
     if(resolverTransform.type == 600){

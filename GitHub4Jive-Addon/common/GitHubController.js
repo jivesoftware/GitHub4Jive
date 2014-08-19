@@ -24,7 +24,6 @@ var url = require('url');
 var Q = require("q");
 
 var placeStore = require("./PlaceStore");
-var oAuth = require('./OauthProvider');
 var gitHubFacade = require("./GitHubFacade");
 var jiveDecorator = require("./JiveDecorators");
 var JiveApi = require("./JiveApiFacade");
@@ -53,34 +52,6 @@ function getGitHubOauthTokenForPlace(placeUrl){
     })
 }
 
-exports.isAuthenticated = function(req, res){
-    var url_parts = url.parse(req.url, true);
-    var query = url_parts.query;
-
-    var viewerID = query['viewerID'];
-    var ticketID = query['ticketID'];
-    console.log("isAuthenticated?? viewerID="+viewerID+" ticketID="+ticketID);
-
-    if (viewerID == undefined)
-        viewerID = ticketID;
-
-    if (viewerID == undefined)
-    {
-        // still undefined, we can't continue .. just return and don't put anything in the body ...
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end();
-        return;
-    }
-
-    oAuth.getOauthToken(ticketID).then(function(authOptions){
-        return gitHubFacade.isAuthenticated(authOptions).then(function(authenticated){
-            contentResponse(res, authenticated);
-        });
-    }).catch(function(error){
-        ErrorResponse(res, error);
-    });
-};
-
 exports.getUserRepos = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
@@ -104,9 +75,9 @@ exports.getUserRepos = function(req, res){
 
 exports.getPlaceIssues = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
-    var place = queryParams.place;
+    var placeUrl = queryParams.place;
 
-    placeStore.getPlaceByUrl(place).then(function (linked) {
+    placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
         var auth = gitHubFacade.createOauthObject( linked.github.token.access_token);
         gitHubFacade.getRepositoryIssues(linked.github.repoOwner,linked.github.repo,auth).then(function (issues) {
             if(issues.length){
@@ -133,12 +104,12 @@ exports.getPlaceIssues = function (req, res) {
 
 exports.getIssueComments = function(req, res){
     var queryParams = url.parse(req.url, true).query;
-    var repo = SplitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
-    var ticketID = queryParams.ticketID;
+    var placeUrl = queryParams.place;
+    var repo = SplitRepo(queryParams.repo);
 
-    oAuth.getOauthToken(ticketID).then(function(authOption){
-        return gitHubFacade.getIssueComments(repo.owner, repo.repo, issueNumber, authOption).then(function(comments){
+    getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
+        return gitHubFacade.getIssueComments(repo.owner, repo.repo, issueNumber, authOptions).then(function(comments){
             contentResponse(res, comments);
         });
     }).catch(function(error){
@@ -148,12 +119,13 @@ exports.getIssueComments = function(req, res){
 
 exports.changeIssueState = function(req, res){
     var queryParams = url.parse(req.url, true).query;
+    var placeUrl = queryParams.place;
     var repo = SplitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
     var ticketID = queryParams.ticketID;
     var state = queryParams.state;
 
-    oAuth.getOauthToken(ticketID).then(function(authOptions){
+    getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.changeIssueState(repo.owner, repo.repo, issueNumber, state, authOptions).then(function(confirmation){
             contentResponse(res, confirmation);
         })
@@ -164,13 +136,13 @@ exports.changeIssueState = function(req, res){
 
 exports.newComment = function(req, res){
     var queryParams = url.parse(req.url, true).query;
+    var placeUrl = queryParams.place;
     var repo = SplitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
-    var ticketID = queryParams.ticketID;
 
     var comment = req.body.newComment;
 
-    oAuth.getOauthToken(ticketID).then(function(authOptions){
+    getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.addNewComment(repo.owner, repo.repo, issueNumber, comment, authOptions).then(function(confirmation){
             contentResponse(res, confirmation);
         });

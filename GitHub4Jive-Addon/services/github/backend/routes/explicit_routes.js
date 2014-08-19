@@ -24,18 +24,18 @@ exports.repositoryListForUser = {
 
 exports.commentsForIssue = {
     'verb' : 'get',
-    'path' : '/github/comments',
+    'path' : '/github/place/comments',
     'route' : gitHubController.getIssueComments
 }
 
 exports.closeIssue = {
     'verb' : 'post',
-    'path' : '/github/changeIssueState',
+    'path' : '/github/place/changeIssueState',
     'route' : gitHubController.changeIssueState
 }
 
 exports.newComment = {
     'verb' : 'post',
-    'path' : '/github/newComment',
+    'path' : '/github/place/newComment',
     'route' : gitHubController.newComment
 }

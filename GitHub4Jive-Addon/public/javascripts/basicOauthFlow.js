@@ -2,6 +2,8 @@ var place, previousRepo;
 var jiveDone = false;
 var githubDone = false;
 
+var host;
+
 function placeUrl(){
     return place.resources.self.ref;
 }
@@ -101,10 +103,6 @@ var app = {
         console.log('initGadget ...');
     },
 
-    initjQuery: function () {
-        console.log('initjQuery ...');
-        gadgets.window.adjustHeight();
-    },
 
     handleContext: function (context) {
         console.log('handleContext ...');
@@ -213,21 +211,39 @@ var app = {
 
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget));
 
+//defined in oAuth2Client
+if(realTile){
 
 
-// register a listener for embedded experience context
-opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
-    var data = opensocial.data.getDataContext().getDataSet(key);
+    // register a listener for embedded experience context
+    opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
+        var data = opensocial.data.getDataContext().getDataSet(key);
 
-    var resolverTransform = data.container;
-    if(resolverTransform.type == 600){
-        resolverTransform.type = "osapi.jive.core.Project";
-    }
-    if(resolverTransform.type == 700){
-        resolverTransform.type = "osapi.jive.core.Group";
-    }
-    if(resolverTransform.type == 14){
-        resolverTransform.type = "osapi.jive.core.Space";
-    }
-    app.handleContext(resolverTransform);
-});
+        var resolverTransform = data.container;
+        if(resolverTransform.type == 600){
+            resolverTransform.type = "osapi.jive.core.Project";
+        }
+        if(resolverTransform.type == 700){
+            resolverTransform.type = "osapi.jive.core.Group";
+        }
+        if(resolverTransform.type == 14){
+            resolverTransform.type = "osapi.jive.core.Space";
+        }
+        app.handleContext(resolverTransform);
+    });
+}else{
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.group.config",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.project.config",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.space.config",
+        callback: app.handleContext
+    });
+}

@@ -1,21 +1,20 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/bootstrap-30.min.css">
+    <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/style.css">
     <script src="{{{host}}}/javascripts/jquery-1.8.3.js"></script>
-    <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
+    <script src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
     <script src="{{{host}}}/javascripts/oauth2client.js"></script>
-    <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
+    <script src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
     <script src="{{{host}}}/github-issues-recent/javascripts/action.js"></script>
-    <script>
-        $(document).ready( function() {
-            host = '{{{host}}}'
-            //doIt( host );
-        });
-    </script>
 </head>
 
 <body>
-
+<script>
+    $(function () {
+        host = "{{{host}}}";
+    })
+</script>
     <div>
         <u>Repository:</u>&nbsp&nbsp<label id="repo"><b>placeholder for repo</b></label>&nbsp&nbsp<u>Issue #:</u>&nbsp&nbsp<b><label id="issue"></label></b>
         <br><br>
@@ -23,21 +22,22 @@
         <br><br>
         <a id="GitHubLink" href="https://www.github.com" target="_blank">placeholder for github link and issue name</a>
     </div>
-    <div id="j-card-authentication" class="j-card" >
-        <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
-        <p>
-            <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+<div id="j-card-authentication" class="j-card" >
+    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+    <div>
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
         <div id="github4jive-jive-authorize-success" style="display: none;">
             <span>Jive Authorized - OK</span>
         </div>
-        </p>
-        <p>
-            <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+    </div>
+    <br/>
+    <div>
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
         <div id="github4jive-github-authorize-success" style="display: none;">
             <span>GitHub Authorized - OK</span>
         </div>
-        </p>
     </div>
+</div>
 
     <div id="j-card-action" class="j-card" style='display: none'>
         <div class="container_fluid" id="todo_panel">

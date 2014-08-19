@@ -16,10 +16,11 @@
 
 var count = 0;
 var jive = require("jive-sdk");
+var q = require("q");
 var COMMONS_DIRECTORY = "../../../common/";
 
-
-var gitHubFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
+var placeStore = require(COMMONS_DIRECTORY+ "PlaceStore");
+var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
 var sampleOauth = require(COMMONS_DIRECTORY+ "OauthProvider");
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
 
@@ -42,7 +43,6 @@ function decorateIssuesWithColoredIcons(issues){
 
 function decorateIssuesWithActions(issues, repository){
     issues.forEach(function(issue){
-
         issue["action"] = {
             url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
                 context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels  }
@@ -51,59 +51,51 @@ function decorateIssuesWithActions(issues, repository){
     return issues;
 }
 
-function pushUpdate(tile) {
-    var config = tile.config;
-    console.log('pushing update: '+ tile.name +','+ config.repoOwner + "/" + config.repoName +", " + tile.jiveCommunity);
-
-    sampleOauth.getOauthToken(config.ticketID).then(function(authOptions){
-        return gitHubFacade.getRepositoryIssues(config.repoOwner, config.repoName, authOptions, 10);
-    }).then(function(issues){
-        var decoratedIssues = decorateIssuesWithColoredIcons( issues);
-        decoratedIssues = decorateIssuesWithActions(decoratedIssues, config.repoFullName);
-        var formattedIssues = tileFormatter.formatListData(config.repoFullName,decoratedIssues, {"text" : "title"});
-        jive.tiles.pushData(tile, {data: formattedIssues});
-    })
+function processTileInstance(instance) {
+    if ( instance.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
+        var place = instance.config.parent;
+        return placeStore.getPlaceByUrl(place).then(function (linked) {
+            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+            return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10)
+            .then(function (issues) {
+                var decoratedIssues = decorateIssuesWithColoredIcons(issues);
+                var fullName = linked.github.repoOwner+"/"+ linked.github.repo;
+                decoratedIssues = decorateIssuesWithActions(decoratedIssues,fullName);
+                var formattedIssues = tileFormatter.formatListData(fullName, decoratedIssues, {"text": "title"});
+                jive.tiles.pushData(instance, {data: formattedIssues});
+            })
+        });
+    }
 }
 
-exports.task = new jive.tasks.build(
-    // runnable
-    function() {
-        jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
-            tiles.forEach(pushUpdate) ;
-        });
-    },
+var pushData = function () {
+    jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
+        return q.all(tiles.map(processTileInstance)) ;
+    });
+}
 
-    // interval (optional)
-    10000
-);
+exports.onBootstrap = pushData;
+
+exports.task = [
+    {
+        'interval' : 60000,
+        'handler' : pushData
+    }
+];
+
 
 exports.eventHandlers = [
 
     {
         'event': 'activityUpdateInstance',
-        'handler' : function(theInstance){
-            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
-                pushUpdate(theInstance);
-            }
-        }
+        'handler' : processTileInstance
     },
     {
         'event': jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : function(theInstance){
-            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
-                pushUpdate(theInstance);
-            }
-        }
+        'handler' : processTileInstance
     },
     {
         'event': jive.constants.globalEventNames.INSTANCE_UPDATED,
-        'handler' : function(theInstance){
-            jive.logger.info("Caught activityUpdateInstance event, trying to push now.");
-            if ( theInstance['name'] == GITHUB_RECENT_ISSUES_TILE_NAME ) {
-                pushUpdate(theInstance);
-            }
-        }
+        'handler' : processTileInstance
     }
 ];

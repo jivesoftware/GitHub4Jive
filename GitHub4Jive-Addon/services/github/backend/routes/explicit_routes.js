@@ -15,3 +15,27 @@ exports.ConfigurationUpdateTrigger = {
     'verb': 'post',
     'route': service.onConfigurationChange
 };
+
+exports.repositoryListForUser = {
+    'verb' : 'get',
+    'path' : '/github/user/repos',
+    'route' : gitHubController.getUserRepos
+}
+
+exports.commentsForIssue = {
+    'verb' : 'get',
+    'path' : '/github/comments',
+    'route' : gitHubController.getIssueComments
+}
+
+exports.closeIssue = {
+    'verb' : 'post',
+    'path' : '/github/changeIssueState',
+    'route' : gitHubController.changeIssueState
+}
+
+exports.newComment = {
+    'verb' : 'post',
+    'path' : '/github/newComment',
+    'route' : gitHubController.newComment
+}

@@ -38,7 +38,7 @@ function populateCommentsTable(host, ticketID, repository, issueNumber) {
     var bodyPayload = { body: ""};
 
     osapi.http.get({
-        'href': host + '/example-github/comments?' +
+        'href': host + '/github/comments?' +
             'id=all' + // hack job to get us to act different that the one and only other GET we make ...
             "&ts=" + new Date().getTime() +
             "&ticketID=" + ticketID +
@@ -100,7 +100,7 @@ function doIt(host) {
 
         var bodyPayload = {"state": "closed"};
         osapi.http.post({
-            'href': host + '/example-github/changeIssueState?' +
+            'href': host + '/github/changeIssueState?' +
                 'id=' + qTicketID +
                 "&ts=" + new Date().getTime() +
                 "&ticketID=" + qTicketID +
@@ -144,7 +144,7 @@ function doIt(host) {
 
         var bodyPayload = { newComment: comment};
         osapi.http.post({
-            'href': host + '/example-github/newComment?' +
+            'href': host + '/github/newComment?' +
                 'id=' + qTicketID +
                 "&ts=" + new Date().getTime() +
                 "&ticketID=" + qTicketID +

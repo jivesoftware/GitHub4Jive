@@ -20,26 +20,30 @@ var q = require('q');
 var placeStore = require("../../../common/PlaceStore");
 var gitFacade = require("../../../common/GitHubFacade");
 var tileFormatter = require("../../../common/TileFormatter");
+
+var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
+
 /**
  * Handles actually pushing data to the tile instance
  * @param instance
  */
 var processTileInstance = function(instance) {
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
-        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-        return gitFacade.getRepository(linked.github.repoOwner, linked.github.repo, auth).then(function (repo) {
-            var dataToPush = tileFormatter.formatTableData(repo.full_name,[
-                {name:"Last Updated",value: new Date(repo.pushed_at).toDateString()},
-                {name:"Clone Url",value:repo.clone_url},
-                {name:"Open Issues",value:repo.open_issues_count.toString()},
-                {name:"Subscribers",value:repo.subscribers_count.toString()}
+    if ( instance.name === GITHUB_PROJECT_INFO_TILE ) {
+        var place = instance.config.parent;
+        return placeStore.getPlaceByUrl(place).then(function (linked) {
+            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+            return gitFacade.getRepository(linked.github.repoOwner, linked.github.repo, auth).then(function (repo) {
+                var dataToPush = tileFormatter.formatTableData(repo.full_name, [
+                    {name: "Last Updated", value: new Date(repo.pushed_at).toDateString()},
+                    {name: "Clone Url", value: repo.clone_url},
+                    {name: "Open Issues", value: repo.open_issues_count.toString()},
+                    {name: "Subscribers", value: repo.subscribers_count.toString()}
 
-            ]);
-            jive.tiles.pushData(instance, {"data":dataToPush});
-        });
-    })
-
+                ]);
+                jive.tiles.pushData(instance, {"data": dataToPush});
+            });
+        })
+    }
 
 
 };
@@ -49,7 +53,7 @@ var processTileInstance = function(instance) {
  */
 var pushData = function() {
     var deferred = q.defer();
-    jive.tiles.findByDefinitionName('github-project-info').then(function(instances) {
+    jive.tiles.findByDefinitionName(GITHUB_PROJECT_INFO_TILE).then(function(instances) {
         if (instances) {
             q.all(instances.map(processTileInstance)).then(function() {
                 deferred.resolve(); //success

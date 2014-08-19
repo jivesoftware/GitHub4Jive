@@ -21,7 +21,6 @@ var COMMONS_DIRECTORY = "../../../common/";
 
 var placeStore = require(COMMONS_DIRECTORY+ "PlaceStore");
 var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
-var sampleOauth = require(COMMONS_DIRECTORY+ "OauthProvider");
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
 
 var colorMap = {

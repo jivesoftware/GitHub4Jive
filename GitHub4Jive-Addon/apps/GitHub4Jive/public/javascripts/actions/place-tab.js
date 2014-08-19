@@ -33,14 +33,17 @@ var app = {
                     }else{
                         data = response.content;
                         var table = $("#DUMP");
+                        var tbody = table.children("tbody");
                         $.each(data,function (idx, issue) {
                             var number = issue.number;
                             var title = issue.title;
                             var state = issue.state;
 
                             var row = "<tr><td>"+number+"</td><td>"+title+"</td><td>"+state+"</td></tr>";
-                            table.append(row);
-                        })
+                            tbody.append(row);
+                        });
+                        table.dataTable();
+
                     }
 
                     gadgets.window.adjustHeight();

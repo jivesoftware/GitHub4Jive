@@ -12,10 +12,9 @@
         // prepopulate the sequence input dialog
         $("#set_level").val( json["set_level"]);
 
-        $("#github4jive-enable-submit").click( function() {
+        $(document).bind("github4jiveConfigDone",function () {
             config["set_level"] = $("#set_level").val();
             jive.tile.close(config, {} );
-            gadgets.window.adjustHeight(300);
         });
     });
 

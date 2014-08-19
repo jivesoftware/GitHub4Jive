@@ -1,4 +1,8 @@
+var realTile = Boolean(jive.tile);
+jive.tile = jive.tile || {};
+
 function OAuth2ServerFlow( options ) {
+
 
     // required
     var serviceHost = options['serviceHost'];
@@ -50,7 +54,7 @@ function OAuth2ServerFlow( options ) {
 
         //Post condition check
         var closeCallback = function() {
-            oauth2SuccessCallback(jive.tile.oauthReceivedCallbackTicket_);
+                oauth2SuccessCallback(jive.tile.oauthReceivedCallbackTicket_);
         };
 
         // obtain the oauth url (points to oauth creds store like SFDC)
@@ -65,38 +69,105 @@ function OAuth2ServerFlow( options ) {
             }
 
             // pop open oauth url
-            var data = response.content;
-            $(grantDOMElementID).click(
-                jive.tile.openOAuthPopup(
-                    JSON.parse(data).url,
-                    'width='+popupWindowWidth+',height='+popupWindowHeight+',scrollbars=yes',
-                    openCallback, closeCallback
-                ).createOpenerOnClick()
+            var data = JSON.parse(response.content);
+
+            $(grantDOMElementID).click( realTile ?
+                    jive.tile.openOAuthPopup(
+                        data.url,
+                            'width=' + popupWindowWidth + ',height=' + popupWindowHeight + ',scrollbars=yes',
+                        openCallback, closeCallback
+                    ).createOpenerOnClick() : function() {
+                    var popup = window.open(data.url, "GitHub4Jive Authorize",
+                        "toolbar=no, scrollbars=yes, resizable=yes, top=500, left=500, width="+popupWindowWidth+", height="+popupWindowHeight+"")
+                    $(popup).bind("unload", closeCallback);
+                }
             );
+
         });
     };
 
     return {
-        launch: function(options) {
+        launch: function(addOptions) {
 
-//             gadgets.window.adjustHeight();
-            if ( typeof config === "string" ) {
-                config = JSON.parse(config);
+            addOptions = addOptions || {};
+
+            var doLaunch = function(config, options ) {
+
+                gadgets.window.adjustHeight();
+                if ( typeof config === "string" ) {
+                    config = JSON.parse(config);
+                }
+
+                // state
+                var identifiers = realTile ? jive.tile.getIdentifiers() : {};
+                var viewerID =  addOptions.viewerID || identifiers['viewer'];   // user ID
+                var ticket = config["ticketID"]; // may or may not be there
+                var oauth2CallbackUrl = realTile ? jive.tile.getOAuth2CallbackUrl() :
+                    function() {
+                        var containerUrl = location.href;
+                        if(containerUrl && containerUrl.indexOf('/gadgets/ifr') > -1) {
+                            containerUrl = containerUrl.substr(0, containerUrl.indexOf('/gadgets/ifr'));
+                        }
+
+                        return containerUrl + '/gadgets/jiveOAuth2Callback';
+                    }();
+                var jiveTenantID = gadgets.config.get()['jive-opensocial-ext-v1']['jiveTenantID'];
+
+                if ( onLoadCallback ) {
+                    onLoadCallback( config, identifiers );
+                }
+
+                if ( ticketURL ) {
+                    //
+                    // check ticket state
+                    // since a ticket endpoint was provided
+                    //
+                    osapi.http.get({
+                        'href' :  serviceHost + ticketURL + '?' + (
+                            ticket ? ('ticketID=' + ticket) : ('viewerID=' + viewerID + "&ts=" + new Date().getTime())
+                            ),
+                        'format' : 'json',
+                        'authz': authz,
+                        'noCache': true
+                    }).execute( function( response ) {
+                        if ( response.status >= 400 && response.status <= 599 ) {
+                            if (ticketErrorCallback) {
+                                ticketErrorCallback(response);
+                            }
+                            return;
+                        }
+
+                        var data = response.content;
+                        if ( data.status === 'ok' ) {
+                            // ticket is still ok
+                            // skip authentication
+                            ticket = data.ticketID;
+                            if ( !ticket ) {
+                                doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
+                            } else {
+                                oauth2SuccessCallback();
+                            }
+                        } else {
+                            // ticket is not ok
+                            // proceed with authentication
+                            doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
+                        }
+                    });
+
+                } else {
+                    // proceed with authentication since
+                    // there is no ticket endpoint to check for
+                    // origin server access token validity.
+                    doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
+                }
+
             }
-
-            // state
-            var identifiers = jive.tile.getIdentifiers();
-            var viewerID = options['viewerID'];
-            var oauth2CallbackUrl = jive.tile.getOAuth2CallbackUrl();
-            var jiveTenantID = gadgets.config.get()['jive-opensocial-ext-v1']['jiveTenantID'];
-
-            if ( onLoadCallback ) {
-                onLoadCallback( {}, identifiers );
+            if(realTile) {
+                jive.tile.onOpen(doLaunch);
+            }else{
+                doLaunch(addOptions, addOptions);
             }
-
-            doOAuthDance(viewerID, oauth2CallbackUrl, jiveTenantID);
         }
-
     };
 
 }

@@ -171,6 +171,7 @@ var app = {
                                     $('#github4jive-jive-authorize').slideDown('fast', function () {
                                     });
                                 }
+                                gadgets.window.adjustHeight();
                             }
                         }
                     );

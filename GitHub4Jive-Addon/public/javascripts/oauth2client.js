@@ -1,4 +1,8 @@
+var realTile = Boolean(jive.tile);
+jive.tile = jive.tile || {};
+
 function OAuth2ServerFlow( options ) {
+
 
     // required
     var serviceHost = options['serviceHost'];
@@ -65,25 +69,29 @@ function OAuth2ServerFlow( options ) {
             }
 
             // pop open oauth url
-            var data = response.content;
-            $(grantDOMElementID).click(
-                jive.tile.openOAuthPopup(
-                    JSON.parse(data).url,
-                        'width='+popupWindowWidth+',height='+popupWindowHeight+',scrollbars=yes',
-                    openCallback, closeCallback
-                ).createOpenerOnClick()
+            var data = JSON.parse(response.content);
+
+            $(grantDOMElementID).click( realTile ?
+                    jive.tile.openOAuthPopup(
+                        data.url,
+                            'width=' + popupWindowWidth + ',height=' + popupWindowHeight + ',scrollbars=yes',
+                        openCallback, closeCallback
+                    ).createOpenerOnClick() : function() {
+                    var popup = window.open(data.url, "GitHub4Jive Authorize",
+                            "toolbar=no, scrollbars=yes, resizable=yes, top=500, left=500, width="+popupWindowWidth+", height="+popupWindowHeight+"")
+                    $(popup).bind("unload", closeCallback);
+                }
             );
+
         });
     };
 
     return {
         launch: function(addOptions) {
 
+            addOptions = addOptions || {};
 
             var doLaunch = function(config, options ) {
-
-                //Overwrite tileOptions members if provided from launch call
-                for(var m in addOptions){options[m] = addOptions;}
 
                 gadgets.window.adjustHeight();
                 if ( typeof config === "string" ) {
@@ -91,10 +99,18 @@ function OAuth2ServerFlow( options ) {
                 }
 
                 // state
-                var identifiers = jive.tile.getIdentifiers();
-                var viewerID = identifiers['viewer'];   // user ID
+                var identifiers = realTile ? jive.tile.getIdentifiers() : {};
+                var viewerID =  addOptions.viewerID || identifiers['viewer'];   // user ID
                 var ticket = config["ticketID"]; // may or may not be there
-                var oauth2CallbackUrl = jive.tile.getOAuth2CallbackUrl();
+                var oauth2CallbackUrl = realTile ? jive.tile.getOAuth2CallbackUrl() :
+                    function() {
+                        var containerUrl = location.href;
+                        if(containerUrl && containerUrl.indexOf('/gadgets/ifr') > -1) {
+                            containerUrl = containerUrl.substr(0, containerUrl.indexOf('/gadgets/ifr'));
+                        }
+
+                        return containerUrl + '/gadgets/jiveOAuth2Callback';
+                    }();
                 var jiveTenantID = gadgets.config.get()['jive-opensocial-ext-v1']['jiveTenantID'];
 
                 if ( onLoadCallback ) {
@@ -146,7 +162,7 @@ function OAuth2ServerFlow( options ) {
                 }
 
             }
-            if(jive.tile) {
+            if(realTile) {
                 jive.tile.onOpen(doLaunch);
             }else{
                 doLaunch(addOptions, addOptions);

@@ -146,7 +146,6 @@ var app = {
                         'href': host + '/jive/place/isConfigured?' +
                             "ts=" + new Date().getTime() +
                             "&place=" + encodeURIComponent(place.resources.self.ref),
-                        //"&query=" + query,
                         'format': 'json',
                         'authz': 'signed'
                     }).execute(function (response) {

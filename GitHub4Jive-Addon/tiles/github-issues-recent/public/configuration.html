@@ -11,9 +11,8 @@
     $(function () {
         app.initjQuery();
         jive.tile.onOpen(function(config, options ) {
-            $(document).bind("github4jiveAuthDone",function (e, etype) {
+            $(document).bind("github4jiveConfigDone",function () {
                 jive.tile.close(config, {});
-                gadgets.window.adjustHeight(300);
             });
 
         });

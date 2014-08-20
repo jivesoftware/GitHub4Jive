@@ -24,9 +24,9 @@ var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
 
 var colorMap = {
-    'green':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
-    'red':'http://cdn1.iconfinder.com/data/icons/function_icon_set/circle_red.png',
-    'disabled':'http://cdn1.iconfinder.com/data/icons/function_icon_set/warning_48.png'
+    'green':'https://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
+    'red':'https://cdn1.iconfinder.com/data/icons/function_icon_set/circle_red.png',
+    'disabled':'https://cdn1.iconfinder.com/data/icons/function_icon_set/warning_48.png'
 };
 
 var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
@@ -73,7 +73,26 @@ var pushData = function () {
     });
 }
 
-exports.onBootstrap = pushData;
+var setupInstance = function(instance){
+    var place = instance.config.parent;
+    return placeStore.getPlaceByUrl(place).then(function (linked) {
+        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+        return gitFacade.subscribeToRepoEvent(linked.github.repoOwner, linked.github.repo, auth, function () {
+            processTileInstance(instance);
+        })
+    });
+};
+
+var setupAll = function(){
+    jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
+        return q.all(tiles.map(setupInstance)).then(function () {
+            return q.all(tiles.map(processTileInstance));
+        }) ;
+    });
+};
+
+exports.onBootstrap = setupAll;
+
 
 exports.task = [
     {
@@ -91,7 +110,7 @@ exports.eventHandlers = [
     },
     {
         'event': jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : processTileInstance
+        'handler' : setupInstance
     },
     {
         'event': jive.constants.globalEventNames.INSTANCE_UPDATED,

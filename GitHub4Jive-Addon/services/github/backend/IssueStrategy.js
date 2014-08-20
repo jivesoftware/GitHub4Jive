@@ -57,11 +57,11 @@ issueStrategy.setup = function(setupOptions){
 
         }else if(gitData.action === "reopened"){
             helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.unMarkFinal(discussion.id);
+                jiveApi.unMarkFinal(discussion.contentID);
             });
         }else if(gitData.action === "closed"){
             helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.markFinal(discussion.id);
+                jiveApi.markFinal(discussion.contentID);
             });
         }
     });

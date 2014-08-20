@@ -19,9 +19,7 @@ var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var helpers = require("./helpers");
 
-var tokens = {};
-
-var strategyBase = require("./EventStrategyBase");
+var strategyBase = require("./../../../common/strategies/EventStrategyBase");
 var issueCommentStrategy = Object.create(strategyBase);
 module.exports = issueCommentStrategy;
 

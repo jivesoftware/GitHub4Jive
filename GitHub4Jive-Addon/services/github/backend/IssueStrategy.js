@@ -18,12 +18,9 @@ var Q = require("q");
 
 var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
-var TokenPool = require("./EventTokenPool");
 var helpers = require("./helpers");
 
-var tokens = new TokenPool();
-
-var strategyBase = require("./EventStrategyBase");
+var strategyBase = require("./../../../common/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 

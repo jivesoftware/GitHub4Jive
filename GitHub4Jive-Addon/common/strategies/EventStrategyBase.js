@@ -14,25 +14,18 @@
  *    limitations under the License.
  */
 
-var strategyBuilderBase = require("./../../../common/strategies/StrategySetBuilderBase");
+var jive = require("jive-sdk");
+var gitHubFacade = require("../GitHubFacade");
 
-function builder(){
-    strategyBuilderBase.apply(this);
+
+exports.name = "BASE_THIS_SHOULD_BE_REPLACED";
+
+exports.setup = function(setupOptions) {
+
 }
-builder.prototype = new strategyBuilderBase();
 
-
-var issues = require("./IssueStrategy");
-var issueComments = require("./IssueCommentStrategy");
-
-builder.prototype.issues = function(){
-    this.strategies.push(issues);
-    return this;
+exports.teardown = function(teardownOptions){
+    var token = teardownOptions.eventToken;
+    var auth = gitHubFacade.createOauthObject(teardownOptions.gitHubToken);
+    return gitHubFacade.unSubscribeFromRepoEvent(token,auth);
 };
-
-builder.prototype.issueComments = function(){
-    this.strategies.push(issueComments);
-    return this;
-};
-
-module.exports = builder;

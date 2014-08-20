@@ -77,7 +77,6 @@ jive.tile.onOpen(function (config, options) {
 
     $("#btn_close").click(function () {
         // close the issue
-        var issue = $("#issueB").text();
 
         var bodyPayload = {
             "state": "closed"
@@ -86,17 +85,16 @@ jive.tile.onOpen(function (config, options) {
             'href': host + '/github/place/changeIssueState?' +
                 "ts=" + new Date().getTime()+
                 "&place=" + encodeURIComponent(placeUrl()) +
-                "&repo=" + repo +
+                "&repo=" + config.repo +
                 "&number=" + config.number,
             headers: { 'Content-Type': ['application/json'] },
             'noCache': true,
             'authz': 'signed',
             'body': bodyPayload
         }).execute(function (response) {
-            var config = onLoadContext['config'];
 
             //alert( "status=" + response.status) ;
-            if (response.status >= 400 && response.status <= 599) {
+            if ((response.status >= 400 && response.status <= 599) || !JSON.parse(response.content).success) {
                 alert("ERROR!" + JSON.stringify(response.content));
             }
             jive.tile.close(null, {});

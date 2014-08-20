@@ -18,6 +18,5 @@ var jive = require("jive-sdk");
 var util = require("util")
 exports.route = function(req, res){
     var conf = jive.service.options;
-    console.log('action.html wire: ' , util.inspect(req.body)) ;
     res.render('action.html', { host: jive.service.serviceURL() });
 };

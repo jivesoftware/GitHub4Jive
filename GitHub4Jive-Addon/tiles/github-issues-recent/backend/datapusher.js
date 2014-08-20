@@ -55,7 +55,7 @@ function processTileInstance(instance) {
         var place = instance.config.parent;
         return placeStore.getPlaceByUrl(place).then(function (linked) {
             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-            return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10)
+            return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10, "open")
             .then(function (issues) {
                 var decoratedIssues = decorateIssuesWithColoredIcons(issues);
                 var fullName = linked.github.repoOwner+"/"+ linked.github.repo;

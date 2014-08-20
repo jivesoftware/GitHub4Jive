@@ -123,11 +123,11 @@ exports.changeIssueState = function(req, res){
     var repo = SplitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
     var ticketID = queryParams.ticketID;
-    var state = queryParams.state;
+    var state =  req.body.state;
 
     getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.changeIssueState(repo.owner, repo.repo, issueNumber, state, authOptions).then(function(confirmation){
-            contentResponse(res, confirmation);
+            contentResponse(res, {success:confirmation});
         })
     }).catch(function(error){
         ErrorResponse(res, error);

@@ -1,3 +1,46 @@
+/*
+ * basicOauthFlow.js requires oauth2client.js to provide the Oauth2ServerFlow function
+ *
+ * The following html is required for basicOAuthFlow to work
+ *
+ <div id="j-card-authentication" class="j-card" >
+     <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+     <div>
+         <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+         <div id="github4jive-jive-authorize-success" style="display: none;">
+            <span>Jive Authorized - OK</span>
+         </div>
+     </div>
+     <br/>
+     <div>
+         <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+         <div id="github4jive-github-authorize-success" style="display: none;">
+            <span>GitHub Authorized - OK</span>
+         </div>
+     </div>
+ </div>
+
+ <div id="j-card-configuration" class="j-card" style="display: none;">
+     <p>
+        Repo: <select id="projectList"></select>
+     </p>
+     <input id="github4jive-enable-submit" type="button" value="Save" />
+ </div>
+
+
+ This is the bare minimum to allow a tile to configure the place it is on for Github4Jive. Because basicOauthFlow
+ can be used in apps as well it does not handle closing of the tile/app. It instead emits an event "github4jiveConfigDone"
+ when it has finished its configuration. Use this event to then do any additional configuration required for the tile/app
+ and then close it. DO NOT close the tile by listening for github4jive-enable-submit click. This will cancel requests that
+ are in progress that will break the basicOauthFlow configuration.
+
+ The basicOauthFlow.js also emits "github4jiveAuthorized" when it has passed the authorization phase.  Use this event to
+ initialize any elements that require querying GitHub or Jive. The repository list is automatically populated.
+ The j-card-configuration and j-card-action panels will be unhidden automatically if they are present when this event
+ is triggered.
+
+ */
+
 var place, previousRepo;
 var jiveDone = false;
 var githubDone = false;

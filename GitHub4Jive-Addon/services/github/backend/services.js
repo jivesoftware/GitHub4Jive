@@ -60,7 +60,7 @@ function teardownLinkedPlace(linked) {
     return linkedPlaceSkeleton(linked, linked.setupStrategies.teardown);
 }
 
-var linkedPlaces;
+var linkedPlaces = [];
 
 exports.onBootstrap = function() {
     placeStore.getAllPlaces().then(function (places) {

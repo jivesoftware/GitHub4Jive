@@ -9,7 +9,7 @@ var app = {
 
     initjQuery: function () {
         console.log('initjQuery ...');
-        gadgets.window.adjustHeight(250);
+        gadgets.window.adjustHeight();
     },
 
     handleContext: function (context) {
@@ -32,21 +32,19 @@ var app = {
                         data = response.error;
                     }else{
                         data = response.content;
-                        var table = $("#DUMP");
+                        var table = $("#Issues");
                         var tbody = table.children("tbody");
                         $.each(data,function (idx, issue) {
                             var number = issue.number;
                             var title = issue.title;
                             var state = issue.state;
 
-                            var row = "<tr><td>"+number+"</td><td>"+title+"</td><td>"+state+"</td></tr>";
+                            var row = "<tr><td>"+number+"</td><td><a target='_blank' href='"+(issue.jiveContentLink || issue.html_url)+"'>"+title+"</a></td><td>"+state+"</td></tr>";
                             tbody.append(row);
                         });
-                        table.dataTable();
-
+                        table.on("draw.dt", gadgets.window.adjustHeight);
+                        table.dataTable({"order": [[2,"desc"],[ 0, "desc" ]]});
                     }
-
-                    gadgets.window.adjustHeight();
                 });
 
 

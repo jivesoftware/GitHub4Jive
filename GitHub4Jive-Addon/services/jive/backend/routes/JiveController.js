@@ -16,6 +16,7 @@
 
 var https = require("https");
 var url = require('url');
+var jive = require("jive-sdk");
 
 var placeStore = require("../../../../common/PlaceStore");
 
@@ -50,4 +51,8 @@ exports.placeCurrentConfig = function (req, res) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(error));
     })
+};
+
+exports.basicTileConfig = function (req, res) {
+    res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
 }

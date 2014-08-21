@@ -12,10 +12,10 @@
     "name" : "github-pullrequests-recent",
     "description" : "github-pullrequests-recent",
     "style" : "LIST",
-    "icons" : {
-        "16" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-16.png",
-        "48" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-48.png",
-        "128" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-128.png"
+    "icons": {
+        "16" : "%serviceURL%/images/extension-16.png",
+        "48" : "%serviceURL%/images/extension-48.png",
+        "128" : "%serviceURL%/images/extension-128.png"
     },
     "action": "/github-pullrequests-recent/action"
 }

@@ -3,8 +3,8 @@
         "title": "github-project-info",
         "contents": [
             {
-                "name": "Value",
-                "value": "Initial data"
+                "name": "Configuration",
+                "value": "Needed"
             }
         ]},
     "displayName" : "github-project-info",
@@ -12,9 +12,10 @@
     "description" : "github-project-info",
     "style": "TABLE",
     "icons": {
-        "16" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-16.png",
-        "48" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-48.png",
-        "128" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8090/images/extension-128.png"
+        "16" : "%serviceURL%/images/extension-16.png",
+        "48" : "%serviceURL%/images/extension-48.png",
+        "128" : "%serviceURL%/images/extension-128.png"
     },
-    "action": "/github-project-info/action"
+    "action": "/github-project-info/action",
+    "config": "/github4jive/basicTileConfig"
 }

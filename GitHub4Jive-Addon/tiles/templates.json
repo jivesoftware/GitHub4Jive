@@ -4,10 +4,10 @@
         "displayName": "GitHub4Jive",
         "description": "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo.",
         "tiles": [
-            "github-issues-recent",
             "github-issues-active",
-            "github-project-health",
-            "github-project-info"
+            "github-issues-recent",
+            "github-project-info",
+            "github-project-health"
         ]
     }
 }

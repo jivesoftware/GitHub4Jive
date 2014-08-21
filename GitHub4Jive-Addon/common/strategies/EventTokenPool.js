@@ -18,18 +18,28 @@ function TokenPool(){
     this.tokens = {};
 }
 
+exports.INVALID_KEY = "INVALID_TOKEN_KEY";
+exports.INVALID_TOKEN = "INVALID_TOKEN";
+exports.DUPLICATE_KEY = "DUPLICATE_TOKEN_KEY";
+
 TokenPool.prototype.addToken = function (key, token) {
+    if(!key || key.match(/\s+/) ){
+        throw Error(this.INVALID_KEY);
+    }
     if(this.tokens[key]){
-        throw Error("That key has already been been used. It would override an event token");
+        throw Error(this.DUPLICATE_KEY);
+    }
+    if(!token){
+        throw Error(this.INVALID_TOKEN);
     }
     this.tokens[key] = token;
 };
 
 TokenPool.prototype.getByKey = function (key) {
-    return this.tokens[key];
+    return this.tokens[key] || false;
 }
 
-TokenPool.prototype.removeTokenBykey = function (key) {
+TokenPool.prototype.removeTokenByKey = function (key) {
     return (delete this.tokens[key]);
 };
 
@@ -38,7 +48,10 @@ TokenPool.prototype.tokenKeys = function () {
 };
 
 TokenPool.prototype.allTokens = function () {
-    return this.tokens;
+    var self = this;
+    return this.tokenKeys().map(function (key) {
+        return self.tokens[key];
+    });
 };
 
 

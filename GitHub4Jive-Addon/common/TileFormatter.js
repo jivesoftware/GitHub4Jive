@@ -136,6 +136,17 @@ exports.formatListData = function(title, items, keys){
     };
 };
 
+exports.emptyListData = function (title, entry) {
+    return {
+        title: chop(title, 50),
+        contents: [{text:entry}],
+        action: {
+            text: 'Github' ,
+            'url': 'https://www.github.com'
+        }
+    };
+}
+
 exports.formatTableData = function (title, items, keys) {
     var formattedItems = items.map(function (item) {
         return formatTableEntry(item, keys);

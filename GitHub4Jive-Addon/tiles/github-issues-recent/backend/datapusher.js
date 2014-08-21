@@ -61,11 +61,16 @@ function processTileInstance(instance) {
             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
             return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10, "open")
             .then(function (issues) {
-                var decoratedIssues = decorateIssuesWithColoredIcons(issues);
                 var fullName = linked.github.repoOwner+"/"+ linked.github.repo;
-                decoratedIssues = decorateIssuesWithActions(decoratedIssues,fullName);
-                var formattedIssues = tileFormatter.formatListData(fullName, decoratedIssues, {"text": "title"});
-                jive.tiles.pushData(instance, {data: formattedIssues});
+                if(issues.length == 0){
+                    jive.tiles.pushData(instance, {data: tileFormatter.emptyListData(fullName,"No open issues")});
+                }else {
+                    var decoratedIssues = decorateIssuesWithColoredIcons(issues);
+
+                    decoratedIssues = decorateIssuesWithActions(decoratedIssues, fullName);
+                    var formattedIssues = tileFormatter.formatListData(fullName, decoratedIssues, {"text": "title"});
+                    jive.tiles.pushData(instance, {data: formattedIssues});
+                }
             })
         });
     }

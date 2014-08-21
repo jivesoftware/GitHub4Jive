@@ -47,16 +47,16 @@ exports.closeIssue = {
     'verb' : 'post',
     'path' : '/github/place/changeIssueState',
     'route' : gitHubController.changeIssueState
-}
+};
 
 exports.commentsForIssue = {
     'verb' : 'get',
     'path' : '/github/place/comments',
     'route' : gitHubController.getIssueComments
-}
+};
 
 exports.newComment = {
     'verb' : 'post',
     'path' : '/github/place/newComment',
     'route' : gitHubController.newComment
-}
+};

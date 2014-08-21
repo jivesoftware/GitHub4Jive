@@ -1,8 +1,9 @@
 # GitHub4Jive
-This project demonstrates the power of integration with Jive. By combining all
-of the major collaborative elements of GitHub in one add-on, Jive can drive innovation
-with rich discussions and quick access to GitHub resources, all within Jive. Tiles, apps,
-services, web hooks, and cartridges will be used to make this experience both natural and
+
+This project demonstrates the power of integrating with the Jive Platform. By combining all
+of the major collaborative elements of GitHub into one add-on, Jive can drive innovation
+with rich discussions and quick access to GitHub resources, all from within Jive. Tiles, apps,
+services, web hooks, and cartridges are used to make this experience both natural and
 powerful.
 
 *Note: For architecture details and development notes for each component, please see the corresponding **developer_notes.md** in the component directory.*

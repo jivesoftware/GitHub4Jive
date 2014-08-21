@@ -27,7 +27,15 @@ var config = require("../jiveclientconfiguration.json");
 
 /********************* Private Functions **************************/
 
-var GITHUB_EVENT_URL = config.clientUrl + ":" + config.port + config.github.webHookUrl;
+function clienturl() {
+    if(config.clientUrl.slice(-1) == "/"){
+        return config.clientUrl.substr(0, config.clientUrl.length-1);
+    }else{
+        return config.clientUrl;
+    }
+}
+
+var GITHUB_EVENT_URL = clienturl() + ":" + config.port + config.github.webHookUrl;
 
 function GitHubInstance(auth){
     var git = new GitHubApi({version: "3.0.0"});

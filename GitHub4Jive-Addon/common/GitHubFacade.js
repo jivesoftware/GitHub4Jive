@@ -79,7 +79,7 @@ var webhookPending = false;
 var retry = 5;
 
 function inlineResetWebhookProtection(response){
-     webhookPending = false;
+    webhookPending = false;
     retry = 5;
     return response
 };
@@ -88,8 +88,9 @@ function waitForWebHookRequest(){
     if(webhookPending){
         return Q.delay(retry).then(function () {
             retry *= 2;
-            if(retry >= 1000){
-                webhookPending = false;
+            //using a large healthy timeout to handle latency issues
+            if(retry >= 10000){
+                inlineResetWebhookProtection();
             }
             return waitForWebHookRequest();
         })
@@ -102,8 +103,6 @@ function webHookWrapper(surround){
     return waitForWebHookRequest().then(function () {
         webhookPending = true;
 
-
-
         if (typeof surround === "function") {
             return promiseSeed().then(surround).then(inlineResetWebhookProtection);
         }
@@ -111,7 +110,10 @@ function webHookWrapper(surround){
             return surround.then(inlineResetWebhookProtection);
         }
 
-    }).catch(inlineResetWebhookProtection);
+    }).catch(function(error){
+        jive.logger.error(error);
+        return inlineResetWebhookProtection(error);
+    });
 
 }
 

@@ -18,7 +18,9 @@ var Q = require("q");
 
 var TokenPool = require("./EventTokenPool");
 
-
+/*
+ * Inherit this object to
+ */
 
 function StrategySetBuilder() {
     this.strategies = [];
@@ -38,6 +40,7 @@ function setupStrategies(strategies,index, options, tokenPool){
             })
             .catch(function (error) {
                 jive.logger.error(error);
+                return setupStrategies(strategies,++index, options, tokenPool);
             });
     }
     return Q.delay(0);
@@ -50,15 +53,18 @@ function teardownStrategies(strategies,index, options, tokenPool){
         options.eventToken = tokenPool.getByKey(tokenKey(strategy, options));
         return strategy.teardown(options)
             .then(function () {
-                    tokenPool.removeTokenBykey(tokenKey(strategy,options));
+                    tokenPool.removeTokenByKey(tokenKey(strategy,options));
                     return teardownStrategies(strategies,++index, options, tokenPool);
             })
             .catch(function (error) {
                 jive.logger.error(error);
+                return teardownStrategies(strategies,++index, options, tokenPool);
             });
     }
     return Q.delay(0);
 }
+
+StrategySetBuilder.prototype.EMPTY_SET = "Cannot build an empty strategy set.";
 
 /*
  * Build the strategy set and return the interface to setup and teardown that set for a given place.
@@ -68,6 +74,9 @@ function teardownStrategies(strategies,index, options, tokenPool){
  * @return {object} {setup: function(setupOptions){}, teardown: function(teardownOptions){}}
  */
 StrategySetBuilder.prototype.build = function () {
+    if(this.strategies.length == 0){
+        throw Error(this.EMPTY_SET);
+    }
     var strategies = [];
     this.strategies.forEach(function (strat) {
         strategies.push(strat);

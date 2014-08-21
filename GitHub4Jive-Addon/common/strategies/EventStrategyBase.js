@@ -16,14 +16,22 @@
 
 var jive = require("jive-sdk");
 var gitHubFacade = require("../GitHubFacade");
-
+var q = require("q");
 
 exports.name = "BASE_THIS_SHOULD_BE_REPLACED";
 
+/*
+ * When overriding this function IT MUST return a promise.
+ */
 exports.setup = function(setupOptions) {
-
+    return q(function () {
+        return "SOME_TOKEN";
+    }).call();
 }
 
+/*
+ * When overriding this function(And you normally wouldn't) IT MUST return a promise.
+ */
 exports.teardown = function(teardownOptions){
     var token = teardownOptions.eventToken;
     var auth = gitHubFacade.createOauthObject(teardownOptions.gitHubToken);

@@ -24,7 +24,7 @@ chai.use(chaiAsPromised);
 
 var EventTokenPool = require("../../common/strategies/EventTokenPool");
 
-describe.only("EventTokenPool", function () {
+describe("EventTokenPool", function () {
     describe("#addToken", function () {
         it("should add key to pool", function () {
             var pool = new EventTokenPool();

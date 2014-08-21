@@ -144,7 +144,7 @@ var setupAll = function(){
     });
 };
 
-//exports.onBootstrap = setupAll;
+exports.onBootstrap = setupAll;
 
 
 exports.task = [

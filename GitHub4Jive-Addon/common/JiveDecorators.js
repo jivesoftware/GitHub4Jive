@@ -19,11 +19,11 @@ exports.decorateIssueWithJiveContent = function (jiveApi, issue) {
     if(!issue.number){
         throw Error("Invalid Issue");
     }
-    return jiveApi.getByExtProp("github4jiveIssueId",issue.number).then(function (found) {
+    return jiveApi.getByExtProp("github4jiveIssueId",issue.id).then(function (found) {
         if(found.list.length != 1){
-            jive.logger.debug("Issue: " + issue.number + "has no linked content or more than 1");
+            jive.logger.debug("Issue: " + issue.number + " has no linked content or more than 1");
         }else{
-            issue.jiveContentLink = found.list[0];
+            issue.jiveContentLink = found.list[0].resources.html.ref;
         }
         return issue;
     })

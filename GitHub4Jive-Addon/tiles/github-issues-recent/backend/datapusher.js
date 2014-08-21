@@ -22,6 +22,10 @@ var COMMONS_DIRECTORY = "../../../common/";
 var placeStore = require(COMMONS_DIRECTORY+ "PlaceStore");
 var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
+var StrategyBuilder = require("./StrategySetBuilder");
+
+var builder = new StrategyBuilder();
+var stratSetScaffolding = builder.issues();
 
 var colorMap = {
     'green':'https://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
@@ -73,25 +77,74 @@ var pushData = function () {
     });
 }
 
+var linkedTiles = [];
+
+var decorateTileWithStrategies = function (tile) {
+    tile.strategies = stratSetScaffolding.build();
+};
+
 var setupInstance = function(instance){
+    decorateTileWithStrategies(instance);
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
-        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-        return gitFacade.subscribeToRepoEvent(linked.github.repoOwner, linked.github.repo, auth, function () {
-            processTileInstance(instance);
-        })
+        var setupOptions = {
+            owner: linked.github.repoOwner,
+            repo: linked.github.repo,
+            gitHubToken: linked.github.token.access_token,
+            placeUrl: linked.placeUrl,
+            instance: instance,
+            processTile: processTileInstance
+        };
+        return instance.strategies.setup(setupOptions);
+    }).then(function () {
+        processTileInstance(instance);
     });
 };
+
+var tearDownInstance = function (instance) {
+    var place = instance.config.parent;
+    return placeStore.getPlaceByUrl(place).then(function (linked) {
+        var setupOptions = {
+            placeUrl: linked.placeUrl,
+            gitHubToken: linked.github.token.access_token
+        };
+        return instance.strategies.teardown(setupOptions);
+    });
+}
+
+var updateTileInstance = function (newTile) {
+    if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
+        var tempCollection = [];
+        var toTeardown;
+        linkedTiles.forEach(function (tile) {
+            if (tile.config.parent !== newTile.config.parent) {
+                tempCollection.push(tile);
+            }
+            else {//found it
+                toTeardown = tile;
+            }
+        });
+        tempCollection.push(newTile);
+        linkedTiles = tempCollection;
+        if (toTeardown) {
+            return tearDownInstance(toTeardown).then(function () {
+                return setupInstance(newTile);
+            });
+        }
+        else {
+            return setupInstance(newTile);
+        }
+    }
+}
 
 var setupAll = function(){
     jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
-        return q.all(tiles.map(setupInstance)).then(function () {
-            return q.all(tiles.map(processTileInstance));
-        }) ;
+        linkedTiles = tiles;
+        return q.all(tiles.map(setupInstance));
     });
 };
 
-exports.onBootstrap = setupAll;
+//exports.onBootstrap = setupAll;
 
 
 exports.task = [
@@ -114,6 +167,6 @@ exports.eventHandlers = [
     },
     {
         'event': jive.constants.globalEventNames.INSTANCE_UPDATED,
-        'handler' : processTileInstance
+        'handler' : updateTileInstance
     }
 ];

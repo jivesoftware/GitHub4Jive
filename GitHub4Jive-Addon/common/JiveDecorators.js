@@ -16,11 +16,11 @@
 var jive = require("jive-sdk");
 
 exports.decorateIssueWithJiveContent = function (jiveApi,place, issue) {
-    if(!issue.number){
+    if(!issue.id){
         throw Error("Invalid Issue");
     }
     return jiveApi.getByExtProp("github4jiveIssueId",issue.id).then(function (found) {
-        if(found.list){
+        if(found.list.length > 0){
             found.list.forEach(function (discussion) {
                 if(discussion.parent == place){
                     issue.jiveContentLink = discussion.resources.html.ref;
@@ -28,5 +28,6 @@ exports.decorateIssueWithJiveContent = function (jiveApi,place, issue) {
                 }
             })
         }
+        return issue;
     })
 }

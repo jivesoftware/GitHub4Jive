@@ -8,10 +8,9 @@ var JiveOauth = require("../../../common/JiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
 var placeStore = require("../../../common/PlaceStore");
 
-//This can be moved into functions below if we need to dynamically configure events.
-// They will need to be saved into the linkedPlaces array for teardown. Everyone gets the same for now though.
+
 var builder = new StrategyBuilder();
-var stratSet = builder.issues().issueComments().build();
+var stratSetScaffolding = builder.issues().issueComments();
 
 function linkedPlaceSkeleton(linked, action){
     var place = linked.placeID;
@@ -19,42 +18,49 @@ function linkedPlaceSkeleton(linked, action){
     var jiveRefresh = linked.jive.refresh_token;
     var gitHubToken = linked.github.token.access_token;
     var jiveUrl = linked.jiveUrl;
+    var repo = linked.github.repo;
+    var repoOwner = linked.github.repoOwner;
     var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
-        jive.logger.debug(newTokens);
+        jive.logger.info("Refreshing Jive tokens for: "+ linked.placeUrl);
+        jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
+        return placeStore.save(linked.placeUrl,{jive:newTokens});
     });
+
+
     return jive.community.findByJiveURL(jiveUrl).then(function (community) {
         var japi = new JiveFacade(community, jiveAuth);
-        japi.getAllExtProps("places/" + place).then(function (extprops) {
+        if (!repo || !repoOwner) {
+            jive.logger.error("Missing repo information for " + linked.placeUrl)
 
-            var repo = extprops.github4jiveRepo;
-            var repoOwner = extprops.github4jiveRepoOwner;
-
-            if(!repo || !repoOwner){
-                jive.logger.error("Missing repo information for "+ jiveUrl + "/api/core/v3/places/" + place)
-            }else{
-                var setupOptions = {
-                    jiveApi: japi,
-                    placeID: place,
-                    owner: repoOwner,
-                    repo: repo,
-                    gitHubToken: gitHubToken,
-                    placeUrl: linked.placeUrl
-                };
-                return action(setupOptions);
-            }
-        })
+        }
+        else {
+            var setupOptions = {
+                jiveApi: japi,
+                placeID: place,
+                owner: repoOwner,
+                repo: repo,
+                gitHubToken: gitHubToken,
+                placeUrl: linked.placeUrl
+            };
+            return action(setupOptions);
+        }
     });
+}
+
+function decorateLinkedPlaceWithStategies(linked) {
+    linked.setupStrategies = stratSetScaffolding.build();
 }
 
 function setUpLinkedPlace(linked){
-    return linkedPlaceSkeleton(linked, stratSet.setup);
+    decorateLinkedPlaceWithStategies(linked);
+    return linkedPlaceSkeleton(linked, linked.setupStrategies.setup);
 }
 
 function teardownLinkedPlace(linked) {
-    return linkedPlaceSkeleton(linked, stratSet.teardown);
+    return linkedPlaceSkeleton(linked, linked.setupStrategies.teardown);
 }
 
-var linkedPlaces;
+var linkedPlaces = [];
 
 exports.onBootstrap = function() {
     placeStore.getAllPlaces().then(function (places) {
@@ -68,7 +74,7 @@ exports.onConfigurationChange = function(req, res){
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
 
-    placeStore.getPlaceByUrl(placeUrl).then(function (newLinkedPlace) {
+    placeStore.invalidateCache(placeUrl).then(function (newLinkedPlace) {
         var tempCollection = [];
         var toTeardown;
         linkedPlaces.forEach(function (place) {
@@ -91,8 +97,8 @@ exports.onConfigurationChange = function(req, res){
     }).catch(function (error) {
         jive.logger.error(error);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(false));
+        res.end(JSON.stringify({success:false}));
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(true));
+    res.end(JSON.stringify({success:true}));
 };

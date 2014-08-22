@@ -19,40 +19,37 @@ var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var helpers = require("./helpers");
 
-var tokens = {};
+var strategyBase = require("./../../../common/strategies/EventStrategyBase");
+var issueCommentStrategy = Object.create(strategyBase);
+module.exports = issueCommentStrategy;
 
-exports.setup = function(setupOptions) {
+issueCommentStrategy.name = "IssueComments";
+
+issueCommentStrategy.setup = function(setupOptions) {
 
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
-    var auth = {"type": "oauth", "token": setupOptions.gitHubToken};
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
 
-        helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-            var builder = new JiveContentBuilder();
-            var comment = builder.message()
-                .body(gitData.comment.body)
-                .build();
-            jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
-                if (!response.success) {
-                    jive.logger.error("Error creating comment on " + discussion.subject);
-                    jive.logger.error(response);
-                }
-            })
+        helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id).then(function (discussion) {
+            if(discussion){
+                var builder = new JiveContentBuilder();
+                var comment = builder.message()
+                    .body(gitData.comment.body)
+                    .build();
+                jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
+                    if (!response.success) {
+                        jive.logger.error("Error creating comment on " + discussion.subject);
+                        jive.logger.error(response);
+                    }
+                })
+            }
         }).catch(function (error) {
             jive.logger.error(error);
         });
-    }).then(function (token) {
-        tokens[setupOptions.placeUrl] = token;
     });
 
-};
-
-exports.teardown = function (teardownOptions) {
-    var token = tokens[teardownOptions.placeUrl];
-    return gitHubFacade.unSubscribeFromRepoEvent(token).then(function () {
-        delete tokens[teardownOptions.placeUrl];
-    });
 };

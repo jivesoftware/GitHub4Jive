@@ -5,18 +5,12 @@
     "logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
     "extensionInfo" : {
-        "uuid": "3fd92090-0d70-11e4-9191-0800200c9a66",
         "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },
     "jive" : {
         "oauth2": {
             "clientOAuth2CallbackUrl": "/jive/oauth/callback"
-        },
-        "analytics" : {
-            "server" : "api.jivesoftware.com",
-            "clientID" : "REPLACE_ME",
-            "clientSecret" : "REPLACE_ME"
         }
     },
     "github" : {

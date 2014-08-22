@@ -35,6 +35,7 @@ GitHub4Jive.iml
 #add-on db otherwise it will always be merging
 
 db
+extension_src
 
 #Mac junk
 

@@ -44,8 +44,6 @@ describe("TileFormatter", function(){
             formatted.should.have.property("items");
         });
 
-
-
         it("should throw error with more than 15 items", function(){
            var sixteenElementArray = createDummyArray(16);
            expect(function(){formatter.formatAccordionData("", sixteenElementArray, {title:""});}).to.throw(formatter.AccordionItemLengthError);
@@ -77,6 +75,22 @@ describe("TileFormatter", function(){
             formatter.formatListData("", items).contents.forEach(function(item){
                 item.should.have.property("text");
             });
+        });
+    });
+    
+    describe("#emptyListData", function () {
+        it("should return object with title and contents", function () {
+            var formatted = formatter.emptyListData("a", "b");
+            formatted.should.be.an("object");
+            formatted.should.have.property("title");
+            formatted.should.have.property("contents");
+            formatted.title.should.equal("a");
+        });
+        
+        it("should have one item with given string", function () {
+            var formatted = formatter.emptyListData("a", "b");
+            formatted.contents[0].should.have.property("text");
+            formatted.contents[0].text.should.equal("b");
         });
     });
 

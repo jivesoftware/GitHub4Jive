@@ -1,43 +1,47 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/bootstrap-30.min.css">
+    <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/style.css">
     <script src="{{{host}}}/javascripts/jquery-1.8.3.js"></script>
+    <script src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
     <script src="{{{host}}}/javascripts/oauth2client.js"></script>
+    <script src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
     <script src="{{{host}}}/github-issues-recent/javascripts/action.js"></script>
-    <script>
-        $(document).ready( function() {
-            doIt( '{{{host}}}');
-        });
-    </script>
 </head>
 
 <body>
-
-    <div id="j-card-authentication" class="j-card" style='display: none'>
-        <u>Repository:</u>&nbsp&nbsp<label id="repoA"><b>placeholder for repo</b></label>&nbsp&nbsp<u>Issue #:</u>&nbsp&nbsp<b><label id="issueA"></label></b>
+<script>
+    $(function () {
+        host = "{{{host}}}";
+    })
+</script>
+    <div>
+        <u>Repository:</u>&nbsp&nbsp<label id="repo"><b>placeholder for repo</b></label>&nbsp&nbsp<u>Issue #:</u>&nbsp&nbsp<b><label id="issue"></label></b>
         <br><br>
-        Labels: <label id="labelsA"><b>placeholder for labels</b></label>
+        Labels: <label id="labels"><b>placeholder for labels</b></label>
         <br><br>
-        <a id="GitHubLinkA" href="https://www.github.com" target="_blank">placeholder for github link and issue name</a>
-
-        <br> <br>
-        <p>The remote system (GitHub) requires you to grant access before proceeding.</p>
-        <br><br>
-        <button id="oauth">Grant Access</button>
-        <button id="btn_submitA">Exit</button>
-        <br>
+        <a id="GitHubLink" href="https://www.github.com" target="_blank">placeholder for github link and issue name</a>
     </div>
+<div id="j-card-authentication" class="j-card" >
+    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+    <div>
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+        <div id="github4jive-jive-authorize-success" style="display: none;">
+            <span>Jive Authorized - OK</span>
+        </div>
+    </div>
+    <br/>
+    <div>
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+        <div id="github4jive-github-authorize-success" style="display: none;">
+            <span>GitHub Authorized - OK</span>
+        </div>
+    </div>
+</div>
 
     <div id="j-card-action" class="j-card" style='display: none'>
         <div class="container_fluid" id="todo_panel">
-            <u>Repository:</u>&nbsp&nbsp<label id="repoB"><b>placeholder for repo</b></label>&nbsp&nbsp<u>Issue #:</u>&nbsp&nbsp<b><label id="issueB"></label></b>
-            <br><br>
-            Labels: <label id="labelsB"><b>placeholder for labels</b></label>
-            <br><br>
-            <a id="GitHubLinkB" href="https://www.github.com" target="_blank">placeholder for github link and issue name</a>
-
-            <br> <br>
-            Existing Comments:<br><br>
+            <span>Existing Comments:</span><br/><br/>
             <div id="div-comments-table">
                 <table class="table table-striped table-condensed table-bordered" style="border: 1px solid" id="comments-table">
                     <th>Comment:</th><th>By User:</th><th>Timestamp</th>
@@ -49,7 +53,7 @@
             <br><br>
             <button class="btn btn-primary" id="btn_comment">Post Comment</button>
             <button class="btn btn-primary" id="btn_close">Close Issue</button>
-            <button class="btn btn-primary" id="btn_submitB">Exit</button>
+            <button class="btn btn-primary" id="btn_submit">Exit</button>
             <br>
         </div>
     </div>

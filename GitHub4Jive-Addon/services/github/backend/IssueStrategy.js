@@ -14,24 +14,30 @@
  *    limitations under the License.
  */
 var jive = require("jive-sdk");
+var Q = require("q");
+
 var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var helpers = require("./helpers");
-var Q = require("q");
 
-var tokens = {};
+var strategyBase = require("./../../../common/strategies/EventStrategyBase");
+var issueStrategy = Object.create(strategyBase);
+module.exports = issueStrategy;
 
-exports.setup = function(setupOptions){
+issueStrategy.name = "Issue";
+
+issueStrategy.setup = function(setupOptions){
 
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
     var placeID = setupOptions.placeID;
-    var auth = {"type": "oauth", "token":setupOptions.gitHubToken};
+    var placeUrl = setupOptions.placeUrl;
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
-        jive.logger.debug(gitData);
         if(gitData.action === "opened") {
+            jive.logger.info("New Issue! Creating a discussion for it.");
             var builder = new JiveContentBuilder();
             var content = builder.discussion()
                 .parentPlace(placeID)
@@ -43,30 +49,18 @@ exports.setup = function(setupOptions){
                 //attach ext props to get discussion later
                 return jiveApi.attachProps(contentID, {
                     "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number//may not be correct field name
+                    "github4jiveIssueNumber": gitData.issue.number
                 });
             });
 
         }else if(gitData.action === "reopened"){
-            helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.unMarkFinal(discussion.id);
+            helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+                jiveApi.unMarkFinal(discussion.contentID);
             });
         }else if(gitData.action === "closed"){
-            helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-                jiveApi.markFinal(discussion.id);
+            helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+                jiveApi.markFinal(discussion.contentID);
             });
         }
-
-
-    }).then(function (token) {
-        tokens[setupOptions.placeUrl] = token;
-    });
-};
-
-exports.teardown = function(teardownOptions){
-
-    var token = tokens[teardownOptions.placeUrl];
-    return gitHubFacade.unSubscribeFromRepoEvent(token).then(function () {
-        delete tokens[teardownOptions.placeUrl];
     });
 };

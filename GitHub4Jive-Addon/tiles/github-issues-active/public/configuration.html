@@ -2,20 +2,33 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{{host}}}/stylesheets/style.css">
     <script src="{{{host}}}/javascripts/jquery-1.8.3.js"></script>
-    <script src="{{{host}}}/javascripts/oauth2client.js"></script>
-    <script src="{{{host}}}/github-issues-active/javascripts/main.js"></script>
-    <script>
-        $(document).ready( function() {
-            doIt( '{{{host}}}');
-        });
-    </script>
+    <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/coreapi-context-resolver-v3.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/oauth2client.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{{{host}}}/javascripts/basicOauthFlow.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{{{host}}}/github-issues-active/javascripts/configure.js"></script>
 </head>
 
 <body>
-
-<div id="j-card-authentication" class="j-card" style='display: none'>
-    <p>The remote system (GitHub) requires you to grant access before proceeding.</p>
-    <button id="oauth">Grant Access</button>
+<script>
+    $(function () {
+        host = "{{{host}}}";
+    })
+</script>
+<div id="j-card-authentication" class="j-card" >
+    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+    <div>
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+        <div id="github4jive-jive-authorize-success" style="display: none;">
+            <span>Jive Authorized - OK</span>
+        </div>
+    </div>
+    <br/>
+    <div>
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+        <div id="github4jive-github-authorize-success" style="display: none;">
+            <span>GitHub Authorized - OK</span>
+        </div>
+    </div>
 </div>
 
 <div id="j-card-configuration" class="j-card" style="...">
@@ -27,9 +40,9 @@
         <input type="radio" value="off" name="post_activity">off
     </p>
     <p>
-        Repository:  <select id="repoList"></select>
+        Repo: <select id="projectList"></select>
     </p>
-    <button id="btn_submit">Submit</button>
+    <input id="github4jive-enable-submit" type="button" value="Save" />
 
 </div>
 

@@ -17,14 +17,27 @@
 var jive = require('jive-sdk');
 var GitHubApi = require("github");
 var Q = require("q");
+function promiseSeed() {
+    return Q.fcall(function () {
+        return;
+    });
+}
 
 var config = require("../jiveclientconfiguration.json");
 
 /********************* Private Functions **************************/
 
-function GitHubInstance(auth){
+function clienturl() {
+    if(config.clientUrl.slice(-1) == "/"){
+        return config.clientUrl.substr(0, config.clientUrl.length-1);
+    }else{
+        return config.clientUrl;
+    }
+}
 
-    console.log(auth);
+var GITHUB_EVENT_URL = clienturl() + ":" + config.port + config.github.webHookUrl;
+
+function GitHubInstance(auth){
     var git = new GitHubApi({version: "3.0.0"});
     if(auth){
         git.authenticate(auth);
@@ -70,24 +83,66 @@ function getOrgsRepositories(git, org){
 
 var repoHooks = {};
 
+var webhookPending = false;
+var retry = 5;
+
+function inlineResetWebhookProtection(response){
+    webhookPending = false;
+    retry = 5;
+    return response
+};
+
+function waitForWebHookRequest(){
+    if(webhookPending){
+        return Q.delay(retry).then(function () {
+            retry *= 2;
+            //using a large healthy timeout to handle latency issues
+            if(retry >= 10000){
+                inlineResetWebhookProtection();
+            }
+            return waitForWebHookRequest();
+        })
+    }else{
+        return promiseSeed();
+    }
+}
+
+function webHookWrapper(surround){
+    return waitForWebHookRequest().then(function () {
+        webhookPending = true;
+
+        if (typeof surround === "function") {
+            return promiseSeed().then(surround).then(inlineResetWebhookProtection);
+        }
+        else {
+            return surround.then(inlineResetWebhookProtection);
+        }
+
+    }).catch(function(error){
+        jive.logger.error(error);
+        return inlineResetWebhookProtection(error);
+    });
+
+}
+
 function createGitHubHook(git,owner, repo, events){
-    return deferredTemplate( git.repos.createHook,
+    return ( deferredTemplate( git.repos.createHook,
         {"user": owner, "repo": repo, "name": "web",
-            "config": JSON.stringify( { "url": config.clientUrl + ":" + config.port +  config.github.webHookUrl, "content_type": "json"}),
+            "config": JSON.stringify( { "url":  GITHUB_EVENT_URL, "content_type": "json"}),
             "events": events,
             "active": true
-        });
+        }));
 }
 
 function deleteRepoHook(git,owner, repo, key){
-    return deferredTemplate(git.repos.deleteHook, {"user": owner, "repo": repo, "id": key});
+    return (deferredTemplate(git.repos.deleteHook, {"user": owner, "repo": repo, "id": key}));
 }
 
 function deletePreviousHooks(git,owner, repo){
     return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo}).then(function(hooks){
         var hooksDeleting = [];
         hooks.forEach(function(hook){
-            if(hook.name == "web"){
+            if(hook.config.url == GITHUB_EVENT_URL){
                 hooksDeleting.push(deleteRepoHook(git, owner, repo, hook.id));
             }
         });
@@ -131,40 +186,42 @@ function currentSubscribedEvents(hook){
 }
 
 function subscribeTo(git,owner,repo, gitEvent, handler){
-    var fullName = owner + "/" + repo;
-    var hook = repoHooks[fullName];
-    if(!hook){
-        return deletePreviousHooks(git, owner, repo).then(function(){
-            return createGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
-                var eventHandler = EventHandler(gitEvent, handler);
-                repoHooks[fullName] = {events:{}, key: hookResponse.id};
-                repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
-                return eventHandler.token;
-            });
-        });
-    }else{
-
-        if(hookHasRegisteredEvent(hook, gitEvent)){
-            var eventHandler = EventHandler(gitEvent, handler);
-            hook.events[gitEvent].handlers.push(eventHandler);
-            //hack to make interface consistent
-            return Q.delay(0).then(function() {return eventHandler.token;});
-        }else{
-            var newEventList = currentSubscribedEvents(hook);
-            newEventList.push(gitEvent);
-            jive.logger.info(newEventList);
-            return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
-                return createGitHubHook(git,owner, repo, newEventList).then(function(hookResponse){
-                    hook.key = hookResponse.id;
+    return webHookWrapper(function () {
+        var fullName = owner + "/" + repo;
+        var hook = repoHooks[fullName];
+        if(!hook){
+            return deletePreviousHooks(git, owner, repo).then(function(){
+                return createGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
                     var eventHandler = EventHandler(gitEvent, handler);
+                    repoHooks[fullName] = {events:{}, key: hookResponse.id};
                     repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
                     return eventHandler.token;
                 });
-            })
+            });
+        }else{
+
+            if(hookHasRegisteredEvent(hook, gitEvent)){
+                var eventHandler = EventHandler(gitEvent, handler);
+                hook.events[gitEvent].handlers.push(eventHandler);
+                //hack to make interface consistent
+                return promiseSeed().then(function() {return eventHandler.token;});
+            }else{
+                var newEventList = currentSubscribedEvents(hook);
+                newEventList.push(gitEvent);
+                jive.logger.info(fullName + " has registered to",newEventList);
+                return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
+                    return createGitHubHook(git,owner, repo, newEventList).then(function(hookResponse){
+                        hook.key = hookResponse.id;
+                        var eventHandler = EventHandler(gitEvent, handler);
+                        repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
+                        return eventHandler.token;
+                    });
+                })
+
+            }
 
         }
-
-    }
+    } );
 }
 
 function findPathToHandler(token){
@@ -191,8 +248,12 @@ function extractRepoParts(repo) {
 /*
  * Test the authentication object
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
+
+exports.createOauthObject = function (token) {
+    return {"type": "oauth", "token": token};
+}
 
 exports.isAuthenticated = function(authOptions){
     var git = GitHubInstance(authOptions);
@@ -207,7 +268,7 @@ exports.isAuthenticated = function(authOptions){
  * @param repo Repo name, not full name with owner
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of commits to retrieve. Defaults to 5
- * @return promise promise -> {commitMessage: string, changes: [{fileName: string}]}) Use .then(function(result){}; to process return asynchronously
+ * @return {Promise} promise -> {commitMessage: string, changes: [{fileName: string}]}) Use .then(function(result){}; to process return asynchronously
  */
 exports.getChangeList = function(owner, repo, authOptions, upTo){
     var git = GitHubInstance(authOptions);
@@ -225,11 +286,16 @@ exports.getChangeList = function(owner, repo, authOptions, upTo){
     });
 };
 
+exports.getRepository = function (owner, repo, authOptions) {
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.repos.get,{"user": owner, "repo": repo});
+}
+
 /*
  * Retrieve a list of all the repositories a user has access to
  * @param user Name of the user to get list for
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getCompleteRepositoryListForUser = function(user, authOptions){
     var git = GitHubInstance(authOptions);
@@ -250,7 +316,7 @@ exports.getCompleteRepositoryListForUser = function(user, authOptions){
 /*
  * Retrieve the currently authenticated user
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getCurrentUser = function(authOptions){
     var git = GitHubInstance(authOptions);
@@ -264,7 +330,7 @@ exports.getCurrentUser = function(authOptions){
  * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of comments to retrieve up to 100. Default is 30.
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo){
     var git = GitHubInstance(authOptions);
@@ -277,18 +343,18 @@ exports.getIssueComments = function(owner, repo, issueNumber, authOptions, upTo)
  * @param repo Repo name, not full name with owner
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param upTo Number of issues to retrieve up to 100. Default is 30.
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
-exports.getRepositoryIssues = function(owner, repo, authOptions, upTo){
+exports.getRepositoryIssues = function(owner, repo, authOptions, upTo, state){
     var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo, "per_page" : upTo});
+    return deferredTemplate(git.issues.repoIssues, {"user" : owner, "repo" : repo, "state": (state || "all"), "per_page" : upTo});
 };
 
 /*
  * Retrieve a user's details
  * @param user Username of user
  * @param authOptions OPTIONAL object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
 exports.getUserDetails = function(user, authOptions){
@@ -322,7 +388,7 @@ exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions
  * @param issueNumber The number that corresponds to the issue you want from the repository. These are usually numeric from 1.
  * @param newComment String the content of the new comment to be made. Must not be empty.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptions){
     if(!newComment || newComment === "") {
@@ -342,7 +408,7 @@ exports.addNewComment = function(owner, repo, issueNumber, newComment, authOptio
  * @param gitEvent The GitHub event that this handler should respond to. Possible values are defined on the Events member
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
  * @param handler Callback function. Passed raw GitHub payload on event.
- * @return  promise promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
+ * @return  {Promise} promise -> subscriptionToken This token is used to identify an event handler. Keep it to unregister an event later.
  */
 exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, handler){
     if(!owner){
@@ -362,23 +428,25 @@ exports.subscribeToRepoEvent = function(owner, repo, gitEvent, authOptions, hand
     var git = GitHubInstance(authOptions);
     return subscribeTo(git, owner, repo, gitEvent, handler).catch(function (error) {
         jive.logger.error(  owner + "/" + repo + ": " + error.message);
-        return error;
+        throw error;
     });
 };
 
 /*
  * UnRegister an event handler from GitHub.
  * @param token Use the token returned from the promise of subscribeToRepoEvent to unsubscribe handler
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
-exports.unSubscribeFromRepoEvent = function(token, authOptions){
+exports.unSubscribeFromRepoEvent = function(token, authOptions) {
     var path = findPathToHandler(token);
-    if(path) {
-        var repo = repoHooks[path.hook];
-        var event = repo.events[path.event];
+    if (!path) {
+        throw Error("Invalid Handler Token");
+    }
+    var repo = repoHooks[path.hook];
+    var event = repo.events[path.event];
 
-        var handler = event.handlers.splice(path.handler, 1)[0];
-
+    var handler = event.handlers.splice(path.handler, 1)[0];
+    return webHookWrapper(function () {
         if (event.handlers.length == 0) {
             if (!(delete repo.events[path.event])) {
                 throw Error("Unable to unregister hook event.");
@@ -388,39 +456,49 @@ exports.unSubscribeFromRepoEvent = function(token, authOptions){
             var unregisterAction;
             var r = extractRepoParts(path.hook);
             var git = GitHubInstance(authOptions);
-            if (currentEvents.length == 0) {
-                unregisterAction = deleteRepoHook(git, r.owner, r.repo, repo.key);
-            }
-            else {//
-                unregisterAction = createGitHubHook(git, r.owner, r.repo, currentEvents);
-            }
-            return unregisterAction;
+            return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
+                if (currentEvents.length != 0) {
+                    return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
+                        repo.key = hookResponse.id;
+                        return true;
+                    });
+                }
+                else {
+                    if (Object.keys(repo.events).length == 0) {
+                        delete repoHooks[path.hook];
+                    }
+                }
+            });
         }
-    }
-    return Q.delay(0).then(function(){return true;});//sorry for the hack. Makes the interface consistent when mixing asynchronous code
-};
+        return promiseSeed().then(function () {
+            return true;
+        });//sorry for the hack. Makes the interface consistent when mixing asynchronous code
+    });
+}
+
+
 
 /*
  * Remove all outstanding GitHub events that were previously registered.
  * @param authOptions object with either type: "basic" with username and password or type: "oauth" with token: "OAuthToken"
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
-exports.RemoveAllWebHooks = function(authOptions){
-    var git = GitHubInstance(authOptions);
-    var repoDeletes = [];
-    for(var repo in repoHooks){
-        var r = extractRepoParts(repo);
-        repoDeletes.push( deletePreviousHooks(git, r.owner, r.repo));
-    }
-    return Q.all(repoDeletes);
-};
+//exports.RemoveAllWebHooks = function(authOptions){
+//    var git = GitHubInstance(authOptions);
+//    var repoDeletes = [];
+//    for(var repo in repoHooks){
+//        var r = extractRepoParts(repo);
+//        repoDeletes.push( deletePreviousHooks(git, r.owner, r.repo));
+//    }
+//    return Q.all(repoDeletes);
+//};
 
 /*
  * This is used to notify event handlers of new data. This needs to be wired up to web accessible controller to pass GitHub payloads to event handlers.
  * Currently web hooks are created looking for the url set in jiveClientConfiguration.json by gitHubWebHookUrl. This url must be used to capture the GitHub Payloads.
  * @param eventType String must be either "ping" or one of the events in the Events member
  * @param eventData GitHub Payload body
- * @return promise promise: Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
 exports.notifyNewGitHubHookInfo = function(eventType, eventData){

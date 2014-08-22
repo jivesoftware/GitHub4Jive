@@ -1,10 +1,10 @@
 * {
-    font-family: Arial, sans-serif;
+    font-family: Helvetica, arial, freesans, clean, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 
 body {
-    background-color: #b6f5ff;
+    background-color: rgb(242, 248, 250);
     margin:20px;
 }
 

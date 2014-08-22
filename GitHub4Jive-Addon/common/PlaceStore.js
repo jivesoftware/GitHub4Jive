@@ -15,16 +15,33 @@
  */
 
 var jive = require("jive-sdk");
-
+var Q = require("q");
 var store = jive.service.persistence();
+var JiveApi = require("./JiveApiFacade");
+var JiveOauth = require("./JiveOauth");
 
-exports.save = function(placeUrl, token){
+function recursiveOverwrite(record,newObject){
+    if (typeof(newObject) === "object" || typeof newObject === "array") {
+        for(var m in newObject) {
+            if(record[m]){
+                recursiveOverwrite(record[m], newObject[m]);
+            }
+            record[m] = newObject[m];
+        }
+
+    }else{
+        record = newObject;
+    }
+
+}
+
+exports.save = function(placeUrl, newObject, dontStamp){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
     return store.findByID("tokens", placeUrl).then(function (found) {
         var record = found || {};
-        for(var m in token){record[m] = token[m];} //overwrite old members or add new ones
+        recursiveOverwrite(record, newObject);
         var delimitter = "/";
         var tokens = placeUrl.split(delimitter);
         var domainTokens = tokens.slice(0, 3);
@@ -32,17 +49,55 @@ exports.save = function(placeUrl, token){
         record.jiveUrl =  domainTokens.join(delimitter);
         record.placeID =  tokens[tokens.length -1];
         record.placeUrl = placeUrl;
+        record.invalidCache = !dontStamp;
         return store.save("tokens", placeUrl, record).then(function(){
             return record;
         });
     })
 };
 
+exports.invalidateCache = function(placeUrl){
+    if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
+        throw Error("Invalid Place");
+    }
+    var self = this;
+    return self.save(placeUrl).then(function (record) {
+        return pullExternalPropertiesIn(self, record);
+    })
+}
+
+function pullExternalPropertiesIn(self,linked){
+    if(!linked.github.repoOwner || !linked.github.repo || linked.invalidCache){
+        //cache repo information
+        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var jauth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token);
+            var japi = new JiveApi(community, jauth);
+            return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {
+                linked.github.repo = extprops.github4jiveRepo;
+                linked.github.repoOwner = extprops.github4jiveRepoOwner;
+                var githubReplacement = {"github": linked.github};
+                return self.save(linked.placeUrl, githubReplacement, true);
+            })
+        });
+
+    }else{
+        return linked;
+    }
+}
+
 exports.getAllPlaces = function(){
-    return store.find("tokens");
+    var self = this;
+    return store.find("tokens").then(function (linkedPlaces) {
+        return Q.all(linkedPlaces.map(function (linked) {
+            return pullExternalPropertiesIn(self, linked);
+        }));
+    });
 };
 
 
 exports.getPlaceByUrl = function(placeUrl){
-    return store.findByID("tokens", placeUrl);
+    var self = this;
+    return store.findByID("tokens", placeUrl).then(function (linked) {
+        return pullExternalPropertiesIn(self,linked);
+    });
 };

@@ -18,7 +18,6 @@ var count = 0;
 
 var jive = require("jive-sdk");
 var gitHub = require("../../../common/GitHubFacade");
-var oAuth = require("../../../common/OauthProvider");
 var tileFormatter = require("../../../common/TileFormatter");
 
 var registeredTiles = {};
@@ -72,9 +71,8 @@ function setupGitHubListeners(instance){
     if ( !config || config['posting'] === 'off' || registeredTiles[instance.id]) {
         return;
     }
-    var owner = config.repoOwner;
-    var repo = config.repoName;
-    var ticketID = config.ticketID;
+
+
 
     oAuth.getOauthToken(ticketID).then(function (authOptions) {
         return setupIssueActivityFeed(instance, config, owner, repo, authOptions)
@@ -93,7 +91,7 @@ exports.onBootstrap = function () {
         }
 
     });
-}
+};
 
 exports.eventHandlers = [
 

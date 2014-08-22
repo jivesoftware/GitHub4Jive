@@ -116,7 +116,7 @@ function decorateWithExtPropRetrievers(community, content, authenticator){
 /*
  * Create new content in the Jive community
  * @param object post Jive API payload to create content. JiveContentBuilder makes this easy.
- * @return promise promise Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
 JiveApiFacade.prototype.create = function(post){
@@ -138,7 +138,7 @@ JiveApiFacade.prototype.create = function(post){
 /*
  * Delete content form the Jive community by its reference
  * @param string id The content id to be deleted.
- * @return promise promise Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 JiveApiFacade.prototype.destroy = function(id){
     var url  = communityAPIURL(this) + "contents/" + id;
@@ -155,7 +155,7 @@ JiveApiFacade.prototype.destroy = function(id){
  * as described by the Jive API. Use JiveContentBuilder Message to create easily.
  * @param string discussionID The reference for the discussion to reply to
  * @param object reply Jive API payload for a discussion message. JiveContentBuilder Message will make this easy.
- * @return promise promise Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  *
  */
 JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
@@ -197,7 +197,7 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
  * Attach external properties to a piece of content
  * @param string parentID The content ID for the content to attach properties to
  * @param object props All fields will be converted to properties
- * @return promise promise Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 JiveApiFacade.prototype.attachProps = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
@@ -215,7 +215,7 @@ JiveApiFacade.prototype.attachProps = function(parentID,props){
  * Retrieve a list of object by external property and value
  * @param string key The external property to query on
  * @param string value The value of the external property to look for
- * @return promise promise Use .then(function(result){}); to process return asynchronously
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
 JiveApiFacade.prototype.getByExtProp= function (key, value) {

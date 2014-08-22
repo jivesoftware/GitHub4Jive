@@ -266,33 +266,5 @@ describe("JiveApiFacade", function () {
             });
         })
     });
-
-//    describe("#commentOn", function () {
-//        function TestContentTypeComments(contentType) {
-//            var builder = new ContentBuilder();
-//            var comment = builder.comment().body("").build();
-//            return createContent(jiveFacade, contentType).then(function (response) {
-//                response.success.should.be.true;
-//                var content = response.apiID;
-//                return jiveFacade.commentOn(content, comment).then(function (response) {
-//                    response.success.should.be.true;
-//                }).done(function () {
-//                    return jiveFacade.destroy(content).then(function (res) {
-//                        res.success.should.be.true;
-//                    });
-//                });
-//            })
-//        }
-//
-//        it("should add a comment to supported content", function () {
-//            var contentType = "document";
-//            return TestContentTypeComments(contentType);
-//        });
-//
-//        it("should post a message to discussion which don't support comments", function () {
-//            var contentType = "discussion";
-//            //return TestContentTypeComments(contentType);
-//        });
-//    })
 });
 

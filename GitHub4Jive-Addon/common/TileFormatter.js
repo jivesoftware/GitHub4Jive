@@ -89,6 +89,18 @@ function formatListEntry(item, keys){
     };
 }
 
+function formatTableEntry(item, keys) {
+    if(!keys){
+        keys = {};
+    }
+    var nameKey = keys.name || "name";
+    var valueKey = keys.value || "value";
+    return {
+        name: chop(item[nameKey], 25),
+        value: chop(item[valueKey], 50)
+    }
+}
+
 exports.formatAccordionData = function(title,items, keys){
 
 
@@ -122,6 +134,27 @@ exports.formatListData = function(title, items, keys){
             'url': 'https://www.github.com'
         }
     };
+};
+
+exports.emptyListData = function (title, entry) {
+    return {
+        title: chop(title, 50),
+        contents: [{text:entry}],
+        action: {
+            text: 'Github' ,
+            'url': 'https://www.github.com'
+        }
+    };
+}
+
+exports.formatTableData = function (title, items, keys) {
+    var formattedItems = items.map(function (item) {
+        return formatTableEntry(item, keys);
+    })
+    return {
+        title: chop(title,50),
+        contents: formattedItems
+    }
 }
 
 exports.formatActivityData = function (headLine, description, displayName, email, url) {

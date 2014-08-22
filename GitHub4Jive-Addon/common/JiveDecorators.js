@@ -15,16 +15,18 @@
  */
 var jive = require("jive-sdk");
 
-exports.decorateIssueWithJiveContent = function (jiveApi, issue) {
+exports.decorateIssueWithJiveContent = function (jiveApi,place, issue) {
     if(!issue.number){
         throw Error("Invalid Issue");
     }
     return jiveApi.getByExtProp("github4jiveIssueId",issue.id).then(function (found) {
-        if(found.list.length != 1){
-            jive.logger.debug("Issue: " + issue.number + " has no linked content or more than 1");
-        }else{
-            issue.jiveContentLink = found.list[0].resources.html.ref;
+        if(found.list){
+            found.list.forEach(function (discussion) {
+                if(discussion.parent == place){
+                    issue.jiveContentLink = discussion.resources.html.ref;
+                    return discussion;
+                }
+            })
         }
-        return issue;
     })
 }

@@ -61,6 +61,7 @@ exports.getUserRepos = function(req, res){
         res.end(JSON.stringify("Specify place api url"));
     }
 
+
     getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.getCurrentUser(authOptions).then(function(user){
             var username = user.login;
@@ -87,7 +88,7 @@ exports.getPlaceIssues = function (req, res) {
                     });
                     var japi = new JiveApi(community, jAuth);
                     Q.all(issues.map(function (issue) {
-                        return jiveDecorator.decorateIssueWithJiveContent(japi, issue);
+                        return jiveDecorator.decorateIssueWithJiveContent(japi,placeUrl, issue);
                     })).then(function (decIssues) {
                         contentResponse(res, decIssues);
                     })

@@ -14,8 +14,19 @@
  *    limitations under the License.
  */
 
-exports.getDiscussionForIssue = function (jiveApi, issueId){
+var jive = require("jive-sdk");
+
+exports.getDiscussionForIssue = function (jiveApi, place,issueId){
     return jiveApi.getByExtProp("github4jiveIssueId", issueId).then(function (contents) {
-        return contents.list[0];
+        if(contents.list){
+            var toReturn = null;
+            contents.list.forEach(function (discussion) {
+                if(discussion.parent == place){
+                    toReturn = discussion;
+                    return discussion;
+                }
+            })
+            return toReturn;
+        }
     });
 };

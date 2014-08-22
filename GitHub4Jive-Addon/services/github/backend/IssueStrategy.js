@@ -32,6 +32,7 @@ issueStrategy.setup = function(setupOptions){
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
     var placeID = setupOptions.placeID;
+    var placeUrl = setupOptions.placeUrl;
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
@@ -53,11 +54,11 @@ issueStrategy.setup = function(setupOptions){
             });
 
         }else if(gitData.action === "reopened"){
-            helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
+            helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.unMarkFinal(discussion.contentID);
             });
         }else if(gitData.action === "closed"){
-            helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
+            helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.markFinal(discussion.contentID);
             });
         }

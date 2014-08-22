@@ -34,17 +34,19 @@ issueCommentStrategy.setup = function(setupOptions) {
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
 
-        helpers.getDiscussionForIssue(jiveApi, gitData.issue.id).then(function (discussion) {
-            var builder = new JiveContentBuilder();
-            var comment = builder.message()
-                .body(gitData.comment.body)
-                .build();
-            jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
-                if (!response.success) {
-                    jive.logger.error("Error creating comment on " + discussion.subject);
-                    jive.logger.error(response);
-                }
-            })
+        helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id).then(function (discussion) {
+            if(discussion){
+                var builder = new JiveContentBuilder();
+                var comment = builder.message()
+                    .body(gitData.comment.body)
+                    .build();
+                jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
+                    if (!response.success) {
+                        jive.logger.error("Error creating comment on " + discussion.subject);
+                        jive.logger.error(response);
+                    }
+                })
+            }
         }).catch(function (error) {
             jive.logger.error(error);
         });

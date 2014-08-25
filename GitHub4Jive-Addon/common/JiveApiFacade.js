@@ -215,8 +215,21 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
  * @param object props All fields will be converted to properties
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
+
 JiveApiFacade.prototype.attachProps = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
+    var headers = {};
+    var options = this.authenticator.applyTo(url, props, headers);
+    options['method'] = 'POST';
+    return catchErrorResponse(
+        jive.community.doRequest(this.community, options ).then(function (response) {
+            return decorateResponseWithSuccess(response, 201);
+        })
+    );
+};
+
+JiveApiFacade.prototype.attachPropsToReply = function(parentID,props){
+    var url = communityAPIURL(this) + "messages/" + parentID + "/extprops";
     var headers = {};
     var options = this.authenticator.applyTo(url, props, headers);
     options['method'] = 'POST';

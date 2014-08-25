@@ -36,8 +36,8 @@ issueCommentStrategy.setup = function(setupOptions) {
 
         var gitComment = gitData.comment.body;
 
-        if(gitComment.indexOf("[Jive") != 0){
-            gitComment = "[GitHub - " + gitData.comment.user.login + "] " + gitComment;
+        if(gitComment.indexOf("<!--Jive-->") != 0){
+            gitComment = "<!--GitHub-->" + gitComment;
             helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id).then(function (discussion) {
                 if(discussion){
                     var builder = new JiveContentBuilder();
@@ -48,6 +48,13 @@ issueCommentStrategy.setup = function(setupOptions) {
                         if (!response.success) {
                             jive.logger.error("Error creating comment on " + discussion.subject);
                             jive.logger.error(response);
+                        }else{
+//                            jiveApi.attachPropsToReply(response.entity.id,{fromGitHub: true}).then(function (response) {
+//                                if (!response.success) {
+//                                    jive.logger.error("Error creating comment on " + discussion.subject);
+//                                    jive.logger.error(response);
+//                                }
+//                            })
                         }
                     })
                 }

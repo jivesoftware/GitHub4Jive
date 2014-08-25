@@ -113,6 +113,22 @@ function decorateWithExtPropRetrievers(community, content, authenticator){
     }
 }
 
+JiveApiFacade.prototype.get = function(url){
+    var headers = {};
+    var options = this.authenticator.applyTo(url,null, headers);
+    options['method'] = 'GET';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+        decorateResponseWithSuccess(response, 201);
+        if(response.success){
+            var url = response.entity.resources.self.ref;
+            response.apiID = url.substr(url.lastIndexOf("/") + 1);
+        }
+        return response;
+    }));
+
+};
+
+
 /*
  * Create new content in the Jive community
  * @param object post Jive API payload to create content. JiveContentBuilder makes this easy.
@@ -238,7 +254,11 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
 };
 
 JiveApiFacade.prototype.getAllExtProps = function (uri) {
+
     var url = communityAPIURL(this) + uri;
+    if(uri.indexOf("http") == 0){
+        url = uri;
+    }
     var headers = {};
     var options = this.authenticator.applyTo(url, null, headers);
     options["method"] = "GET";

@@ -135,7 +135,7 @@
   <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
-  <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />
+  <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" preferred_width="400"/>
 
 
   <!--

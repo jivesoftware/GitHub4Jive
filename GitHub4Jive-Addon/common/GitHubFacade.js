@@ -364,8 +364,8 @@ exports.getUserDetails = function(user, authOptions){
 
 exports.newIssue = function (owner, repo, title, body, authOptions) {
     var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.issues.create, {"user":owner,"repo":repo,"title":title,"body":body}).then(function (issue) {
-        return issue && issue.title == title;
+    return deferredTemplate(git.issues.create, {"user":owner,"repo":repo,"title":title,"body":body, "labels": []}).then(function (issue) {
+        return issue && issue.title === title;
     })
 }
 

@@ -149,7 +149,7 @@ exports.newComment = function(req, res){
 
     getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.addNewComment(repo.owner, repo.repo, issueNumber, comment, authOptions).then(function(confirmation){
-            contentResponse(res, confirmation);
+            contentResponse(res, {success:confirmation});
         });
     }).catch(function(error){
         ErrorResponse(res, error);
@@ -171,7 +171,7 @@ exports.newIssue = function (req, res) {
             var authOptions = gitHubFacade.createOauthObject(linked.github.token.access_token);
             return gitHubFacade.newIssue(linked.github.repoOwner, linked.github.repo, title, body, authOptions)
                 .then(function (confirmation) {
-                    contentResponse(res, confirmation);
+                    contentResponse(res, {success:confirmation});
                 })
                 .catch(function (error) {
                     ErrorResponse(res, error);

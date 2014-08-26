@@ -44,7 +44,7 @@ exports.IssuesForPlace = {
 };
 
 exports.IssuesForPlace = {
-    'verb' : 'get',
+    'verb' : 'post',
     'path' : '/github/place/newIssue',
     'route' : gitHubController.newIssue
 };

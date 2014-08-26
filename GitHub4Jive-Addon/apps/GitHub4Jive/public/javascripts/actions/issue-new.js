@@ -1,7 +1,7 @@
 $(function () {
     $("#btn_issue").click(function (e) {
         var title = $("#Title").val();
-        var body = $("#body").val();
+        var body = $("#Body").val();
 
         var bodyPayload = {
             "title": title,
@@ -23,5 +23,9 @@ $(function () {
             }
             osapi.jive.core.container.closeApp();
         });
-    })
+    });
+
+    $("#btn_exit").click(function () {
+        osapi.jive.core.container.closeApp();
+    });
 })

@@ -289,4 +289,19 @@ if(realTile){
         id: "com.jivesoftware.addon.github4jive.space.config",
         callback: app.handleContext
     });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.group.newIssue",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.project.newIssue",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.space.newIssue",
+        callback: app.handleContext
+    });
 }

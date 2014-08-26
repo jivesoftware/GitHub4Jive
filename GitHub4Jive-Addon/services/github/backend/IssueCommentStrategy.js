@@ -43,6 +43,7 @@ issueCommentStrategy.setup = function(setupOptions) {
                     var builder = new JiveContentBuilder();
                     var comment = builder.message()
                         .body(gitComment)
+                        .onBehalfOf(gitData.comment.user.email || "", gitData.comment.user.login)
                         .build();
                     jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
                         if (!response.success) {

@@ -28,4 +28,8 @@ $(function () {
     $("#btn_exit").click(function () {
         osapi.jive.core.container.closeApp();
     });
+
+    $(document).bind("github4jiveAuthorized", function () {
+        gadgets.window.adjustWidth(800);
+    })
 })

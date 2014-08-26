@@ -117,11 +117,14 @@ JiveApiFacade.prototype.get = function(url){
     var headers = {};
     var options = this.authenticator.applyTo(url,null, headers);
     options['method'] = 'GET';
+    var community = this.community;
+    var authenticator = this.authenticator;
     return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
-        decorateResponseWithSuccess(response, 201);
+        decorateResponseWithSuccess(response, 200);
         if(response.success){
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
+            decorateWithExtPropRetrievers(community,response.entity,authenticator);
         }
         return response;
     }));

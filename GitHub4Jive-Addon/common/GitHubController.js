@@ -158,6 +158,6 @@ exports.gitHubWebHookPortal = function(req, res){
     var data = req.body;
 
     gitHubFacade.notifyNewGitHubHookInfo(event, data);
-    res.writeHead(204);
+    res.writeHead(202);
     res.end();
 };

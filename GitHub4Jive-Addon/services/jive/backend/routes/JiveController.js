@@ -61,19 +61,18 @@ exports.basicTileConfig = function (req, res) {
     res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
 };
 
-function getDiscussionUrl(jiveApi, message){
-    return jiveApi.get(message.id).then(function (m) {
-        return m.entity.discussion;
-    });
+function getDiscussionUrl(message){
+    return message.discussion;
 }
 
 function processPayload(hookPayload)
 {
     var place = hookPayload.target.id;
     var event = hookPayload.verb;
-    var comment = hookPayload.object.summary;
-    jive.logger.debug(comment);
-    if(event == "jive:replied" && comment.indexOf("<!--GitHub-->") != 0){//Check for a comment created from GitHub
+    var comment = hookPayload.object;
+    jive.logger.debug(hookPayload.object);
+    if(event == "jive:replied" ){//Check for a comment created from GitHub
+
 
         return placeStore.getPlaceByUrl(place).then(function (linked) {
             if(!linked || !linked.github || !linked.github.repo || !linked.github.repoOwner){
@@ -84,35 +83,46 @@ function processPayload(hookPayload)
 
             return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
                 var jiveAuth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token, function (newTokens) {
-                    jive.logger.info("Refreshing Jive tokens for: "+ linked.placeUrl);
+                    jive.logger.info("Refreshing Jive tokens for: " + linked.placeUrl);
                     jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
-                    return placeStore.save(linked.placeUrl,{jive:newTokens});
+                    return placeStore.save(linked.placeUrl, {jive: newTokens});
                 });
 
-                var japi = new JiveApi(community,jiveAuth);
-//                japi.getAllExtProps(hookPayload.object.id).then(function (commentProps) {
-//                    if(!commentProps.fromGitHub){
-//                        return q(function () {
-//                            return;
-//                        })
-//                    }
-                    return getDiscussionUrl(japi, hookPayload.object).then(function (discussion) {
+                var japi = new JiveApi(community, jiveAuth);
+                return japi.get(comment.id).then(function (message) {
+                    jive.logger.debug(message);
+                    var message = message.entity;
+                    return message.retrieveAllExtProps().then(function (commentprops) {
+
+                        if (commentprops.fromGitHub) {
+                            return q(function () {
+                                return;
+                            })
+                        }
+                        var discussion =  getDiscussionUrl(message);
                         return japi.getAllExtProps(discussion).then(function (props) {
                             var issueNumber = props.github4jiveIssueNumber;
-                            if(!issueNumber){//Discussion is not linked to an issue
+                            if (!issueNumber) {//Discussion is not linked to an issue
                                 return;
                             }
-                            comment = "<!--Jive-->\n" + comment;
-                            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-                            return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,issueNumber, comment, auth).then(function (response) {
+                            return japi.get(hookPayload.object.author.id).then(function (user) {
+                                user = user.entity;
+                                var userPage = user.resources.html.ref;
+                                var gitComment = "<!--Jive-->\n[[Jive](" + community.jiveUrl + ") - [" +
+                                    user.displayName +
+                                    "](" + userPage + ")] " + hookPayload.object.summary;
+                                var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+                                return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
+                                    issueNumber, gitComment, auth).then(function (response) {
+                                    })
                             })
+
                         });
-                    });
-//                });
 
-
-
+                    })
+                });
             });
+
 
         });
     }else{

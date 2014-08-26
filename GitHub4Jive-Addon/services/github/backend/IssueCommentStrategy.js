@@ -40,24 +40,28 @@ issueCommentStrategy.setup = function(setupOptions) {
             gitComment = "<!--GitHub-->" + gitComment;
             helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id).then(function (discussion) {
                 if(discussion){
-                    var builder = new JiveContentBuilder();
-                    var comment = builder.message()
-                        .body(gitComment)
-                        .onBehalfOf(gitData.comment.user.email || "", gitData.comment.user.login)
-                        .build();
-                    jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
-                        if (!response.success) {
-                            jive.logger.error("Error creating comment on " + discussion.subject);
-                            jive.logger.error(response);
-                        }else{
-//                            jiveApi.attachPropsToReply(response.entity.id,{fromGitHub: true}).then(function (response) {
-//                                if (!response.success) {
-//                                    jive.logger.error("Error creating comment on " + discussion.subject);
-//                                    jive.logger.error(response);
-//                                }
-//                            })
-                        }
-                    })
+
+                    return gitHubFacade.getUserDetails(gitData.comment.user.login, auth).then(function (user) {
+                        var builder = new JiveContentBuilder();
+                        var comment = builder.message()
+                            .body(gitComment)
+                            .onBehalfOf(user.email || "", user.login)
+                            .build();
+                        return jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
+                            if (!response.success) {
+                                jive.logger.error("Error creating comment on " + discussion.subject);
+                                jive.logger.error(response);
+                            }else{
+                            jiveApi.attachPropsToReply(response.entity.id,{fromGitHub: true}).then(function (response) {
+                                if (!response.success) {
+                                    jive.logger.error("Error attaching props to comment");
+                                    jive.logger.error(response);
+                                }
+                            })
+                            }
+                        })
+                    });
+
                 }
             }).catch(function (error) {
                 jive.logger.error(error);

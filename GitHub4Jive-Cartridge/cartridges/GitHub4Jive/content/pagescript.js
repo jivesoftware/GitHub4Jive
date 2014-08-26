@@ -26,7 +26,7 @@ this.getSearchQuery = function (params, sendResponse) {
 }
 
 function getIssueNumber () {
-    var issueNumner = "";
+    var issueNumber = "";
     if ($(".gh-header-number").length) {
         issueNumber = $(".gh-header-number").text().substring(1);
     }

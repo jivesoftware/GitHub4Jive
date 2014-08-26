@@ -6,9 +6,12 @@ with rich discussions and quick access to GitHub resources, all from within Jive
 services, web hooks, and cartridges are used to make this experience both natural and
 powerful.
 
-*Note: For architecture details and development notes for each component, please see the corresponding **developer_notes.md** in the component directory.*
+*For architecture details and development notes for each component, please see the corresponding `.developer_notes.md` in the component directory: [Add-on developer notes](GitHub4Jive-Addon/.developer-notes.md), [Cartridge developer notes](GitHub4Jive-Cartridge/.developer-notes.md).*
 
-# User Stories - General
+# User Stories
+
+## General (User Stories)
+
 As a **user**, I should be able to:
 * see what places are linked to GitHub. 
 * These should link to the place's page
@@ -25,7 +28,8 @@ As a **person** with the keys to the repository, I should be able to:
 * create a new place or link an existing one to a repository on GitHub. 
 * Desynchronize with GitHub (turn off webhooks).
 
-# User Stories - Issues
+## Issues (User Stories)
+
 As a **contributor**, I should be able to:
 * create an issue in Jive and all comments in Jive should be sent to GitHub.
 * comment on an issue in GitHub and comments should be picked up in the Jive Issue discussion.
@@ -33,7 +37,9 @@ As a **contributor**, I should be able to:
 * see the most recent open issues related to a place.
 * see issue state changes and comments in the activity feed.
 
-# User Stories - Commits
+
+## Commits (User Stories)
+
 As any **user**, I should be able to:
 * see recent commits and changes that have occurred on the repository.
 * Those commits should also allow me to see the diff to allow me to see what code changed.
@@ -44,7 +50,8 @@ As a **contributor**, I should be able to:
 * show at least the files changed.
 * show diff of specific file(s) in commit if possible
 
-# User Stories - Pull Requests
+## Pull Requests (User Stories)
+
 As a **contributor**, I should be able to:
 * make a pull request from within Jive.
 * discuss the details of the pull request.

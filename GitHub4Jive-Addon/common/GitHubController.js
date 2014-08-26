@@ -46,8 +46,12 @@ function SplitRepo(fullname){
     return {owner: parts[0], repo: parts[1]};
 }
 
+function getLinkedPlace(placeUrl){
+    return placeStore.getPlaceByUrl(placeUrl);
+}
+
 function getGitHubOauthTokenForPlace(placeUrl){
-    return placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
+    return getLinkedPlace(placeUrl).then(function (linked) {
         return gitHubFacade.createOauthObject(linked.github.token.access_token);
     })
 }
@@ -152,6 +156,30 @@ exports.newComment = function(req, res){
     });
 
 };
+
+exports.newIssue = function (req, res) {
+    var queryParams = url.parse(req.url, true).query;
+    var placeUrl = queryParams.place;
+
+    var title = req.body.title;
+    var body = req.body.body;
+
+    if(!title){
+        ErrorResponse(res, Error("Title cannot be empty"));
+    }else{
+        getLinkedPlace(placeUrl).then(function(linked){
+            var authOptions = gitHubFacade.createOauthObject(linked.github.token.access_token);
+            return gitHubFacade.newIssue(linked.github.repoOwner, linked.github.repo, title, body, authOptions)
+                .then(function (confirmation) {
+                    contentResponse(res, confirmation);
+                })
+                .catch(function (error) {
+                    ErrorResponse(res, error);
+                })
+        });
+
+    }
+}
 
 exports.gitHubWebHookPortal = function(req, res){
     var event = req.headers["x-github-event"];

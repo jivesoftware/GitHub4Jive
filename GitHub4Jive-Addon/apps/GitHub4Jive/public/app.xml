@@ -36,6 +36,24 @@
                           view="github4jive-issue-embed"
                           icon="images/icon16.png" />
 
+                     <action id="com.jivesoftware.addon.github4jive.project.newIssue"
+                          path="jive/actions/places/project?filter=exists(context.extprops.github4jiveEnabled)"
+                          label="Create New GitHub Issue"
+                          view="github4jive-issue-new"
+                          icon="images/icon16.png" />
+
+                     <action id="com.jivesoftware.addon.github4jive.group.newIssue"
+                          path="jive/actions/places/group?filter=exists(context.extprops.github4jiveEnabled)"
+                          label="Create New GitHub Issue"
+                          view="github4jive-issue-new"
+                          icon="images/icon16.png" />
+
+                      <action id="com.jivesoftware.addon.github4jive.space.newIssue"
+                          path="jive/actions/places/space?filter=exists(context.extprops.github4jiveEnabled)"
+                          label="Create New GitHub Issue"
+                          view="github4jive-issue-new"
+                          icon="images/icon16.png" />
+
                     <action id="com.jivesoftware.addon.github4jive.project.config"
                           path="jive/settings/places/project"
                           label="Configure GitHub4Jive"
@@ -114,6 +132,7 @@
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
+  <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />

@@ -359,8 +359,15 @@ exports.getRepositoryIssues = function(owner, repo, authOptions, upTo, state){
 
 exports.getUserDetails = function(user, authOptions){
     var git = GitHubInstance(authOptions);
-    return deferredTemplate(git.user.getFrom, {"user":user})
+    return deferredTemplate(git.user.getFrom, {"user":user});
 };
+
+exports.newIssue = function (owner, repo, title, body, authOptions) {
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.create, {"user":owner,"repo":repo,"title":title,"body":body}).then(function (issue) {
+        return issue && issue.title == title;
+    })
+}
 
 /*
  * Change the state of an issue to open or closed

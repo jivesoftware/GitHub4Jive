@@ -43,6 +43,12 @@ exports.IssuesForPlace = {
     'route' : gitHubController.getPlaceIssues
 };
 
+exports.IssuesForPlace = {
+    'verb' : 'get',
+    'path' : '/github/place/newIssue',
+    'route' : gitHubController.newIssue
+};
+
 exports.closeIssue = {
     'verb' : 'post',
     'path' : '/github/place/changeIssueState',

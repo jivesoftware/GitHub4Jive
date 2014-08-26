@@ -36,22 +36,28 @@
                           view="github4jive-issue-embed"
                           icon="images/icon16.png" />
 
-                     <action id="com.jivesoftware.addon.github4jive.project.newIssue"
+                    <action id="com.jivesoftware.addon.github4jive.project.newIssue"
                           path="jive/actions/places/project?filter=exists(context.extprops.github4jiveEnabled)"
                           label="Create New GitHub Issue"
                           view="github4jive-issue-new"
                           icon="images/icon16.png" />
 
-                     <action id="com.jivesoftware.addon.github4jive.group.newIssue"
+                    <action id="com.jivesoftware.addon.github4jive.group.newIssue"
                           path="jive/actions/places/group?filter=exists(context.extprops.github4jiveEnabled)"
                           label="Create New GitHub Issue"
                           view="github4jive-issue-new"
                           icon="images/icon16.png" />
 
-                      <action id="com.jivesoftware.addon.github4jive.space.newIssue"
+                    <action id="com.jivesoftware.addon.github4jive.space.newIssue"
                           path="jive/actions/places/space?filter=exists(context.extprops.github4jiveEnabled)"
                           label="Create New GitHub Issue"
                           view="github4jive-issue-new"
+                          icon="images/icon16.png" />
+
+                    <action id="com.jivesoftware.addon.github4jive.discussion.gotoIssue"
+                          path="jive/actions/content/discussion?filter=exists(context.extprops.github4jiveIssueLink)"
+                          label="Go to Issue on GitHub"
+                          url="{context.extprops.github4jiveIssueLink}"
                           icon="images/icon16.png" />
 
                     <action id="com.jivesoftware.addon.github4jive.project.config"

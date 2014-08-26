@@ -49,7 +49,8 @@ issueStrategy.setup = function(setupOptions){
                 //attach ext props to get discussion later
                 return jiveApi.attachProps(contentID, {
                     "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number
+                    "github4jiveIssueNumber": gitData.issue.number,
+                    "github4jiveIssueLink" : gitData.issue.html_url
                 });
             });
 

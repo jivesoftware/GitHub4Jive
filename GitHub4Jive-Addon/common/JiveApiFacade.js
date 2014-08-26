@@ -113,6 +113,25 @@ function decorateWithExtPropRetrievers(community, content, authenticator){
     }
 }
 
+JiveApiFacade.prototype.get = function(url){
+    var headers = {};
+    var options = this.authenticator.applyTo(url,null, headers);
+    options['method'] = 'GET';
+    var community = this.community;
+    var authenticator = this.authenticator;
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+        decorateResponseWithSuccess(response, 200);
+        if(response.success){
+            var url = response.entity.resources.self.ref;
+            response.apiID = url.substr(url.lastIndexOf("/") + 1);
+            decorateWithExtPropRetrievers(community,response.entity,authenticator);
+        }
+        return response;
+    }));
+
+};
+
+
 /*
  * Create new content in the Jive community
  * @param object post Jive API payload to create content. JiveContentBuilder makes this easy.
@@ -199,8 +218,21 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
  * @param object props All fields will be converted to properties
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
+
 JiveApiFacade.prototype.attachProps = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
+    var headers = {};
+    var options = this.authenticator.applyTo(url, props, headers);
+    options['method'] = 'POST';
+    return catchErrorResponse(
+        jive.community.doRequest(this.community, options ).then(function (response) {
+            return decorateResponseWithSuccess(response, 201);
+        })
+    );
+};
+
+JiveApiFacade.prototype.attachPropsToReply = function(parentID,props){
+    var url = communityAPIURL(this) + "messages/" + parentID + "/extprops";
     var headers = {};
     var options = this.authenticator.applyTo(url, props, headers);
     options['method'] = 'POST';
@@ -238,7 +270,11 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
 };
 
 JiveApiFacade.prototype.getAllExtProps = function (uri) {
+
     var url = communityAPIURL(this) + uri;
+    if(uri.indexOf("http") == 0){
+        url = uri;
+    }
     var headers = {};
     var options = this.authenticator.applyTo(url, null, headers);
     options["method"] = "GET";

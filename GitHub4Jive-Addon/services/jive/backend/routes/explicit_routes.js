@@ -13,3 +13,9 @@ exports.basicTileConfig = {
     'path' : '/github4jive/basicTileConfig',
     'route' : jiveController.basicTileConfig
 };
+
+exports.webhookPortal = {
+    'verb' : 'post',
+    'path' : '/webhooks',
+    'route' : jiveController.webHookPortal
+}

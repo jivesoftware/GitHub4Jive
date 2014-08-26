@@ -23,6 +23,7 @@ var MISSING_SUBJECT = exports.MISSING_SUBJECT = "Missing subject";
 var MISSING_BODY = exports.MISSING_BODY = "Content text missing";
 var MISSING_USERS = exports.MISSING_USERS = "Missing user list.";
 var MISSING_PARENT = exports.MISSING_PARENT = "Missing parent uri";
+var INVALID_TYPE = exports.INVALID_TYPE = "Invalid Type";
 
 function verify(builder) {
     if(!builder.content.type){
@@ -245,6 +246,19 @@ JiveContentBuilder.prototype.place = function (placeURI) {
     return this;
 };
 
+JiveContentBuilder.prototype.onBehalfOf = function(email, name){
+    if(this.content.type != "discussion" && this.content.type != "message"){
+        throw INVALID_TYPE;
+    }
+    this.content.onBehalfOf = {};
+    if(email) {
+        this.content.onBehalfOf.email = email;
+    }
+    if(name) {
+        this.content.onBehalfOf.name = name;
+    }
+    return this;
+}
 
 module.exports = JiveContentBuilder;
 

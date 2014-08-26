@@ -69,6 +69,41 @@ exports.onBootstrap = function() {
     });
 };
 
+function setupJiveHook(linked){
+
+    if(!linked.jive.hookID){
+        var webhookCallback = jive.service.serviceURL() + '/webhooks?place='+ encodeURIComponent( linked.placeUrl);
+        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var community = community;
+
+            function doWebhook(accessToken) {
+                jive.webhooks.register(
+                    community, undefined, linked.placeUrl,
+                    webhookCallback, accessToken
+                ).then(function (webhook) {
+                        var webhookEntity = webhook['entity'];
+                        var webhookToSave = {
+                            'object': webhookEntity['object'],
+                            'events': webhookEntity['event'],
+                            'callback': webhookEntity['callback'],
+                            'url': webhookEntity['resources']['self']['ref'],
+                            'id': webhookEntity['id']
+                        };
+
+                        return jive.webhooks.save(webhookToSave).then(function () {
+                            return placeStore.save(linked.placeUrl, {jive:{hookID:webhookEntity.id}});
+                        })
+                    });
+            }
+
+            return doWebhook(linked.jive.access_token);
+        })
+
+    }else return Q(function () {
+        return;
+    });
+}
+
 exports.onConfigurationChange = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
@@ -86,13 +121,16 @@ exports.onConfigurationChange = function(req, res){
         });
         tempCollection.push(newLinkedPlace);
         linkedPlaces = tempCollection;
-        if(toTeardown) {
-            return teardownLinkedPlace(toTeardown).then(function () {
-                setUpLinkedPlace(newLinkedPlace);
-            });
-        }else{
-            return setUpLinkedPlace(newLinkedPlace);
-        }
+        return setupJiveHook(newLinkedPlace).then(function () {
+            if(toTeardown) {
+                return teardownLinkedPlace(toTeardown).then(function () {
+                    setUpLinkedPlace(newLinkedPlace);
+                });
+            }else{
+                return setUpLinkedPlace(newLinkedPlace);
+            }
+        });
+
 
     }).catch(function (error) {
         jive.logger.error(error);

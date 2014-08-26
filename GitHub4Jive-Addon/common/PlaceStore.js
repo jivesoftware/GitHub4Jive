@@ -25,8 +25,9 @@ function recursiveOverwrite(record,newObject){
         for(var m in newObject) {
             if(record[m]){
                 recursiveOverwrite(record[m], newObject[m]);
+            }else {
+                record[m] = newObject[m];
             }
-            record[m] = newObject[m];
         }
 
     }else{
@@ -67,7 +68,7 @@ exports.invalidateCache = function(placeUrl){
 }
 
 function pullExternalPropertiesIn(self,linked){
-    if(!linked.github.repoOwner || !linked.github.repo || linked.invalidCache){
+    if(linked && (linked.github && (!linked.github.repoOwner || !linked.github.repo) || linked.invalidCache)){
         //cache repo information
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
             var jauth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token);

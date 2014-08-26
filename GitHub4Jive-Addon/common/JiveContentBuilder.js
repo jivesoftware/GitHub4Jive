@@ -250,7 +250,13 @@ JiveContentBuilder.prototype.onBehalfOf = function(email, name){
     if(this.content.type != "discussion" && this.content.type != "message"){
         throw INVALID_TYPE;
     }
-    this.content.onBehalfOf = {email: email, name: name};
+    this.content.onBehalfOf = {};
+    if(email) {
+        this.content.onBehalfOf.email = email;
+    }
+    if(name) {
+        this.content.onBehalfOf.name = name;
+    }
     return this;
 }
 

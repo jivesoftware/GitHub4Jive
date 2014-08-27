@@ -33,13 +33,19 @@ var tempOAuthToken = jive.util.guid();
 var tempOAuthRefreshToken = jive.util.guid();
 var basic = new JiveBasicLoader("admin", "admin");
 
-function createContent(jiveFacade, type) {
-    return jiveFacade.create({type: type,
+var counter = 1;
+
+function createContent(jiveFacade, type, notQuestion) {
+    var content = {type: type,
         content: {
             type: "text/html",
             text: "<h1>WooHOO</h1>"},
-        subject: "YAHOO"
-    });
+        subject: "YAHOO" + counter++
+    };
+    if(type == "discussion" && !notQuestion){//stupid I know
+        content.question = true;
+    }
+    return jiveFacade.create(content);
 }
 describe("JiveApiFacade", function () {
     var jiveFacade = new JiveFacadeLoader(community, basic);
@@ -266,5 +272,62 @@ describe("JiveApiFacade", function () {
             });
         })
     });
+
+    describe("#answer", function () {
+        it("should mark the question assumed answered", function () {
+            return createContent(jiveFacade, "discussion").then(function (content) {
+                var contentID = content.apiID;
+                return jiveFacade.answer(content.entity).then(function (response) {
+                    response.success.should.be.true;
+                    response.entity.should.be.an("object");
+                    response.entity.id.should.be.above(0);
+                    response.entity.resolved.should.equal("assumed_resolved");
+                    jiveFacade.destroy(contentID);
+                }).catch(function (error) {
+                    jiveFacade.destroy(contentID);
+                    throw error;
+                });
+            });
+        });
+
+        it("should throw if the discussion isn't marked as a question", function () {
+            var contentID;
+            return createContent(jiveFacade, "discussion", true).then(function (content) {
+                contentID = content.apiID;
+                 expect(function () {
+                    return jiveFacade.answer(content.entity);
+                }).to.throw("This discussion is not a question.");
+                jiveFacade.destroy(contentID);
+                }).catch(function (error) {
+                    jiveFacade.destroy(contentID);
+                    throw error;
+                 });
+            });
+
+    });
+
+    describe("#removeAnswer", function () {
+        it("should remove assumed answer marking and unmark any reply that is marked", function () {
+            return createContent(jiveFacade, "discussion").then(function (content) {
+                var contentID = content.apiID;
+                return jiveFacade.answer(content.entity).then(function (response) {
+                    response.success.should.be.true;
+                    return jiveFacade.removeAnswer(content.entity).then(function (response) {
+                        response.success.should.be.true;
+                        return jiveFacade.get(response.entity.discussion).then(function (response) {
+                            response.entity.resolved.should.equal("open");
+                            jiveFacade.destroy(contentID);
+                        });
+
+
+                    }).catch(function (error) {
+                        jiveFacade.destroy(contentID);
+                        throw error;
+                    });
+
+                });
+            });
+        });
+    })
 });
 

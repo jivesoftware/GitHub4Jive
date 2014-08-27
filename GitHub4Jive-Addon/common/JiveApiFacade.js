@@ -121,10 +121,12 @@ JiveApiFacade.prototype.get = function(url){
     var authenticator = this.authenticator;
     return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
         decorateResponseWithSuccess(response, 200);
-        if(response.success){
-            var url = response.entity.resources.self.ref;
-            response.apiID = url.substr(url.lastIndexOf("/") + 1);
-            decorateWithExtPropRetrievers(community,response.entity,authenticator);
+        if(response.success) {
+            if (!response.entity.list) {
+                var url = response.entity.resources.self.ref;
+                response.apiID = url.substr(url.lastIndexOf("/") + 1);
+                decorateWithExtPropRetrievers(community, response.entity, authenticator);
+            }
         }
         return response;
     }));
@@ -337,10 +339,84 @@ JiveApiFacade.prototype.unMarkFinal = function(contentID){
             return decorateResponseWithSuccess(response, 204);
         }));
     });
-
-
 };
 
+
+JiveApiFacade.prototype.answer = function (discussion) {
+    if(!discussion.question){
+        throw Error("This discussion is not a question.");
+    }
+    var url = discussion.resources.self.ref;
+    var headers = {};
+    discussion.resolved = "assumed_resolved";
+    var body = discussion
+    var options = this.authenticator.applyTo(url, body, headers);
+    options['method'] = 'PUT';
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
+        return decorateResponseWithSuccess(response, 200);
+    }));
+};
+
+function unMarkAnsweredComment(community,authenticator, comment){
+
+    comment.answer = false;
+    var headers = {};
+    var options = authenticator.applyTo(comment.resources.self.ref, comment, headers);
+    options['method'] = 'PUT';
+    return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
+        return decorateResponseWithSuccess(response, 200);
+    }));
+}
+
+JiveApiFacade.prototype.removeAnswer = function(discussion){
+    if(!discussion.question){
+        throw Error("This discussion is not a question.");
+    }
+    if(discussion.resolved == "open"){
+        return Q(function () {
+            return {success: true, entity:discussion};
+        });
+    }
+
+    var headers = {};
+    var community = this.community;
+    var authenticator = this.authenticator;
+    var self = this;
+    if(discussion.answer){
+        return self.get(discussion.answer).then(function (comment) {
+            return unMarkAnsweredComment(community, authenticator, comment.entity);
+        })
+    }else{
+
+        return this.get(discussion.resources.messages.ref).then(function (messages) {
+            var p = Q(function () {
+                return;
+            });
+            var tempAnswer;
+            if(messages.entity.list.length == 0){// stupid api design makes it possible to undo assumed resolved but only with a comment in place.
+                var blank = {type:"message", content:{type:"text/html", text:""}};
+                p = p.then(function () {
+                    return self.replyToDiscussion(discussion.contentID,blank).then(function (comment) {
+                        tempAnswer = comment.entity;
+                        return;
+                    });
+                });
+            }else {
+                tempAnswer = messages.entity.list[0];
+            }
+
+            return p.then(function () {
+                tempAnswer.answer = true;
+                var options = authenticator.applyTo(tempAnswer.resources.self.ref, tempAnswer, headers);
+                options['method'] = 'PUT';
+                return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
+                    return unMarkAnsweredComment(community,authenticator, response.entity);
+                }));
+            });
+        })
+    }
+
+};
 
 module.exports = JiveApiFacade;
 exports.supportedContent = supportedContent;

@@ -184,7 +184,7 @@ exports.newIssue = function (req, res) {
 exports.gitHubWebHookPortal = function(req, res){
     var event = req.headers["x-github-event"];
     var data = req.body;
-
+    jive.logger.info("Received GitHub data: " + event)
     gitHubFacade.notifyNewGitHubHookInfo(event, data);
     res.writeHead(202);
     res.end();

@@ -56,16 +56,14 @@ issueStrategy.setup = function(setupOptions){
 
         }else if(gitData.action === "reopened"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.unMarkFinal(discussion.contentID).then(function () {
-                    jiveApi.answer(discussion);
-                })
+                jiveApi.removeAnswer(discussion);
+                jiveApi.unMarkFinal(discussion.contentID);
 
             });
         }else if(gitData.action === "closed"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.markFinal(discussion.contentID).then(function () {
-                    jiveApi.removeAnswer(discussion);
-                })
+                jiveApi.answer(discussion);
+                jiveApi.markFinal(discussion.contentID);
             });
         }
     });

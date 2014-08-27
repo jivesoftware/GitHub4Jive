@@ -55,7 +55,7 @@
                           icon="images/icon16.png" />
 
                     <action id="com.jivesoftware.addon.github4jive.discussion.gotoIssue"
-                          path="jive/actions/content/discussion?filter=exists(context.extprops.github4jiveIssueLink)"
+                          path="jive/actions/content/*?filter=exists(context.extprops.github4jiveIssueLink)"
                           label="Go to Issue on GitHub"
                           url="{context.extprops.github4jiveIssueLink}"
                           icon="images/icon16.png" />

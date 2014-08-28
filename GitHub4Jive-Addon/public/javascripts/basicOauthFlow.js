@@ -41,15 +41,11 @@
 
  */
 
-var place, previousRepo;
+var placeUrl, previousRepo;
 var jiveDone = false;
 var githubDone = false;
 
 var host;
-
-function placeUrl(){
-    return place.resources.self.ref;
-}
 
 function AllAuthorized() {
     $("#j-card-authentication").hide();
@@ -63,7 +59,7 @@ function AllAuthorized() {
     osapi.http.get({
         'href': host + '/github/user/repos?' +
             "&ts=" + new Date().getTime() +
-            "&place=" + encodeURIComponent(place.resources.self.ref),
+            "&place=" + encodeURIComponent(placeUrl),
         //"&query=" + query,
         'format': 'json',
         'authz': 'signed'
@@ -137,7 +133,7 @@ function setupOAuthFor(system, successCallBack) {
         onLoadCallback: onLoadCallback,
         authorizeUrl: authorizeUrl,
         jiveOAuth2Dance: system === "jive",
-        context: {"place": placeUrl()}
+        context: {"place": placeUrl}
     }).launch({'viewerID': viewerID});
 }
 
@@ -155,7 +151,14 @@ var app = {
         if (context) {
 
             osapi.jive.corev3.resolveContext(context, function (result) {
-                place = result.content;
+
+                if(result.content.contentID){//Content Action.
+                    placeUrl = result.content.parentPlace.uri;
+                }else{
+                    placeUrl = result.content;
+                }
+
+
 
                 setupOAuthFor("github", function (ticketID) {
                     if (ticketID) {
@@ -186,7 +189,7 @@ var app = {
                     osapi.http.get({
                         'href': host + '/jive/place/isConfigured?' +
                             "&ts=" + new Date().getTime() +
-                            "&place=" + encodeURIComponent(placeUrl()),
+                            "&place=" + encodeURIComponent(placeUrl),
                         //"&query=" + query,
                         'format': 'json',
                         'authz': 'signed'
@@ -242,7 +245,7 @@ var app = {
                     osapi.http.post({
                         'href': host + "/github/place/trigger?" +
                             "ts=" + new Date().getTime() +
-                            "&place=" + encodeURIComponent(placeUrl()),
+                            "&place=" + encodeURIComponent(placeUrl),
                         'format': 'json',
                         'authz': 'signed'
                     }).execute(function (response) {
@@ -305,6 +308,11 @@ if(realTile){
 
     gadgets.actions.updateAction({
         id: "com.jivesoftware.addon.github4jive.space.newIssue",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.discussion.modifyIssue",
         callback: app.handleContext
     });
 }

@@ -60,6 +60,12 @@
                           url="{context.extprops.github4jiveIssueLink}"
                           icon="images/icon16.png" />
 
+                    <action id="com.jivesoftware.addon.github4jive.discussion.modifyIssue"
+                          path="jive/actions/content/*?filter=exists(context.extprops.github4jiveIssueLink)"
+                          label="Change Issue Properties"
+                          view="github4jive-issue-modify"
+                          icon="images/icon16.png" />
+
                     <action id="com.jivesoftware.addon.github4jive.project.config"
                           path="jive/settings/places/project"
                           label="Configure GitHub4Jive"
@@ -142,6 +148,7 @@
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="600" preferred_width="800"/>
+  <Content type="html" view="github4jive-issue-modify" href="issue-modify.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />

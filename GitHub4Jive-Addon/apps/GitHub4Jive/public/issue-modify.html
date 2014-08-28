@@ -4,8 +4,8 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap-30.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="screen" />
-    <script src="/javascripts/jquery-1.8.3.js"></script>
-
+    <script src="/javascripts/jquery-1.11.1.min.js"></script>
+    <script src="/javascripts/bootstrap-30.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/shared.js"></script>
     <script type="text/javascript" charset="utf-8" src="javascripts/actions/issue-modify.js"></script>
     <script src="/javascripts/coreapi-context-resolver-v3.js"></script>
@@ -37,7 +37,14 @@
 
 <div id="j-card-action" class="j-card" style='display: none'>
     <div class="container_fluid" id="todo_panel">
-
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary active">
+                <input type="radio" name="options" id="open" checked> Open
+            </label>
+            <label class="btn btn-primary">
+                <input type="radio" name="options" id="closed"> Closed
+            </label>
+        </div>
     </div>
 </div>
 </body>

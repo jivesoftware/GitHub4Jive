@@ -32,4 +32,6 @@ $(function () {
     $(document).bind("github4jiveAuthorized", function () {
         gadgets.window.adjustWidth(800);
     });
+
+    $('.btn').button();
 });

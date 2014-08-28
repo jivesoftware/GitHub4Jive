@@ -31,3 +31,11 @@ ul {
     width: 50%;
     height: 512px;
 }
+
+.j-loading-big span {
+
+    background: rgba(0,0,0,0) url(../images/jive-image-loading.gif) no-repeat ;
+    background-size: 20px 20px;
+    padding: 1px 10px;
+
+}

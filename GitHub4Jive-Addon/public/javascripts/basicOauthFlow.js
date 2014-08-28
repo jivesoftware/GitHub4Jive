@@ -22,7 +22,7 @@
 
  <div id="j-card-configuration" class="j-card" style="display: none;">
      <p>
-        Repo: <select id="projectList"></select>
+        Repo: <span id="loader"><select id="projectList"></select><span></span></span>
      </p>
      <input id="github4jive-enable-submit" type="button" value="Save" />
  </div>
@@ -59,6 +59,7 @@ function AllAuthorized() {
     gadgets.window.adjustHeight();  // do this here in case the pre-auth callback above wasn't called
 
     // set up a query to get this user's list of repositories
+    $("#loader").addClass("j-loading-big");
     osapi.http.get({
         'href': host + '/github/user/repos?' +
             "&ts=" + new Date().getTime() +
@@ -67,6 +68,7 @@ function AllAuthorized() {
         'format': 'json',
         'authz': 'signed'
     }).execute(function (response) {
+
         if (response.status >= 400 && response.status <= 599) {
             alert("ERROR!" + JSON.stringify(response.content));
         }
@@ -81,6 +83,7 @@ function AllAuthorized() {
             }
             $("#projectList").append(opt);
         }
+        $("#loader").removeClass("j-loading-big");
     });
 }
 

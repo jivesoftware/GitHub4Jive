@@ -3,6 +3,7 @@
 <script type="text/javascript" charset="utf-8" src="/javascripts/coreapi-context-resolver-v3.js"></script>
 <script type="text/javascript" charset="utf-8" src="/javascripts/oauth2client.js"></script>
 <script type="text/javascript" charset="utf-8" src="/javascripts/basicOauthFlow.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/actions/place-config.js"></script>
 
 <script>
     $(document).bind("github4jiveConfigDone",function () {
@@ -30,7 +31,7 @@
 
 <div id="j-card-configuration" class="j-card" style="display: none;">
     <p>
-        Repo: <select id="projectList"></select>
+        Repo: <span id="loader"><select id="projectList"></select><span></span></span>
     </p>
     <input type="hidden" id="github-authorize-token">
     <input type="hidden" id="jive-authorize-token">

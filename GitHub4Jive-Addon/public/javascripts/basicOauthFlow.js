@@ -41,7 +41,7 @@
 
  */
 
-var placeUrl, previousRepo;
+var place, placeUrl, previousRepo;
 var jiveDone = false;
 var githubDone = false;
 
@@ -155,7 +155,8 @@ var app = {
                 if(result.content.contentID){//Content Action.
                     placeUrl = result.content.parentPlace.uri;
                 }else{
-                    placeUrl = result.content;
+                    place = result.content;
+                    placeUrl = result.content.resources.self.ref;
                 }
 
 
@@ -176,54 +177,66 @@ var app = {
                     }
                 });
 
-                result.content.getExtProps().execute(function (props) {
+                function setupPlaceConfig(p) {
 
-                    if ("true" === props.content.github4jiveEnabled) {//&& props.content.github4jiveGitHubAccessToken && props.content.github4jiveJiveAccessToken) {
-                        console.log('initializing UI for already configured place');
-                        previousRepo = props.content.github4jiveRepoOwner + "/" + props.content.github4jiveRepo;
-                    } else {
-                        console.log('initializing UI for UNconfigured place');
-                    }
+                    place = p;
+                    place.getExtProps().execute(function (props) {
 
-                    //double check server side configuration with ext props
-                    osapi.http.get({
-                        'href': host + '/jive/place/isConfigured?' +
-                            "&ts=" + new Date().getTime() +
-                            "&place=" + encodeURIComponent(placeUrl),
-                        //"&query=" + query,
-                        'format': 'json',
-                        'authz': 'signed'
-                    }).execute(function (response) {
-                            var config = response.content;
-                            githubDone = config.github;
-                            jiveDone = config.jive;
-
-                            if (BothAreDone()) {
-                                AllAuthorized();
-                            } else {
-                                if (config.github) {
-                                    $('#github4jive-github-authorize-success').slideDown('fast', function () {
-                                    });
-                                }
-                                else {
-                                    $('#github4jive-github-authorize').slideDown('fast', function () {
-                                    });
-                                }
-
-                                if (config.jive) {
-                                    $('#github4jive-jive-authorize-success').slideDown('fast', function () {
-                                    });
-                                }
-                                else {
-                                    $('#github4jive-jive-authorize').slideDown('fast', function () {
-                                    });
-                                }
-                                gadgets.window.adjustHeight();
-                            }
+                        if ("true" === props.content.github4jiveEnabled) {//&& props.content.github4jiveGitHubAccessToken && props.content.github4jiveJiveAccessToken) {
+                            console.log('initializing UI for already configured place');
+                            previousRepo = props.content.github4jiveRepoOwner + "/" + props.content.github4jiveRepo;
                         }
-                    );
+                        else {
+                            console.log('initializing UI for UNconfigured place');
+                        }
 
-                });
+                        //double check server side configuration with ext props
+                        osapi.http.get({
+                            'href': host + '/jive/place/isConfigured?' +
+                                "&ts=" + new Date().getTime() +
+                                "&place=" + encodeURIComponent(placeUrl),
+                            //"&query=" + query,
+                            'format': 'json',
+                            'authz': 'signed'
+                        }).execute(function (response) {
+                                var config = response.content;
+                                githubDone = config.github;
+                                jiveDone = config.jive;
+
+                                if (BothAreDone()) {
+                                    AllAuthorized();
+                                }
+                                else {
+                                    if (config.github) {
+                                        $('#github4jive-github-authorize-success').slideDown('fast', function () {
+                                        });
+                                    }
+                                    else {
+                                        $('#github4jive-github-authorize').slideDown('fast', function () {
+                                        });
+                                    }
+
+                                    if (config.jive) {
+                                        $('#github4jive-jive-authorize-success').slideDown('fast', function () {
+                                        });
+                                    }
+                                    else {
+                                        $('#github4jive-jive-authorize').slideDown('fast', function () {
+                                        });
+                                    }
+                                    gadgets.window.adjustHeight();
+                                }
+                            }
+                        );
+
+                    });
+                };
+
+                if(!place){
+                    osapi.jive.corev3.places.get({"uri": placeUrl}).execute(setupPlaceConfig);
+                }else{
+                    setupPlaceConfig(place);
+                }
 
             });
 

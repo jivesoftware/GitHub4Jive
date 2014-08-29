@@ -222,7 +222,11 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
  */
 
 JiveApiFacade.prototype.attachProps = function(parentID,props){
-    var url = communityAPIURL(this) + "contents/" + parentID + "/extprops";
+    var url = communityAPIURL(this) + "contents/" + parentID ;
+    if(parentID.indexOf("http") == 0){//if full id is passed in
+        url = parentID;
+    }
+    url += "/extprops";
     var headers = {};
     var options = this.authenticator.applyTo(url, props, headers);
     options['method'] = 'POST';

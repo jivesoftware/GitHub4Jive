@@ -78,7 +78,7 @@ function setupJiveHook(linked){
 
             function doWebhook(accessToken) {
                 jive.webhooks.register(
-                    community, undefined, linked.placeUrl,
+                    community, "discussion", linked.placeUrl,
                     webhookCallback, accessToken
                 ).then(function (webhook) {
                         var webhookEntity = webhook['entity'];

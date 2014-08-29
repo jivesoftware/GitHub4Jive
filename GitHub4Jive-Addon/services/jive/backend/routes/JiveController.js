@@ -65,66 +65,121 @@ function getDiscussionUrl(message){
     return message.discussion;
 }
 
+function getPlace(place) {
+    return placeStore.getPlaceByUrl(place).then(function (linked) {
+        if (!linked || !linked.github || !linked.github.repo || !linked.github.repoOwner) {
+            return jive.webhooks.findByWebhookURL(jive.service.serviceURL() + '/webhooks?place=' +
+                encodeURIComponent(place)).then(function (webhook) {
+                return jive.webhooks.unregister(webhook);
+            })
+        }
+        return linked;
+    });
+}
+function getJiveApi(linked) {
+    return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+        var jiveAuth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token, function (newTokens) {
+            jive.logger.info("Refreshing Jive tokens for: " + linked.placeUrl);
+            jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
+            return placeStore.save(linked.placeUrl, {jive: newTokens});
+        });
+        var japi = new JiveApi(community, jiveAuth);
+        return japi;
+    });
+}
+function hydrateObject(japi, comment) {
+    return japi.get(comment.id).then(function (message) {
+        var message = message.entity;
+        return message;
+    });
+}
+function createGitHubComment(place, hookPayload) {
+    var comment = hookPayload.object;
+    return getPlace(place).then(function (linked) {
+        return getJiveApi(linked).then(function (japi) {
+            return hydrateObject(japi, comment).then(function (message) {
+            return message.retrieveAllExtProps().then(function (commentprops) {
+
+                    if (commentprops.fromGitHub) {//Check for a comment created from GitHub
+                        return q(function () {
+                            return;
+                        })
+                    }
+                    var discussion = getDiscussionUrl(message);
+                    return japi.getAllExtProps(discussion).then(function (props) {
+                        var issueNumber = props.github4jiveIssueNumber;
+                        if (!issueNumber) {//Discussion is not linked to an issue
+                            return;
+                        }
+                        return japi.get(hookPayload.object.author.id).then(function (user) {
+                            user = user.entity;
+                            var userPage = user.resources.html.ref;
+                            var gitComment = "<!--Jive-->\n[[Jive](" + community.jiveUrl + ") - [" +
+                                user.displayName +
+                                "](" + userPage + ")] " + hookPayload.object.summary;
+                            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+                            return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
+                                issueNumber, gitComment, auth).then(function (response) {
+                                })
+                        })
+
+                    });
+
+                })
+            });
+        });
+
+
+    });
+}
+
+function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
+{
+    props.github4jiveIssueClosed = JSON.parse(props.github4jiveIssueClosed);
+    if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
+        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+        props.github4jiveIssueClosed = shouldClose;
+        var state = props.github4jiveIssueClosed ? "closed" : "open";
+        return gitFacade.changeIssueState(linked.github.repoOwner, linked.github.repo,
+            props.github4jiveIssueNumber, state, auth).then(function () {
+                return japi.attachProps(discussionUrl, props);
+            });
+    }else {
+        return;
+    }
+}
 function processPayload(hookPayload)
 {
     var place = hookPayload.target.id;
     var event = hookPayload.verb;
-    var comment = hookPayload.object;
+    var obj = hookPayload.object;
     jive.logger.debug(hookPayload.object);
-    if(event == "jive:replied" ){//Check for a comment created from GitHub
-
-
-        return placeStore.getPlaceByUrl(place).then(function (linked) {
-            if(!linked || !linked.github || !linked.github.repo || !linked.github.repoOwner){
-                return jive.webhooks.findByWebhookURL(jive.service.serviceURL() + '/webhooks?place='+ encodeURIComponent( place)).then(function (webhook) {
-                    return jive.webhooks.unregister(webhook);
-                })
-            }
-
-            return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-                var jiveAuth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token, function (newTokens) {
-                    jive.logger.info("Refreshing Jive tokens for: " + linked.placeUrl);
-                    jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
-                    return placeStore.save(linked.placeUrl, {jive: newTokens});
-                });
-
-                var japi = new JiveApi(community, jiveAuth);
-                return japi.get(comment.id).then(function (message) {
-                    jive.logger.debug(message);
-                    var message = message.entity;
-                    return message.retrieveAllExtProps().then(function (commentprops) {
-
-                        if (commentprops.fromGitHub) {
-                            return q(function () {
-                                return;
-                            })
-                        }
-                        var discussion =  getDiscussionUrl(message);
-                        return japi.getAllExtProps(discussion).then(function (props) {
-                            var issueNumber = props.github4jiveIssueNumber;
-                            if (!issueNumber) {//Discussion is not linked to an issue
-                                return;
-                            }
-                            return japi.get(hookPayload.object.author.id).then(function (user) {
-                                user = user.entity;
-                                var userPage = user.resources.html.ref;
-                                var gitComment = "<!--Jive-->\n[[Jive](" + community.jiveUrl + ") - [" +
-                                    user.displayName +
-                                    "](" + userPage + ")] " + hookPayload.object.summary;
-                                var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-                                return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
-                                    issueNumber, gitComment, auth).then(function (response) {
-                                    })
-                            })
-
+    if(event == "jive:replied" ){
+        return createGitHubComment(place, hookPayload);
+    }else if(event == "jive:outcome_set" || event == "jive:correct_answer_set" || "jive:correct_answer_removed"){
+        if(event == "jive:outcome_set"){
+            return getPlace(place).then(function (linked) {
+                return getJiveApi(linked).then(function (japi) {
+                    return hydrateObject(japi, obj).then(function (discussion) {
+                        return discussion.retrieveAllExtProps().then(function (discussionProps) {
+                            return setGitHubIssueState(linked,japi,discussion.resources.self.ref,discussionProps,discussion.outcomeCounts.finalized);
                         });
-
-                    })
+                    });
                 });
             });
+        }else  if (obj.objectType != "jive:message"){
+                return getPlace(place).then(function (linked) {
+                    return getJiveApi(linked).then(function (japi) {
+                        return hydrateObject(japi, obj).then(function (message) {
+                            var discussion = getDiscussionUrl(message);
+                            return japi.getAllExtProps(discussion).then(function (props) {
+                                return setGitHubIssueState(linked,japi,discussion,props,!!message.answer);
+                            });
+                        });
+                    });
+                });
 
-
-        });
+        }
     }else{
         return q(function () {
             return;
@@ -149,7 +204,7 @@ exports.webHookPortal = function (req, res) {
             return new Date(a.activity.published).getTime() - new Date(b.activity.published).getTime();
     });
     sequentiallyProcessPayloads(hookPayloads, 0).then(function () {
-        res.writeHead(204, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end();
     }).catch(function (error) {
         jive.logger.error(error);

@@ -384,7 +384,7 @@ exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions
     }
     var git = GitHubInstance(authOptions);
     return deferredTemplate(git.issues.edit, {"user": owner, "repo": repo, "number": issueNumber, "state": state}).then(function(issue){
-        return issue.state === "closed";
+        return issue.state === state;
     });
 };
 

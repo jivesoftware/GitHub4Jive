@@ -41,7 +41,8 @@
 
  */
 
-var place, placeUrl, previousRepo;
+var place, placeUrl, placeProps,previousRepo;
+var contentObject;
 var jiveDone = false;
 var githubDone = false;
 
@@ -153,7 +154,9 @@ var app = {
             osapi.jive.corev3.resolveContext(context, function (result) {
 
                 if(result.content.contentID){//Content Action.
+                    contentObject = result.content;
                     placeUrl = result.content.parentPlace.uri;
+
                 }else{
                     place = result.content;
                     placeUrl = result.content.resources.self.ref;
@@ -181,10 +184,10 @@ var app = {
 
                     place = p;
                     place.getExtProps().execute(function (props) {
-
-                        if ("true" === props.content.github4jiveEnabled) {//&& props.content.github4jiveGitHubAccessToken && props.content.github4jiveJiveAccessToken) {
+                        placeProps = props.content;
+                        if ("true" === placeProps.github4jiveEnabled) {//&& placeProps.github4jiveGitHubAccessToken && placeProps.github4jiveJiveAccessToken) {
                             console.log('initializing UI for already configured place');
-                            previousRepo = props.content.github4jiveRepoOwner + "/" + props.content.github4jiveRepo;
+                            previousRepo = placeProps.github4jiveRepoOwner + "/" + placeProps.github4jiveRepo;
                         }
                         else {
                             console.log('initializing UI for UNconfigured place');

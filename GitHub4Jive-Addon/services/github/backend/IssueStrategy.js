@@ -50,7 +50,9 @@ issueStrategy.setup = function(setupOptions){
                 return jiveApi.attachProps(contentID, {
                     "github4jiveIssueId": gitData.issue.id,
                     "github4jiveIssueNumber": gitData.issue.number,
-                    "github4jiveIssueLink" : gitData.issue.html_url
+                    "github4jiveIssueLink" : gitData.issue.html_url,
+                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
+                    "github4jiveIssueClosed": false
                 });
             });
 
@@ -58,12 +60,26 @@ issueStrategy.setup = function(setupOptions){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.removeAnswer(discussion);
                 jiveApi.unMarkFinal(discussion.contentID);
+                return jiveApi.attachProps(contentID, {
+                    "github4jiveIssueId": gitData.issue.id,
+                    "github4jiveIssueNumber": gitData.issue.number,
+                    "github4jiveIssueLink" : gitData.issue.html_url,
+                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
+                    "github4jiveIssueClosed": false
+                });
 
             });
         }else if(gitData.action === "closed"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.answer(discussion);
                 jiveApi.markFinal(discussion.contentID);
+                return jiveApi.attachProps(contentID, {
+                    "github4jiveIssueId": gitData.issue.id,
+                    "github4jiveIssueNumber": gitData.issue.number,
+                    "github4jiveIssueLink" : gitData.issue.html_url,
+                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
+                    "github4jiveIssueClosed": true
+                });
             });
         }
     });

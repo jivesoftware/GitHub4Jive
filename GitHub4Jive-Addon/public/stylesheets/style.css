@@ -39,3 +39,67 @@ ul {
     padding: 1px 10px;
 
 }
+
+.btn.bug{
+    background-color: #fc2929;
+}
+.btn.duplicate{
+    background-color: #cccccc;
+}
+.btn.enhancement{
+    background-color: #84b6eb;
+}
+.btn.invalid{
+    background-color: #e6e6e6;
+    color:black;
+}
+.btn.question{
+    background-color: #cc317c;
+}
+.btn.wontfix{
+    background-color: #ffffff;
+    color:black;
+}
+
+.btn.bug:hover{
+    background-color: #fc2929;
+}
+.btn.duplicate:hover{
+    background-color: #cccccc;
+}
+.btn input[value='enhancement']:hover{
+    background-color: #84b6eb;
+}
+.btn.invalid:hover{
+    background-color: #e6e6e6;
+    color:black;
+}
+.btn.question:hover{
+    background-color: #cc317c;
+}
+.btn.wontfix:hover{
+    background-color: #ffffff;
+    color:black;
+}
+
+.btn.bug.active{
+    background-color: #fc2929;
+}
+.btn.duplicate.active{
+    background-color: #cccccc;
+}
+.btn.enhancement.active{
+    background-color: #84b6eb;
+}
+.btn.invalid.active{
+    background-color: #e6e6e6;
+    color:black;
+}
+.btn.question.active{
+    background-color: #cc317c;
+}
+.btn.wontfix.active{
+    background-color: #ffffff;
+    color:black;
+}
+

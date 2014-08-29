@@ -26,6 +26,10 @@ h3 {
 ul {
     margin-left:0px; padding-left:20px; list-style-type:square;
 }
+.float-right{
+    float:right;
+}
+
 
 .j-textarea {
     width: 50%;
@@ -38,6 +42,22 @@ ul {
     background-size: 20px 20px;
     padding: 1px 10px;
 
+}
+
+.btn.open{
+    background-color: #cccccc;
+}
+
+.btn.closed{
+    background-color: #cccccc;
+}
+
+.btn.open.active,.btn.open:hover{
+    background-color: #6cc644;
+}
+
+.btn.closed.active,.btn.closed:hover{
+    background-color: #bd2c00;
 }
 
 .btn.bug{
@@ -61,45 +81,23 @@ ul {
     color:black;
 }
 
-.btn.bug:hover{
-    background-color: #fc2929;
+.btn.bug:hover,.btn.bug.active{
+    background-color: #ac1010;
 }
-.btn.duplicate:hover{
-    background-color: #cccccc;
+.btn.duplicate:hover,.btn.duplicate.active{
+    background-color: #999999;
 }
-.btn input[value='enhancement']:hover{
-    background-color: #84b6eb;
+.btn.enhancement:hover,.btn.enhancement.active{
+    background-color: #64a6c6;
 }
-.btn.invalid:hover{
-    background-color: #e6e6e6;
+.btn.invalid:hover,.btn.invalid.active{
+    background-color: #c6c6c6;
     color:black;
 }
-.btn.question:hover{
-    background-color: #cc317c;
+.btn.question:hover,.btn.question.active{
+    background-color: #aa255c ;
 }
-.btn.wontfix:hover{
-    background-color: #ffffff;
-    color:black;
+.btn.wontfix:hover,.btn.wontfix.active{
+    background-color: #000000;
+    color:white;
 }
-
-.btn.bug.active{
-    background-color: #fc2929;
-}
-.btn.duplicate.active{
-    background-color: #cccccc;
-}
-.btn.enhancement.active{
-    background-color: #84b6eb;
-}
-.btn.invalid.active{
-    background-color: #e6e6e6;
-    color:black;
-}
-.btn.question.active{
-    background-color: #cc317c;
-}
-.btn.wontfix.active{
-    background-color: #ffffff;
-    color:black;
-}
-

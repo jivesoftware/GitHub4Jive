@@ -2,17 +2,15 @@
 
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap-30.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="screen" />
     <script src="/javascripts/jquery-1.11.1.min.js"></script>
-    <script src="/javascripts/bootstrap-30.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/shared.js"></script>
     <script type="text/javascript" charset="utf-8" src="javascripts/actions/issue-modify.js"></script>
     <script src="/javascripts/coreapi-context-resolver-v3.js"></script>
     <script src="/javascripts/oauth2client.js"></script>
     <script src="/javascripts/basicOauthFlow.js"></script>
-
-
 </head>
 
 <body>
@@ -37,36 +35,42 @@
 
 <div id="j-card-action" class="j-card" style='display: none'>
     <div class="container_fluid" id="todo_panel">
-        <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-primary active">
-                <input type="radio" name="options" id="open" checked> Open
+        <h2 style="display:inline"><span>#</span><span id="IssueNumber"></span><span> - </span><span id="IssueTitle"></span></h2>
+        <div class="btn-group float-right" data-toggle="buttons">
+            <label class="btn btn-primary open active">
+                <input type="radio" name="options" id="open" checked><span>Open</span>
             </label>
-            <label class="btn btn-primary">
-                <input type="radio" name="options" id="closed"> Closed
-            </label>
-        </div>
-        <br/><br/>
-        <div id="Labels" class="btn-group" data-toggle="buttons">
-            <label class="btn btn-primary bug">
-                <input type="checkbox" name="options" value="bug"> Bug
-            </label>
-            <label class="btn btn-primary duplicate">
-                <input type="checkbox" name="options" value="duplicate"> Duplicate
-            </label>
-            <label class="btn btn-primary enhancement">
-                <input type="checkbox" name="options" value="enhancement"> Enhancement
-            </label>
-            <label class="btn btn-primary question">
-                <input type="checkbox" name="options" value="question"> Question
-            </label>
-            <label class="btn btn-primary invalid">
-                <input type="checkbox" name="options" value="invalid"> Invalid
-            </label>
-            <label class="btn btn-primary wontfix">
-                <input type="checkbox" name="options" value="wontfix"> Won't Fix
+            <label class="btn btn-primary closed">
+                <input type="radio" name="options" id="closed"><span>Close</span>
             </label>
         </div>
-        <button id="SaveLabels" class="btn btn-primary">Apply Labels</button>
+        <div style="margin-top: 20px;">
+            <h3 style="display:inline">Labels:</h3>
+            <div id="Labels" class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary bug">
+                    <input type="checkbox" name="options" value="bug"><span>Bug</span>
+                </label>
+                <label class="btn btn-primary duplicate">
+                    <input type="checkbox" name="options" value="duplicate"><span>Duplicate</span>
+                </label>
+                <label class="btn btn-primary enhancement">
+                    <input type="checkbox" name="options" value="enhancement"><span>Enhancement</span>
+                </label>
+                <label class="btn btn-primary question">
+                    <input type="checkbox" name="options" value="question"><span>Question</span>
+                </label>
+                <label class="btn btn-primary invalid">
+                    <input type="checkbox" name="options" value="invalid"><span>Invalid</span>
+                </label>
+                <label class="btn btn-primary wontfix">
+                    <input type="checkbox" name="options" value="wontfix"><span>Won't Fix</span>
+                </label>
+            </div>
+            <button id="SaveLabels" class="btn btn-primary">Apply Labels</button>
+        </div>
+        <div>
+
+        </div>
     </div>
 </div>
 </body>

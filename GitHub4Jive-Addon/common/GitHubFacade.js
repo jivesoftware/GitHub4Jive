@@ -388,6 +388,20 @@ exports.changeIssueState = function(owner, repo, issueNumber, state, authOptions
     });
 };
 
+exports.changeIssueLabels = function (owner, repo, issueNumber, labels, authOptions) {
+    var git = GitHubInstance(authOptions);
+    return deferredTemplate(git.issues.edit, {"user": owner, "repo": repo, "number": issueNumber, "labels": labels}).then(function(issue){
+        var allThere = true;
+        labels.forEach(function (label) {
+            if(!issue.labels.indexOf(label) < 0){
+                allThere = false;
+                return false;
+            }
+        })
+        return allThere;
+    });
+}
+
 /*
  * Add a new comment to an issue
  * @param owner Entity that owns the repository. Either a git username or organization name

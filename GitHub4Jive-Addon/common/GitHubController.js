@@ -139,6 +139,23 @@ exports.changeIssueState = function(req, res){
     });
 };
 
+exports.changeIssueLabels = function(req, res){
+    var queryParams = url.parse(req.url, true).query;
+    var placeUrl = queryParams.place;
+    var repo = SplitRepo(queryParams.repo);
+    var issueNumber = queryParams.number;
+    var ticketID = queryParams.ticketID;
+    var labels =  req.body.labels;
+
+    getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
+        return gitHubFacade.changeIssueLabels(repo.owner, repo.repo, issueNumber, labels, authOptions).then(function(confirmation){
+            contentResponse(res, {success:confirmation});
+        })
+    }).catch(function(error){
+        ErrorResponse(res, error);
+    });
+}
+
 exports.newComment = function(req, res){
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;

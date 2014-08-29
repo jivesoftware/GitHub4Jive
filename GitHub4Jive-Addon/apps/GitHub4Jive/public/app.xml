@@ -15,7 +15,9 @@
         <Link rel="Screenshot3" href="images/screenshot03.png" />
         <Link rel="Screenshot4" href="images/screenshot04.png" />
 
-
+        <Optional feature="content-rewrite">
+            <Param name="exclude-url">.css</Param>
+        </Optional>
 	    <Require feature="dynamic-height" />
 		<Require feature="settitle"/>
 		<Require feature="views" />
@@ -62,7 +64,7 @@
 
                     <action id="com.jivesoftware.addon.github4jive.discussion.modifyIssue"
                           path="jive/actions/content/*?filter=exists(context.extprops.github4jiveIssueLink)"
-                          label="Change Issue Properties"
+                          label="Edit Issue Properties"
                           view="github4jive-issue-modify"
                           icon="images/icon16.png" />
 

@@ -49,11 +49,29 @@ $(function () {
                 e.parent("label").toggleClass("active");
             }
 
+            function renameStates(){
+                var openLabel = openToggle.next("span");
+                var closeLabel = closeToggle.next("span");
+
+                if(openLabel.html() == "Open"){
+                    openLabel.html("Reopen");
+                    closeLabel.html("Closed");
+                }else{
+                    openLabel.html("Open");
+                    closeLabel.html("Close");
+                }
+            }
 
             function toggleState(){
+
                 toggleChecked(openToggle);
                 toggleChecked(closeToggle);
+                renameStates();
             }
+
+            $("#IssueNumber").html(props.github4jiveIssueNumber);
+            var matches = contentObject.subject.match(/\[[\w-\/]*\](.*)/);
+            $("#IssueTitle").html(matches[1]);
 
             if (JSON.parse(props.github4jiveIssueClosed)) {
                 toggleState();
@@ -71,6 +89,7 @@ $(function () {
                 var bodyPayload = {
                     "state": state
                 };
+                renameStates();
                 osapi.http.post({
                     'href': host + '/github/place/changeIssueState?' +
                         "ts=" + new Date().getTime() +
@@ -108,7 +127,28 @@ $(function () {
                 });
 
                 console.log(labels);
+                var bodyPayload = {
+                    "labels": labels
+                };
+                osapi.http.post({
+                    'href': host + '/github/place/changeIssueLabels?' +
+                        "ts=" + new Date().getTime() +
+                        "&place=" + encodeURIComponent(placeUrl) +
+                        "&repo=" + placeProps.github4jiveRepoOwner + "/" + placeProps.github4jiveRepo +
+                        "&number=" + props.github4jiveIssueNumber,
+                    headers: { 'Content-Type': ['application/json'] },
+                    'noCache': true,
+                    'authz': 'signed',
+                    'body': bodyPayload
+                }).execute(function (response) {
 
+                    //alert( "status=" + response.status) ;
+                    if ((response.status >= 400 && response.status <= 599) || !JSON.parse(response.content).success) {
+                        alert("ERROR!" + JSON.stringify(response.content));
+                        //toggleState();
+                    }
+
+                });
             })
 
         });

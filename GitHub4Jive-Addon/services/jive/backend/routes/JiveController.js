@@ -135,7 +135,7 @@ function createGitHubComment(place, hookPayload) {
 
 function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
 {
-    props.github4jiveIssueClosed = JSON.parse(props.github4jiveIssueClosed);
+    props.github4jiveIssueClosed = props.github4jiveIssueClosed ? JSON.parse(props.github4jiveIssueClosed) : false;
     if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
         var auth = gitFacade.createOauthObject(linked.github.token.access_token);
         props.github4jiveIssueClosed = shouldClose;

@@ -35,6 +35,16 @@ issueStrategy.setup = function(setupOptions){
     var placeUrl = setupOptions.placeUrl;
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
+    function createExtProps(gitData) {
+        return {
+            "github4jiveIssueId": gitData.issue.id,
+            "github4jiveIssueNumber": gitData.issue.number,
+            "github4jiveIssueLink": gitData.issue.html_url,
+            "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
+            "github4jiveIssueClosed": gitData.issue.state == "closed"
+        };
+    }
+
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
         if(gitData.action === "opened") {
             jive.logger.info("New Issue! Creating a discussion for it.");
@@ -47,39 +57,21 @@ issueStrategy.setup = function(setupOptions){
             jiveApi.create(content).then(function (contentResponse) {
                 var contentID = contentResponse.apiID;
                 //attach ext props to get discussion later
-                return jiveApi.attachProps(contentID, {
-                    "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number,
-                    "github4jiveIssueLink" : gitData.issue.html_url,
-                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
-                    "github4jiveIssueClosed": false
-                });
+                return jiveApi.attachProps(contentID, createExtProps(gitData));
             });
 
         }else if(gitData.action === "reopened"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.removeAnswer(discussion);
                 jiveApi.unMarkFinal(discussion.contentID);
-                return jiveApi.attachProps(discussion.contentID, {
-                    "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number,
-                    "github4jiveIssueLink" : gitData.issue.html_url,
-                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
-                    "github4jiveIssueClosed": false
-                });
+                return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
 
             });
         }else if(gitData.action === "closed"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 jiveApi.answer(discussion);
                 jiveApi.markFinal(discussion.contentID);
-                return jiveApi.attachProps(discussion.contentID, {
-                    "github4jiveIssueId": gitData.issue.id,
-                    "github4jiveIssueNumber": gitData.issue.number,
-                    "github4jiveIssueLink" : gitData.issue.html_url,
-                    "github4jiveIssueLabels": JSON.stringify(gitData.issue.labels),
-                    "github4jiveIssueClosed": true
-                });
+                return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
             });
         }
     });

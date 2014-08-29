@@ -114,7 +114,7 @@ function createGitHubComment(place, hookPayload) {
                         return japi.get(hookPayload.object.author.id).then(function (user) {
                             user = user.entity;
                             var userPage = user.resources.html.ref;
-                            var gitComment = "<!--Jive-->\n[[Jive](" + community.jiveUrl + ") - [" +
+                            var gitComment = "<!--Jive-->\n[[Jive](" + japi.community.jiveUrl + ") - [" +
                                 user.displayName +
                                 "](" + userPage + ")] " + hookPayload.object.summary;
                             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
@@ -156,18 +156,18 @@ function processPayload(hookPayload)
     jive.logger.debug(hookPayload.object);
     if(event == "jive:replied" ){
         return createGitHubComment(place, hookPayload);
-    }else if(event == "jive:outcome_set" || event == "jive:correct_answer_set" || "jive:correct_answer_removed"){
+    }else if(event == "jive:outcome_set" || event == "jive:correct_answer_set" || event == "jive:outcome_removed" || event ==  "jive:correct_answer_removed"){
         if(event == "jive:outcome_set"){
             return getPlace(place).then(function (linked) {
                 return getJiveApi(linked).then(function (japi) {
                     return hydrateObject(japi, obj).then(function (discussion) {
                         return discussion.retrieveAllExtProps().then(function (discussionProps) {
-                            return setGitHubIssueState(linked,japi,discussion.resources.self.ref,discussionProps,discussion.outcomeCounts.finalized);
+                            return setGitHubIssueState(linked,japi,discussion.resources.self.ref,discussionProps,discussion.outcomeCounts ? discussion.outcomeCounts.finalized : false);
                         });
                     });
                 });
             });
-        }else  if (obj.objectType != "jive:message"){
+        }else  if (obj.objectType == "jive:message"){
                 return getPlace(place).then(function (linked) {
                     return getJiveApi(linked).then(function (japi) {
                         return hydrateObject(japi, obj).then(function (message) {
@@ -179,6 +179,10 @@ function processPayload(hookPayload)
                     });
                 });
 
+        }else{
+            return q(function () {
+                return;
+            });
         }
     }else{
         return q(function () {

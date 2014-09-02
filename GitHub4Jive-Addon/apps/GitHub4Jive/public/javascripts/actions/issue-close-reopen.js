@@ -12,7 +12,16 @@ $(document).bind("github4jiveAuthorized", function () {
             props = props.content;
         }
 
-
+        var statusText = $("#Status");
+        function replaceStatusText(appendage){
+            statusText.children().hide(500).promise().done(function () {
+                statusText.append(appendage);
+                statusText.after("<br/><p>The page will reload soon unless you close this app. You will be able to recover a comment in progress.</p>")
+                window.setTimeout(function () {
+                    top.location.reload();
+                }, 5000);
+            });
+        }
         function changeIssueState(state) {
             var bodyPayload = {
                 "state": state
@@ -34,24 +43,32 @@ $(document).bind("github4jiveAuthorized", function () {
                     alert("ERROR!" + JSON.stringify(response.content));
 
                 }else{
-                    var statusText = $("#Status");
-                    statusText.children().hide(500).promise().done( function () {
-                        statusText.append("<span>The issue has been "+(state == "open" ? "reopened" : "closed") +"</span>");
-                        window.setTimeout(function () {
-                            osapi.jive.core.container.closeApp();
-                        }, 5000)
-                    });
+
+                    replaceStatusText("<span>The issue has been "+(state == "open" ? "reopened" : "closed") +"</span>");
                 }
 
             });
         }
         var extPropClosed = JSON.parse(props.github4jiveIssueClosed);
-        if (!extPropClosed && stateAction == "close") {
-            changeIssueState("closed");
-        }else if(extPropClosed && stateAction == "reopen"){
-            changeIssueState("open");
+
+        if(stateAction == "close"){
+            if(extPropClosed){
+                replaceStatusText("<span>The issue is already closed. Refresh your discussion page.</span>");
+            }else{
+                changeIssueState("closed");
+            }
+        }
+        else if(stateAction == "reopen") {
+            if (extPropClosed) {
+                changeIssueState("open");
+            }
+            else {
+                replaceStatusText("<span>The issue is already open. Refresh your discussion page.</span>");
+            }
         }else{
-            alert("Invalid Action");
+            replaceStatusText(function () {
+                replaceStatusText("<span>The app is misconfigured. Invalid issue action is defined</span>");
+            });
         }
 
     });

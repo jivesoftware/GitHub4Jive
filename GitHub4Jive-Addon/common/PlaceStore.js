@@ -42,7 +42,7 @@ exports.save = function(placeUrl, newObject, dontStamp){
     if(!placeUrl || placeUrl === "" || typeof placeUrl !== "string"){
         throw Error("Invalid Place");
     }
-    return store.findByID("tokens", placeUrl).then(function (found) {
+    return store.findByID(STORE_NAME, placeUrl).then(function (found) {
         var record = found || {};
         recursiveOverwrite(record, newObject);
         var delimitter = "/";

@@ -62,10 +62,16 @@
                           url="{context.extprops.github4jiveIssueLink}"
                           icon="images/icon16.png" />
 
-                    <action id="com.jivesoftware.addon.github4jive.discussion.modifyIssue"
-                          path="jive/actions/content/*?filter=exists(context.extprops.github4jiveIssueLink)"
-                          label="Edit Issue Properties"
-                          view="github4jive-issue-modify"
+                    <action id="com.jivesoftware.addon.github4jive.discussion.closeIssue"
+                          path="jive/actions/content/*?filter=equals(context.extprops.github4jiveIssueClosed,false)"
+                          label="Close Issue"
+                          view="github4jive-issue-close"
+                          icon="images/icon16.png" />
+
+                     <action id="com.jivesoftware.addon.github4jive.discussion.reopenIssue"
+                          path="jive/actions/content/*?filter=equals(context.extprops.github4jiveIssueClosed,true)"
+                          label="Reopen Issue"
+                          view="github4jive-issue-reopen"
                           icon="images/icon16.png" />
 
                     <action id="com.jivesoftware.addon.github4jive.project.config"
@@ -151,6 +157,8 @@
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="600" preferred_width="800"/>
   <Content type="html" view="github4jive-issue-modify" href="issue-modify.html" preferred_height="400" />
+  <Content type="html" view="github4jive-issue-close" href="issue-close.html" preferred_height="400" />
+  <Content type="html" view="github4jive-issue-reopen" href="issue-reopen.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />

@@ -255,7 +255,8 @@ var app = {
                 place.createExtProps({
                     "github4jiveEnabled": true,
                     "github4jiveRepo": repoName,
-                    "github4jiveRepoOwner": owner
+                    "github4jiveRepoOwner": owner,
+                    "github4jiveIssueClosed": false
                 }).execute(function (resp) {
                     console.log('resp: {' + JSON.stringify(resp) + '}');
                     osapi.http.post({
@@ -328,7 +329,12 @@ if(realTile){
     });
 
     gadgets.actions.updateAction({
-        id: "com.jivesoftware.addon.github4jive.discussion.modifyIssue",
+        id: "com.jivesoftware.addon.github4jive.discussion.reopenIssue",
+        callback: app.handleContext
+    });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.discussion.closeIssue",
         callback: app.handleContext
     });
 }

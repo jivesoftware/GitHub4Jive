@@ -26,6 +26,11 @@ h3 {
 ul {
     margin-left:0px; padding-left:20px; list-style-type:square;
 }
+
+.center-content{
+    text-align: center;
+}
+
 .float-right{
     float:right;
 }

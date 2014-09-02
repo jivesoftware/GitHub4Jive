@@ -21,10 +21,16 @@
  </div>
 
  <div id="j-card-configuration" class="j-card" style="display: none;">
-     <p>
-        Repo: <span id="loader"><select id="projectList"></select><span></span></span>
-     </p>
-     <input id="github4jive-enable-submit" type="button" value="Save" />
+     <br/>
+     <div class="form-group">
+         <label for="projectList">Reposoitory: </label>
+         <div class="bootstrap-select-overlay">
+            <span id="loader" ><span></span></span><select id="projectList" class="form-control"></select>
+         </div>
+     </div>
+     <div class="form-group">
+        <input id="github4jive-enable-submit" type="button" value="Save" class="btn btn-primary"/>
+     </div>
  </div>
 
 

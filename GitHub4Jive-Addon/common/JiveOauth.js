@@ -14,15 +14,18 @@
  *    limitations under the License.
  */
 var jive = require("jive-sdk");
+var placeStore = require("./PlaceStore");
 
-function JiveOauth(accessToken, refreshToken, tokenPersistenceFunction){
+function JiveOauth(placeUrl,accessToken, refreshToken){
+    this.placeUrl = placeUrl;
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    var self = this;
     this.tokenPersistenceFunction =
-        tokenPersistenceFunction ?
-        tokenPersistenceFunction :
             function (newTokens, community){
-                jive.logger.warn("New access/refresh tokens are not being stored for "+community.jiveUrl+ "!")
+                self.accessToken = newTokens.access_token;
+                self.refreshToken = newTokens.refresh_token;
+                placeStore.save(self.placeUrl,{jive:newTokens});
             };
 }
 

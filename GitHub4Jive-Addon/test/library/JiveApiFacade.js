@@ -110,7 +110,7 @@ describe("JiveApiFacade", function () {
 
     describe("#attachProps", function () {
         it("should return true when complete", function () {
-            var oAuth = new JiveOAuthLoader(tempOAuthToken ,tempOAuthRefreshToken);
+            var oAuth = new JiveOAuthLoader(null,tempOAuthToken ,tempOAuthRefreshToken);
             var oAuthFacade = new JiveFacadeLoader(community,oAuth);
 
             this.stub(jive.community, "findByCommunity").returns(Q(community));

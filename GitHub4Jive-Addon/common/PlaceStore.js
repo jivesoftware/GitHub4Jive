@@ -20,6 +20,8 @@ var store = jive.service.persistence();
 var JiveApi = require("./JiveApiFacade");
 var JiveOauth = require("./JiveOauth");
 
+var STORE_NAME = "places";
+
 function recursiveOverwrite(record,newObject){
     if (typeof(newObject) === "object" || typeof newObject === "array") {
         for(var m in newObject) {
@@ -51,7 +53,7 @@ exports.save = function(placeUrl, newObject, dontStamp){
         record.placeID =  tokens[tokens.length -1];
         record.placeUrl = placeUrl;
         record.invalidCache = !dontStamp;
-        return store.save("tokens", placeUrl, record).then(function(){
+        return store.save(STORE_NAME, placeUrl, record).then(function(){
             return record;
         });
     })
@@ -74,7 +76,7 @@ function pullExternalPropertiesIn(self,linked){
             || linked.invalidCache)){
         //cache repo information
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-            var jauth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token);
+            var jauth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
             var japi = new JiveApi(community, jauth);
             return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {
                 linked.github.repo = extprops.github4jiveRepo;
@@ -91,7 +93,7 @@ function pullExternalPropertiesIn(self,linked){
 
 exports.getAllPlaces = function(){
     var self = this;
-    return store.find("tokens").then(function (linkedPlaces) {
+    return store.find(STORE_NAME).then(function (linkedPlaces) {
         return Q.all(linkedPlaces.map(function (linked) {
             return pullExternalPropertiesIn(self, linked);
         }));
@@ -101,7 +103,7 @@ exports.getAllPlaces = function(){
 
 exports.getPlaceByUrl = function(placeUrl){
     var self = this;
-    return store.findByID("tokens", placeUrl).then(function (linked) {
+    return store.findByID(STORE_NAME, placeUrl).then(function (linked) {
         return pullExternalPropertiesIn(self,linked);
     });
 };

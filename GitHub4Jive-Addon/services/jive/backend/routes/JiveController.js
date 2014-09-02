@@ -78,11 +78,7 @@ function getPlace(place) {
 }
 function getJiveApi(linked) {
     return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-        var jiveAuth = new JiveOauth(linked.jive.access_token, linked.jive.refresh_token, function (newTokens) {
-            jive.logger.info("Refreshing Jive tokens for: " + linked.placeUrl);
-            jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
-            return placeStore.save(linked.placeUrl, {jive: newTokens});
-        });
+        var jiveAuth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
         var japi = new JiveApi(community, jiveAuth);
         return japi;
     });

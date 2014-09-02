@@ -14,17 +14,11 @@ var stratSetScaffolding = builder.issues().issueComments();
 
 function linkedPlaceSkeleton(linked, action){
     var place = linked.placeID;
-    var jiveToken = linked.jive.access_token;
-    var jiveRefresh = linked.jive.refresh_token;
     var gitHubToken = linked.github.token.access_token;
     var jiveUrl = linked.jiveUrl;
     var repo = linked.github.repo;
     var repoOwner = linked.github.repoOwner;
-    var jiveAuth = new JiveOauth(jiveToken, jiveRefresh, function (newTokens, community) {
-        jive.logger.info("Refreshing Jive tokens for: "+ linked.placeUrl);
-        jiveAuth = new JiveOauth(newTokens.access_token, newTokens.refresh_token, this)
-        return placeStore.save(linked.placeUrl,{jive:newTokens});
-    });
+    var jiveAuth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
 
 
     return jive.community.findByJiveURL(jiveUrl).then(function (community) {

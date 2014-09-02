@@ -52,7 +52,7 @@ ul {
     height: 34px;
 }
 
-#loader{
+.bootstrap-select-overlay #loader{
     position: absolute;
     top:10px;
     left:5px;

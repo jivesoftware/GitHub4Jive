@@ -62,16 +62,19 @@ issueStrategy.setup = function(setupOptions){
 
         }else if(gitData.action === "reopened"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.removeAnswer(discussion);
-                jiveApi.unMarkFinal(discussion.contentID);
-                return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
-
+                return jiveApi.removeAnswer(discussion).then(function () {
+                    return jiveApi.unMarkFinal(discussion.contentID).then(function () {
+                        return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
+                    });
+                });
             });
         }else if(gitData.action === "closed"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.answer(discussion);
-                jiveApi.markFinal(discussion.contentID);
-                return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
+                return jiveApi.answer(discussion).then(function () {
+                    return jiveApi.markFinal(discussion.contentID).then(function () {
+                        return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
+                    });
+                });
             });
         }
     });

@@ -10,7 +10,7 @@ $(function () {
         osapi.http.post({
             'href': host + '/github/place/newIssue?' +
                 "ts=" + new Date().getTime()+
-                "&place=" + encodeURIComponent(placeUrl()),
+                "&place=" + encodeURIComponent(placeUrl),
             headers: { 'Content-Type': ['application/json'] },
             'noCache': true,
             'authz': 'signed',

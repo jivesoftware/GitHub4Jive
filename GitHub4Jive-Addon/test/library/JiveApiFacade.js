@@ -328,6 +328,32 @@ describe("JiveApiFacade", function () {
                 });
             });
         });
-    })
+    });
+
+    describe("#update", function () {
+        it("should add tags", function () {
+            return createContent(jiveFacade, "discussion").then(function (content) {
+                var contentID = content.apiID;
+                var builder = new ContentBuilder(content.entity);
+                var update = builder.tags(["bug", "enhancement"]).build();
+
+                return jiveFacade.update(update).then(function (response) {
+                    response.success.should.be.true;
+                    response.entity.tags.should.be.an("array");
+                    response.entity.tags.length.should.equal(2);
+                    response.entity.tags.should.contain("bug");
+                    response.entity.tags.should.contain("enhancement");
+                    jiveFacade.destroy(contentID);
+
+
+
+                    }).catch(function (error) {
+                        jiveFacade.destroy(contentID);
+                        throw error;
+                    });
+
+                });
+            });
+        });
 });
 

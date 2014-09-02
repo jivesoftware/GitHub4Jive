@@ -14,8 +14,13 @@
  *    limitations under the License.
  */
 
-function JiveContentBuilder(){
-    this.content = {content:{type:"text/html"}};
+function JiveContentBuilder(source){
+    if(!source) {
+        this.content = {content: {type: "text/html"}};
+    }else{
+        verify(source);
+        this.content = source;
+    }
 }
 
 var MISSING_TYPE = exports.MISSING_TYPE ="Missing type";
@@ -24,15 +29,16 @@ var MISSING_BODY = exports.MISSING_BODY = "Content text missing";
 var MISSING_USERS = exports.MISSING_USERS = "Missing user list.";
 var MISSING_PARENT = exports.MISSING_PARENT = "Missing parent uri";
 var INVALID_TYPE = exports.INVALID_TYPE = "Invalid Type";
+var INVALID_TAGS = exports.INVALID_TAGS = "Invalid Tags";
 
-function verify(builder) {
-    if(!builder.content.type){
+function verify(content) {
+    if(!content.type){
         throw Error(MISSING_TYPE);
     }
-    if(builder.content.subject == null && builder.content.type != "comment" && builder.content.type != "message"){
+    if(content.subject == null && content.type != "comment" && content.type != "message"){
         throw Error(MISSING_SUBJECT);
     }
-    if(builder.content.content.text == null){
+    if(content.content.text == null){
         throw Error(MISSING_BODY);
     }
 }
@@ -44,7 +50,7 @@ function verify(builder) {
  * created object is returned.
  */
 JiveContentBuilder.prototype.build = function(onBuild){
-    verify(this);
+    verify(this.content);
     if(onBuild && onBuild instanceof Function ){
         onBuild(JSON.parse(JSON.stringify(this.content)));
         return this;
@@ -257,6 +263,14 @@ JiveContentBuilder.prototype.onBehalfOf = function(email, name){
     if(name) {
         this.content.onBehalfOf.name = name;
     }
+    return this;
+};
+
+JiveContentBuilder.prototype.tags = function (tags) {
+    if(!( tags instanceof Array) || (tags.length > 0 && typeof tags[0] !== "string")){
+        throw INVALID_TAGS;
+    }
+    this.content.tags = tags;
     return this;
 }
 

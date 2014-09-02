@@ -76,6 +76,19 @@ issueStrategy.setup = function(setupOptions){
                     });
                 });
             });
+        }else if(gitData.action === "labeled"){
+            helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+                var builder = new JiveContentBuilder(discussion);
+                var tags = gitData.issue.labels.map(function (label) {
+                    return label.name;
+                })
+                var content = builder.discussion()
+                    .tags(tags)
+                    .build();
+                jiveApi.update(content).then(function (contentResponse) {
+                    jive.logger.debug(contentResponse);
+                });
+            });
         }
     });
 };

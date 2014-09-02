@@ -156,6 +156,21 @@ JiveApiFacade.prototype.create = function(post){
     }));
 };
 
+JiveApiFacade.prototype.update = function (put) {
+    var url = communityAPIURL(this) + "contents/" + put.contentID;
+    var headers = {};
+    var options = this.authenticator.applyTo(url,put, headers);
+    options['method'] = 'PUT';
+    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+        decorateResponseWithSuccess(response, 200);
+        if(response.success){
+            var url = response.entity.resources.self.ref;
+            response.apiID = url.substr(url.lastIndexOf("/") + 1);
+        }
+        return response;
+    }));
+}
+
 /*
  * Delete content form the Jive community by its reference
  * @param string id The content id to be deleted.

@@ -19,7 +19,7 @@ $(document).bind("github4jiveAuthorized", function () {
                 statusText.after("<br/><p>The page will reload soon unless you close this app. You will be able to recover a comment in progress.</p>")
                 window.setTimeout(function () {
                     window.top.location.href = document.referrer;
-                    osapi.jive.core.container.closeApp();
+                    //osapi.jive.core.container.closeApp();//makes it a little clunky online with latency
                 }, 5000);
             });
         }

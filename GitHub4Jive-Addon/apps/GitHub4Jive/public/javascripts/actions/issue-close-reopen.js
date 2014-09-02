@@ -20,7 +20,7 @@ $(document).bind("github4jiveAuthorized", function () {
                 window.setTimeout(function () {
                     window.top.location.href = document.referrer;
                     //osapi.jive.core.container.closeApp();//makes it a little clunky online with latency
-                }, 5000);
+                }, 3000);
             });
         }
         function changeIssueState(state) {

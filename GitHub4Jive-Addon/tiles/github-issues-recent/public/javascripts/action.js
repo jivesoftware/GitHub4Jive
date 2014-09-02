@@ -6,7 +6,7 @@ function populateCommentsTable(repo, issueNumber) {
     osapi.http.get({
         'href': host + '/github/place/comments?' +
             "ts=" + new Date().getTime() +
-            "&place=" + encodeURIComponent(placeUrl()) +
+            "&place=" + encodeURIComponent(placeUrl) +
             "&repo=" + repo +
             "&number=" + issueNumber,
         headers: { 'Content-Type': ['application/json'] },
@@ -84,7 +84,7 @@ jive.tile.onOpen(function (config, options) {
         osapi.http.post({
             'href': host + '/github/place/changeIssueState?' +
                 "ts=" + new Date().getTime()+
-                "&place=" + encodeURIComponent(placeUrl()) +
+                "&place=" + encodeURIComponent(placeUrl) +
                 "&repo=" + config.repo +
                 "&number=" + config.number,
             headers: { 'Content-Type': ['application/json'] },
@@ -116,7 +116,7 @@ jive.tile.onOpen(function (config, options) {
         osapi.http.post({
             'href': host + '/github/place/newComment?' +
                 "ts=" + new Date().getTime() +
-                "&place=" + encodeURIComponent(placeUrl()) +
+                "&place=" + encodeURIComponent(placeUrl) +
                 "&repo=" + config.repo +
                 "&number=" + config.number,
             headers: { 'Content-Type': ['application/json'] },

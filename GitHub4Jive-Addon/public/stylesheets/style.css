@@ -58,6 +58,10 @@ ul {
     left:5px;
 }
 
+.bootstrap-select-overlay .j-loading-big span {
+    padding: 5px 10px;
+}
+
 .btn.open{
     background-color: #cccccc;
 }

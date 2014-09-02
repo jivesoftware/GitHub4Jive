@@ -15,7 +15,7 @@ $(document).bind("github4jiveAuthorized", function () {
         var statusText = $("#Status");
         function replaceStatusText(appendage){
             statusText.children().hide(500).promise().done(function () {
-                statusText.append(appendage);
+                statusText.append("<h2>"+appendage+"</h2>");
                 statusText.after("<br/><p>The page will reload momentarily unless you close this window. You will be able to recover a comment in progress.</p>")
                 window.setTimeout(function () {
                     window.top.location.href = document.referrer;
@@ -45,7 +45,7 @@ $(document).bind("github4jiveAuthorized", function () {
 
                 }else{
 
-                    replaceStatusText("<span>The issue has been "+(state == "open" ? "reopened" : "closed") +"</span>");
+                    replaceStatusText("The issue has been "+(state == "open" ? "reopened" : "closed") );
                 }
 
             });
@@ -54,7 +54,7 @@ $(document).bind("github4jiveAuthorized", function () {
 
         if(stateAction == "close"){
             if(extPropClosed){
-                replaceStatusText("<span>The issue is already closed. Refresh your discussion page.</span>");
+                replaceStatusText("The issue is already closed. Refresh your discussion page.");
             }else{
                 changeIssueState("closed");
             }
@@ -64,11 +64,11 @@ $(document).bind("github4jiveAuthorized", function () {
                 changeIssueState("open");
             }
             else {
-                replaceStatusText("<span>The issue is already open. Refresh your discussion page.</span>");
+                replaceStatusText("The issue is already open. Refresh your discussion page.");
             }
         }else{
             replaceStatusText(function () {
-                replaceStatusText("<span>The app is misconfigured. Invalid issue action is defined</span>");
+                replaceStatusText("The app is misconfigured. Invalid issue action is defined");
             });
         }
 

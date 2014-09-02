@@ -18,7 +18,8 @@ $(document).bind("github4jiveAuthorized", function () {
                 statusText.append(appendage);
                 statusText.after("<br/><p>The page will reload soon unless you close this app. You will be able to recover a comment in progress.</p>")
                 window.setTimeout(function () {
-                    top.location.reload();
+                    window.top.location.href = document.referrer;
+                    osapi.jive.core.container.closeApp();
                 }, 5000);
             });
         }

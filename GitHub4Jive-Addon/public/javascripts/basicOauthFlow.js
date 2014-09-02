@@ -255,8 +255,7 @@ var app = {
                 place.createExtProps({
                     "github4jiveEnabled": true,
                     "github4jiveRepo": repoName,
-                    "github4jiveRepoOwner": owner,
-                    "github4jiveIssueClosed": false
+                    "github4jiveRepoOwner": owner
                 }).execute(function (resp) {
                     console.log('resp: {' + JSON.stringify(resp) + '}');
                     osapi.http.post({

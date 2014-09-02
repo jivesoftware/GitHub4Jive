@@ -15,9 +15,7 @@
         <Link rel="Screenshot3" href="images/screenshot03.png" />
         <Link rel="Screenshot4" href="images/screenshot04.png" />
 
-        <Optional feature="content-rewrite">
-            <Param name="exclude-url">.css</Param>
-        </Optional>
+
 	    <Require feature="dynamic-height" />
 		<Require feature="settitle"/>
 		<Require feature="views" />

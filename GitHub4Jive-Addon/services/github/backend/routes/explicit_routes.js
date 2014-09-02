@@ -43,7 +43,7 @@ exports.IssuesForPlace = {
     'route' : gitHubController.getPlaceIssues
 };
 
-exports.IssuesForPlace = {
+exports.newIssue = {
     'verb' : 'post',
     'path' : '/github/place/newIssue',
     'route' : gitHubController.newIssue

@@ -17,7 +17,6 @@ var jive = require("jive-sdk");
 var placeStore = require("./PlaceStore");
 
 function JiveOauth(placeUrl,accessToken, refreshToken){
-    this.placeUrl = placeUrl;
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     var self = this;
@@ -25,7 +24,7 @@ function JiveOauth(placeUrl,accessToken, refreshToken){
             function (newTokens, community){
                 self.accessToken = newTokens.access_token;
                 self.refreshToken = newTokens.refresh_token;
-                placeStore.save(self.placeUrl,{jive:newTokens});
+                placeStore.save(placeUrl,{jive:newTokens});
             };
 }
 

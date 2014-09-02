@@ -87,9 +87,7 @@ exports.getPlaceIssues = function (req, res) {
         gitHubFacade.getRepositoryIssues(linked.github.repoOwner,linked.github.repo,auth).then(function (issues) {
             if(issues.length){
                  return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-                    var jAuth = new JiveAuth(linked.jive.access_token, linked.jive.refresh_token, function () {
-                        //fill in refresh scheme
-                    });
+                    var jAuth = new JiveAuth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
                     var japi = new JiveApi(community, jAuth);
                     Q.all(issues.map(function (issue) {
                         return jiveDecorator.decorateIssueWithJiveContent(japi,placeUrl, issue);

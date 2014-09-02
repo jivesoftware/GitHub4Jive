@@ -83,10 +83,9 @@ function getJiveApi(linked) {
         return japi;
     });
 }
-function hydrateObject(japi, comment) {
-    return japi.get(comment.id).then(function (message) {
-        var message = message.entity;
-        return message;
+function hydrateObject(japi, webHookObject) {
+    return japi.get(webHookObject.id).then(function (message) {
+        return message.entity;
     });
 }
 function createGitHubComment(place, hookPayload) {

@@ -76,7 +76,7 @@ issueStrategy.setup = function(setupOptions){
                     });
                 });
             });
-        }else if(gitData.action === "labeled"){
+        }else if(gitData.action === "labeled" || gitData.action == "unlabeled"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 var builder = new JiveContentBuilder(discussion);
                 var tags = gitData.issue.labels.map(function (label) {

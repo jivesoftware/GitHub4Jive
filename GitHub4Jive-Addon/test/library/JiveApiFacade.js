@@ -331,29 +331,70 @@ describe("JiveApiFacade", function () {
     });
 
     describe("#update", function () {
-        it("should add tags", function () {
-            return createContent(jiveFacade, "discussion").then(function (content) {
-                var contentID = content.apiID;
+        function createTags(content,tags) {
                 var builder = new ContentBuilder(content.entity);
-                var update = builder.tags(["bug", "enhancement"]).build();
+                var update = builder.tags(tags).build();
 
                 return jiveFacade.update(update).then(function (response) {
                     response.success.should.be.true;
                     response.entity.tags.should.be.an("array");
-                    response.entity.tags.length.should.equal(2);
-                    response.entity.tags.should.contain("bug");
-                    response.entity.tags.should.contain("enhancement");
-                    jiveFacade.destroy(contentID);
+                    response.entity.tags.length.should.equal(tags ? tags.length : 0);
+                    if(tags) {
+                        tags.forEach(function (tag) {
+                            response.entity.tags.should.contain(tag);
+                        });
+                    }
+                    return response;
+            });
+        }
+
+        it("should add tags", function () {
+            var tags = ["bug", "enhancement"];
+            var contentID = null;
+            return createContent(jiveFacade, "discussion").then(function (content) {
+                contentID = content.apiID;
+                return createTags(content,tags)
+                return jiveFacade.destroy(contentID);
 
 
-
-                    }).catch(function (error) {
-                        jiveFacade.destroy(contentID);
-                        throw error;
-                    });
-
-                });
+            }).catch(function (error) {
+                jiveFacade.destroy(contentID);
+                throw error;
             });
         });
+
+        function updateTagsTest(contentID, tags, targetTags) {
+            return createContent(jiveFacade, "discussion").then(function (content) {
+                contentID = content.apiID;
+                return createTags(content, tags).then(function (update) {
+                    return createTags(update, targetTags);
+                }).then(function () {
+                    return jiveFacade.destroy(contentID);
+                });
+
+            }).catch(function (error) {
+                jiveFacade.destroy(contentID);
+                throw error;
+            });
+        }
+
+        it("should remove tags when tags are empty", function () {
+
+            var tags = ["bug", "enhancement"];
+            var contentID = null;
+            return updateTagsTest(contentID, tags, []);
+
+        });
+
+        it("should remove tags when tags are null", function () {
+            var tags = ["bug", "enhancement"];
+            var contentID = null;
+            return updateTagsTest(contentID, tags, null);
+
+
+        });
+    });
+
+
 });
 

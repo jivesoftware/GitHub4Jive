@@ -267,6 +267,9 @@ JiveContentBuilder.prototype.onBehalfOf = function(email, name){
 };
 
 JiveContentBuilder.prototype.tags = function (tags) {
+    if(tags == null){
+        tags = [];
+    }
     if(!( tags instanceof Array) || (tags.length > 0 && typeof tags[0] !== "string")){
         throw INVALID_TAGS;
     }

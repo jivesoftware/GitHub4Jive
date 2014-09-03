@@ -56,19 +56,62 @@ jive.tile.onOpen(function (config, options) {
         }
     }
 
-    $("#repo").text(config.repo);
     $("#issue").text(config.number);
-    $("#labels").empty();
-    config.labels.forEach(function(label){
-        $("#labels").append('<span style="color:#'+label.color+'">'+label.name+'</span>,&nbsp;');
-    });
-    $("#GitHubLink").attr("href", config.url);
-    $("#GitHubLink").text(config.title);
+    $("#issueTitle").text(config.title);
+    $("#gitHubLink").attr("href", config.url);
+
+    var labelGroup = $("#labels");
+    var labelSave = $("#saveLabels");
+
+    function toggleChecked(e){
+        function toggleProperty(idx, oldProp) {
+            return !oldProp;
+        }
+        e.prop("checked", toggleProperty);
+        e.parent("label").toggleClass("active");
+    }
+
+    for(var i = 0; i < config.labels.length; i++){
+        var labelInput = $("input[value='"+config.labels[i].name+"']",labelGroup);
+        toggleChecked(labelInput);
+    }
+
+
+    labelSave.click(function () {
+        var checked =  $("label.active input",labelGroup);
+        var labels =[];
+        checked.each(function (idx,label) {
+            labels.push( $(label).val());
+        });
+
+        console.log(labels);
+        var bodyPayload = {
+            "labels": labels
+        };
+        osapi.http.post({
+            'href': host + '/github/place/changeIssueLabels?' +
+                "ts=" + new Date().getTime() +
+                "&place=" + encodeURIComponent(placeUrl) +
+                "&repo=" + config.repo +
+                "&number=" + config.number,
+            headers: { 'Content-Type': ['application/json'] },
+            'noCache': true,
+            'authz': 'signed',
+            'body': bodyPayload
+        }).execute(function (response) {
+
+            //alert( "status=" + response.status) ;
+            if ((response.status >= 400 && response.status <= 599) || !JSON.parse(response.content).success) {
+                alert("ERROR!" + JSON.stringify(response.content));
+                //toggleState();
+            }
+
+        });
+    })
 
     $(document).on("github4jiveAuthorized",function(){
         populateCommentsTable(config.repo, config.number);
     });
-
 
     $("#btn_submit").click(function () {
         jive.tile.close(null, {});

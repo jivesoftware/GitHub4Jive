@@ -27,6 +27,10 @@ ul {
     margin-left:0px; padding-left:20px; list-style-type:square;
 }
 
+.row.space-top{
+    margin-top: 10px;
+}
+
 .center-content{
     text-align: center;
 }

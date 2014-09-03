@@ -46,9 +46,13 @@ StrategySkeleton.NULL_OBJECT = NULL_OBJECT;
 StrategySkeleton.INVALID_BUILDER = INVALID_BUILDER;
 
 function wrapOptionsInPromise(options){
-    return q(function () {
+    if(options.then){
         return options;
-    })
+    }else {
+        return q(function () {
+            return options;
+        });
+    }
 }
 
 function setupInstance(instance, options){

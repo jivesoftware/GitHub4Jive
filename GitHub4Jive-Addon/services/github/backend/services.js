@@ -11,8 +11,13 @@ var placeStore = require("../../../common/PlaceStore");
 
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues().issueComments();
+var StrategySkeleton = require( "../../../common/strategies/EventStrategySkeleton");
 
-function linkedPlaceSkeleton(linked, action){
+function uniquePlace(lhs, rhs) {
+    return lhs.placeUrl === rhs.placeUrl;
+}
+
+function linkedPlaceOptions(linked){
     var place = linked.placeID;
     var gitHubToken = linked.github.token.access_token;
     var jiveUrl = linked.jiveUrl;
@@ -20,12 +25,11 @@ function linkedPlaceSkeleton(linked, action){
     var repoOwner = linked.github.repoOwner;
     var jiveAuth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
 
-
     return jive.community.findByJiveURL(jiveUrl).then(function (community) {
         var japi = new JiveFacade(community, jiveAuth);
         if (!repo || !repoOwner) {
             jive.logger.error("Missing repo information for " + linked.placeUrl)
-
+            return {};
         }
         else {
             var setupOptions = {
@@ -36,30 +40,22 @@ function linkedPlaceSkeleton(linked, action){
                 gitHubToken: gitHubToken,
                 placeUrl: linked.placeUrl
             };
-            return action(setupOptions);
+            return (setupOptions);
         }
     });
 }
 
-function decorateLinkedPlaceWithStategies(linked) {
-    linked.setupStrategies = stratSetScaffolding.build();
-}
+var strategyProvider = new StrategySkeleton(uniquePlace,linkedPlaceOptions,linkedPlaceOptions);
 
-function setUpLinkedPlace(linked){
-    decorateLinkedPlaceWithStategies(linked);
-    return linkedPlaceSkeleton(linked, linked.setupStrategies.setup);
-}
-
-function teardownLinkedPlace(linked) {
-    return linkedPlaceSkeleton(linked, linked.setupStrategies.teardown);
-}
-
-var linkedPlaces = [];
+function updatePlace(linked){
+    return strategyProvider.addOrUpdate(linked, stratSetScaffolding).then(function () {
+        setupJiveHook(linked);
+    })
+};
 
 exports.onBootstrap = function() {
     placeStore.getAllPlaces().then(function (places) {
-        linkedPlaces = places;
-        linkedPlaces.forEach(setUpLinkedPlace);
+        places.forEach(updatePlace);
     });
 };
 
@@ -103,34 +99,13 @@ exports.onConfigurationChange = function(req, res){
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
 
-    placeStore.invalidateCache(placeUrl).then(function (newLinkedPlace) {
-        var tempCollection = [];
-        var toTeardown;
-        linkedPlaces.forEach(function (place) {
-            if(place.placeUrl !== newLinkedPlace.placeUrl){
-                tempCollection.push(place);
-            }else{//found it
-                toTeardown = place;
-            }
-        });
-        tempCollection.push(newLinkedPlace);
-        linkedPlaces = tempCollection;
-        return setupJiveHook(newLinkedPlace).then(function () {
-            if(toTeardown) {
-                return teardownLinkedPlace(toTeardown).then(function () {
-                    setUpLinkedPlace(newLinkedPlace);
-                });
-            }else{
-                return setUpLinkedPlace(newLinkedPlace);
-            }
-        });
-
-
+    placeStore.invalidateCache(placeUrl).then(updatePlace).then(function () {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({success:true}));
     }).catch(function (error) {
         jive.logger.error(error);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({success:false}));
     });
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({success:true}));
+
 };

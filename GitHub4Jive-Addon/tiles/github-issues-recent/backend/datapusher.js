@@ -23,6 +23,8 @@ var placeStore = require(COMMONS_DIRECTORY+ "PlaceStore");
 var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
 var StrategyBuilder = require("./StrategySetBuilder");
+var StrategySkeleton = require(COMMONS_DIRECTORY + "strategies/EventStrategySkeleton");
+
 
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues();
@@ -82,14 +84,12 @@ var pushData = function () {
     });
 }
 
-var linkedTiles = [];
 
-var decorateTileWithStrategies = function (tile) {
-    tile.strategies = stratSetScaffolding.build();
-};
+function uniqueTile(lhs, rhs){
+    return lhs.config.parent === rhs.config.parent;
+}
 
 var setupInstance = function(instance){
-    decorateTileWithStrategies(instance);
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
         var setupOptions = {
@@ -100,9 +100,7 @@ var setupInstance = function(instance){
             instance: instance,
             processTile: processTileInstance
         };
-        return instance.strategies.setup(setupOptions);
-    }).then(function () {
-        processTileInstance(instance);
+        return setupOptions;
     });
 };
 
@@ -113,39 +111,24 @@ var tearDownInstance = function (instance) {
             placeUrl: linked.placeUrl,
             gitHubToken: linked.github.token.access_token
         };
-        return instance.strategies.teardown(setupOptions);
+        return setupOptions;
     });
-}
+};
+
+
+var strategyProvider = new StrategySkeleton(uniqueTile,setupInstance,tearDownInstance);
 
 var updateTileInstance = function (newTile) {
     if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
-        var tempCollection = [];
-        var toTeardown;
-        linkedTiles.forEach(function (tile) {
-            if (tile.config.parent !== newTile.config.parent) {
-                tempCollection.push(tile);
-            }
-            else {//found it
-                toTeardown = tile;
-            }
+        strategyProvider.addOrUpdate(newTile, stratSetScaffolding).then(function () {
+            return processTileInstance(newTile);
         });
-        tempCollection.push(newTile);
-        linkedTiles = tempCollection;
-        if (toTeardown) {
-            return tearDownInstance(toTeardown).then(function () {
-                return setupInstance(newTile);
-            });
-        }
-        else {
-            return setupInstance(newTile);
-        }
     }
 }
 
 var setupAll = function(){
     jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
-        linkedTiles = tiles;
-        return q.all(tiles.map(setupInstance));
+        return q.all(tiles.map(updateTileInstance));
     });
 };
 
@@ -168,7 +151,7 @@ exports.eventHandlers = [
     },
     {
         'event': jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : setupInstance
+        'handler' : updateTileInstance
     },
     {
         'event': jive.constants.globalEventNames.INSTANCE_UPDATED,

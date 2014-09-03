@@ -22,105 +22,21 @@ var q = require("q");
 
 chai.use(chaiAsPromised);
 
-var strategyBuilderBase = require("../../common/strategies/StrategySetBuilderBase");
-
-var strategyBase = require("../../common/strategies/EventStrategyBase");
-var testStrategy = Object.create(strategyBase);
-var testStrategy2 = Object.create(strategyBase);
-var failingSetupStrategy = Object.create(strategyBase);
-var failingTeardownStrategy = Object.create(strategyBase);
-
-testStrategy.name = "TEST";
-testStrategy2.name = "TEST2";
-failingSetupStrategy.name = "I_THROW_THINGS_ON_SETUP";
-failingTeardownStrategy.name = "I_THROW_THINGS_ON_TEARDOWN";
 
 
-testStrategy.setup = function(setupOptions){
-    setupOptions.setupRun = new Date().getTime();
-    return q(function () {
-        return "SOME_TOKEN";
-    }).call();
-};
-
-testStrategy2.setup = function(setupOptions){
-    setupOptions.setup2Run = new Date().getTime();
-    return q(function () {
-        return "ANOTHER_TOKEN";
-    }).call();
-};
-
-failingSetupStrategy.setup = function(setupOptions){
-    setupOptions.failingSetupRun = new Date().getTime();
-    return q(function () {
-        throw Error("SETUP");
-    }).call();
-};
-
-failingTeardownStrategy.setup = function(setupOptions){
-    setupOptions.failingTeardownSetupRun = new Date().getTime();
-    return q(function () {
-       return "ANOTHER_TOKEN";
-    }).call();
-};
-
-testStrategy.teardown = function(teardownOptions){
-    teardownOptions.should.have.property("eventToken").and.equal("SOME_TOKEN");
-    teardownOptions.teardownRun = new Date().getTime();
-    return q(function () {
-        return ;
-    }).call();
-};
-
-testStrategy2.teardown = function(teardownOptions){
-    teardownOptions.should.have.property("eventToken").and.equal("ANOTHER_TOKEN");
-    teardownOptions.teardown2Run = new Date().getTime();
-    return q(function () {
-        return;
-    }).call();
-};
-
-failingSetupStrategy.teardown = function(teardownOptions){
-    //The setup failed therefore there is no token to unregister
-    teardownOptions.should.have.property("eventToken").and.be.false;
-    teardownOptions.failingSetupTeardownRun = new Date().getTime();
-    return q(function () {
-        return;
-    }).call();
-};
-
-failingTeardownStrategy.teardown = function(teardownOptions){
-    teardownOptions.failingTeardownRun = new Date().getTime();
-    return q(function () {
-        throw Error("TEARDOWN");
-    }).call();
-};
-
-function builder(){
-    strategyBuilderBase.apply(this);
-}
-builder.prototype = new strategyBuilderBase();
+var builder = require("./strategies/testStrategyBuilder");
 
 
-builder.prototype.test = function(){
-    this.strategies.push(testStrategy);
-    return this;
-};
 
-builder.prototype.test2 = function(){
-    this.strategies.push(testStrategy2);
-    return this;
-};
 
-builder.prototype.failSetup = function(){
-    this.strategies.push(failingSetupStrategy);
-    return this;
-};
 
-builder.prototype.failTeardown = function(){
-    this.strategies.push(failingTeardownStrategy);
-    return this;
-};
+
+
+
+
+
+
+
 
 describe("#StrategySetBuilderBase", function () {
     describe("#build", function () {

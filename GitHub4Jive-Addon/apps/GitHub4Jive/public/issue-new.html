@@ -35,16 +35,18 @@
 </div>
 
 <div id="j-card-action" class="j-card" style='display: none'>
-    <div class="container_fluid" id="todo_panel">
-        <label>Issue Title:</label>
-        <textarea type="textarea" id="Title" style="width:100%;max-width:100%;height:200px;" required></textarea>
-        <br/><br/>
-        <label>Body: (Optional)</label>
-        <textarea type="textarea" id="Body" style="width:100%;max-width:100%;height:200px;" ></textarea><br>
-        <br>
-        <button class="btn btn-primary" id="btn_issue">Create Issue</button>
-        <button class="btn btn-primary" id="btn_exit">Exit</button>
-        <br>
+    <div class="container-fluid" id="todo_panel">
+        <div class="form-group">
+            <label>Issue Title:</label>
+            <textarea type="textarea" id="Title" required class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Body: (Optional)</label>
+            <textarea type="textarea" id="Body"  class="form-control"></textarea><br>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" id="btn_issue">Create Issue</button>
+        </div>
     </div>
 </div>
 </body>

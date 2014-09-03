@@ -138,8 +138,11 @@ function deleteRepoHook(git,owner, repo, key){
     return (deferredTemplate(git.repos.deleteHook, {"user": owner, "repo": repo, "id": key}));
 }
 
+function getWebHooks(git, owner, repo){
+    return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo});
+}
 function deletePreviousHooks(git,owner, repo){
-    return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo}).then(function(hooks){
+    return getWebHooks(git, owner, repo).then(function(hooks){
         var hooksDeleting = [];
         hooks.forEach(function(hook){
             if(hook.config.url == GITHUB_EVENT_URL){
@@ -190,8 +193,18 @@ function subscribeTo(git,owner,repo, gitEvent, handler){
         var fullName = owner + "/" + repo;
         var hook = repoHooks[fullName];
         if(!hook){
-            return deletePreviousHooks(git, owner, repo).then(function(){
-                return createGitHubHook(git,owner, repo, [gitEvent]).then(function(hookResponse){
+            return getWebHooks(git, owner, repo).then(function(hooks){
+                var hookPromise = null;
+                hooks.forEach(function(hookResponse){
+                    if(hookResponse.config.url == GITHUB_EVENT_URL){
+                        hookPromise = Q(hookResponse);
+                        return false;
+                    }
+                });
+                if(!hookPromise){
+                    hookPromise = createGitHubHook(git,owner, repo, [gitEvent]);
+                }
+                return hookPromise.then(function(hookResponse){
                     var eventHandler = EventHandler(gitEvent, handler);
                     repoHooks[fullName] = {events:{}, key: hookResponse.id};
                     repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};

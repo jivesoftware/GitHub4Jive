@@ -18,9 +18,7 @@ var jive = require('jive-sdk');
 var GitHubApi = require("github");
 var Q = require("q");
 function promiseSeed() {
-    return Q.fcall(function () {
-        return;
-    });
+    return Q();
 }
 
 var config = require("../jiveclientconfiguration.json");
@@ -83,47 +81,6 @@ function getOrgsRepositories(git, org){
 
 var repoHooks = {};
 
-var webhookPending = false;
-var retry = 5;
-
-function inlineResetWebhookProtection(response){
-    webhookPending = false;
-    retry = 5;
-    return response
-};
-
-function waitForWebHookRequest(){
-    if(webhookPending){
-        return Q.delay(retry).then(function () {
-            retry *= 2;
-            //using a large healthy timeout to handle latency issues
-            if(retry >= 10000){
-                inlineResetWebhookProtection();
-            }
-            return waitForWebHookRequest();
-        })
-    }else{
-        return promiseSeed();
-    }
-}
-
-function webHookWrapper(surround){
-    return waitForWebHookRequest().then(function () {
-        webhookPending = true;
-
-        if (typeof surround === "function") {
-            return promiseSeed().then(surround).then(inlineResetWebhookProtection);
-        }
-        else {
-            return surround.then(inlineResetWebhookProtection);
-        }
-
-    }).catch(function(error){
-        jive.logger.error(error);
-        return inlineResetWebhookProtection(error);
-    });
-
-}
 
 function createGitHubHook(git,owner, repo, events){
     return ( deferredTemplate( git.repos.createHook,
@@ -140,17 +97,6 @@ function deleteRepoHook(git,owner, repo, key){
 
 function getWebHooks(git, owner, repo){
     return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo});
-}
-function deletePreviousHooks(git,owner, repo){
-    return getWebHooks(git, owner, repo).then(function(hooks){
-        var hooksDeleting = [];
-        hooks.forEach(function(hook){
-            if(hook.config.url == GITHUB_EVENT_URL){
-                hooksDeleting.push(deleteRepoHook(git, owner, repo, hook.id));
-            }
-        });
-        return Q.all(hooksDeleting);
-    });
 }
 
 function hookHasRegisteredEvent(hook, event){
@@ -188,53 +134,74 @@ function currentSubscribedEvents(hook){
     return Object.keys(hook.events);
 }
 
-function subscribeTo(git,owner,repo, gitEvent, handler){
-    return webHookWrapper(function () {
-        var fullName = owner + "/" + repo;
-        var hook = repoHooks[fullName];
-        if(!hook){
-            return getWebHooks(git, owner, repo).then(function(hooks){
-                var hookPromise = null;
-                hooks.forEach(function(hookResponse){
-                    if(hookResponse.config.url == GITHUB_EVENT_URL){
-                        hookPromise = Q(hookResponse);
-                        return false;
-                    }
-                });
-                if(!hookPromise){
-                    hookPromise = createGitHubHook(git,owner, repo, [gitEvent]);
-                }
-                return hookPromise.then(function(hookResponse){
-                    var eventHandler = EventHandler(gitEvent, handler);
-                    repoHooks[fullName] = {events:{}, key: hookResponse.id};
-                    repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
-                    return eventHandler.token;
-                });
-            });
-        }else{
+var currentWebhookOperation = promiseSeed();
 
-            if(hookHasRegisteredEvent(hook, gitEvent)){
-                var eventHandler = EventHandler(gitEvent, handler);
-                hook.events[gitEvent].handlers.push(eventHandler);
-                //hack to make interface consistent
-                return promiseSeed().then(function() {return eventHandler.token;});
-            }else{
-                var newEventList = currentSubscribedEvents(hook);
-                newEventList.push(gitEvent);
-                jive.logger.info(fullName + " has registered to",newEventList);
-                return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
-                    return createGitHubHook(git,owner, repo, newEventList).then(function(hookResponse){
-                        hook.key = hookResponse.id;
+function wrapNextOperation( deferred, op){
+    var next = function () {
+        return promiseSeed().then(op).then(function (result) {
+            deferred.resolve(result);
+        });
+
+    };
+    currentWebhookOperation = currentWebhookOperation.then(function () {
+        return next();
+    });
+}
+
+function subscribeTo(git,owner,repo, gitEvent, handler){
+    var deferred = Q.defer();
+    wrapNextOperation(deferred, function () {
+            var fullName = owner + "/" + repo;
+            var hook = repoHooks[fullName];
+            if (!hook) {
+                return getWebHooks(git, owner, repo).then(function (hooks) {
+                    var hookPromise = null;
+                    hooks.forEach(function (hookResponse) {
+                        if (hookResponse.config.url == GITHUB_EVENT_URL) {
+                            hookPromise = Q(hookResponse);
+                            return false;
+                        }
+                    });
+                    if (!hookPromise) {
+                        hookPromise = createGitHubHook(git, owner, repo, [gitEvent]);
+                    }
+                    return hookPromise.then(function (hookResponse) {
                         var eventHandler = EventHandler(gitEvent, handler);
-                        repoHooks[fullName].events[gitEvent] = {handlers:[eventHandler]};
+                        repoHooks[fullName] = {events: {}, key: hookResponse.id};
+                        repoHooks[fullName].events[gitEvent] = {handlers: [eventHandler]};
                         return eventHandler.token;
                     });
-                })
-
+                });
             }
+            else {
 
+                if (hookHasRegisteredEvent(hook, gitEvent)) {
+                    var eventHandler = EventHandler(gitEvent, handler);
+                    hook.events[gitEvent].handlers.push(eventHandler);
+                    //hack to make interface consistent
+                    return promiseSeed().then(function () {
+                        return eventHandler.token;
+                    });
+                }
+                else {
+                    var newEventList = currentSubscribedEvents(hook);
+                    newEventList.push(gitEvent);
+                    jive.logger.info(fullName + " has registered to", newEventList);
+                    return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
+                        return createGitHubHook(git, owner, repo, newEventList).then(function (hookResponse) {
+                            hook.key = hookResponse.id;
+                            var eventHandler = EventHandler(gitEvent, handler);
+                            repoHooks[fullName].events[gitEvent] = {handlers: [eventHandler]};
+                            return eventHandler.token;
+                        });
+                    })
+                }
+            }
         }
-    } );
+    );
+    return deferred.promise;
+
+
 }
 
 function findPathToHandler(token){
@@ -478,36 +445,41 @@ exports.unSubscribeFromRepoEvent = function(token, authOptions) {
     }
     var repo = repoHooks[path.hook];
     var event = repo.events[path.event];
+    var deferred = Q.defer();
+   wrapNextOperation(deferred,function () {
+            var handler = event.handlers.splice(path.handler, 1)[0];
 
-    var handler = event.handlers.splice(path.handler, 1)[0];
-    return webHookWrapper(function () {
-        if (event.handlers.length == 0) {
-            if (!(delete repo.events[path.event])) {
-                throw Error("Unable to unregister hook event.");
-            }
-
-            var currentEvents = currentSubscribedEvents(repo);
-            var unregisterAction;
-            var r = extractRepoParts(path.hook);
-            var git = GitHubInstance(authOptions);
-            return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
-                if (currentEvents.length != 0) {
-                    return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
-                        repo.key = hookResponse.id;
-                        return true;
-                    });
+            if (event.handlers.length == 0) {
+                if (!(delete repo.events[path.event])) {
+                    throw Error("Unable to unregister hook event.");
                 }
-                else {
-                    if (Object.keys(repo.events).length == 0) {
-                        delete repoHooks[path.hook];
+
+                var currentEvents = currentSubscribedEvents(repo);
+                var unregisterAction;
+                var r = extractRepoParts(path.hook);
+                var git = GitHubInstance(authOptions);
+                return deleteRepoHook(git, r.owner, r.repo, repo.key).then(function (response) {
+                    if (currentEvents.length != 0) {
+                        return createGitHubHook(git, r.owner, r.repo, currentEvents).then(function (hookResponse) {
+                            repo.key = hookResponse.id;
+                            return true;
+                        });
                     }
-                }
-            });
-        }
-        return promiseSeed().then(function () {
-            return true;
-        });//sorry for the hack. Makes the interface consistent when mixing asynchronous code
-    });
+                    else {
+                        if (Object.keys(repo.events).length == 0) {
+                            delete repoHooks[path.hook];
+                        }
+                    }
+                });
+            }
+            return promiseSeed().then(function () {
+                return true;
+            });//sorry for the hack. Makes the interface consistent when mixing asynchronous code
+        });
+
+    return deferred.promise;
+
+
 }
 
 

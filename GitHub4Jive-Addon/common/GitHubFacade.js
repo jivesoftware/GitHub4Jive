@@ -96,7 +96,7 @@ function deleteRepoHook(git,owner, repo, key){
 }
 
 function updateRepoHook(git, owner, repo, key, events){
-    return deferredTemplate(git.repos.updateHook,{"user": owner, "repo": repo, "name": "web",
+    return deferredTemplate(git.repos.updateHook,{"user": owner, "repo": repo, "name": "web","id":key,
         "config": JSON.stringify( { "url":  GITHUB_EVENT_URL, "content_type": "json"}),
         "events": events,
         "active": true

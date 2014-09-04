@@ -95,6 +95,14 @@ function deleteRepoHook(git,owner, repo, key){
     return (deferredTemplate(git.repos.deleteHook, {"user": owner, "repo": repo, "id": key}));
 }
 
+function updateRepoHook(git, owner, repo, key, events){
+    return deferredTemplate(git.repos.updateHook,{"user": owner, "repo": repo, "name": "web",
+        "config": JSON.stringify( { "url":  GITHUB_EVENT_URL, "content_type": "json"}),
+        "events": events,
+        "active": true
+    });
+}
+
 function getWebHooks(git, owner, repo){
     return deferredTemplate(git.repos.getHooks, {"user":owner, "repo": repo});
 }
@@ -187,14 +195,11 @@ function subscribeTo(git,owner,repo, gitEvent, handler){
                     var newEventList = currentSubscribedEvents(hook);
                     newEventList.push(gitEvent);
                     jive.logger.info(fullName + " has registered to", newEventList);
-                    return deleteRepoHook(git, owner, repo, hook.key).then(function (deleteResponse) {
-                        return createGitHubHook(git, owner, repo, newEventList).then(function (hookResponse) {
-                            hook.key = hookResponse.id;
+                    return updateRepoHook(git, owner, repo, hook.key, newEventList).then(function (hookResponse) {
                             var eventHandler = EventHandler(gitEvent, handler);
                             repoHooks[fullName].events[gitEvent] = {handlers: [eventHandler]};
                             return eventHandler.token;
                         });
-                    })
                 }
             }
         }

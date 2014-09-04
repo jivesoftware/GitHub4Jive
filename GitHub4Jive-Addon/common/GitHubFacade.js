@@ -148,6 +148,8 @@ function wrapNextOperation( deferred, op){
     var next = function () {
         return promiseSeed().then(op).then(function (result) {
             deferred.resolve(result);
+        }).catch(function (error) {
+            deferred.reject(error);
         });
 
     };

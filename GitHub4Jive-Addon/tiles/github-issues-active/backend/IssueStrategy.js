@@ -19,7 +19,6 @@ var Q = require("q");
 var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var tileFormatter = require("../../../common/TileFormatter");
-var helpers = require("./helpers");
 
 var strategyBase = require("./../../../common/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);

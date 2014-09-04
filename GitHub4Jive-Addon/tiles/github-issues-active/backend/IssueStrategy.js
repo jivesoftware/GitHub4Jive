@@ -19,12 +19,15 @@ var Q = require("q");
 var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
 var tileFormatter = require("../../../common/TileFormatter");
+var helpers = require("../../../common/Helpers");
 
 var strategyBase = require("./../../../common/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 
 issueStrategy.name = "Issue";
+
+var IGNORED_ACTIONS = ["labeled", "unlabeled","opened"];
 
 issueStrategy.setup = function(setupOptions) {
 
@@ -39,13 +42,17 @@ issueStrategy.setup = function(setupOptions) {
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth,
         function (payload) {
 
-            var whoDunIt = payload.sender.login;
-            return gitHubFacade.getUserDetails(whoDunIt,auth).then(function (user) {
-                var title =  (user.name  || user.login) + " " + payload.action + " issue: " + payload.issue.title;
-                var formattedData = tileFormatter.formatActivityData(
-                    title, payload.issue.body, (user.name || user.login) , user.email, payload.issue.html_url);
-                jive.extstreams.pushActivity(instance, formattedData);
-            })
 
+            if(IGNORED_ACTIONS.indexOf( payload.action) < 0) {
+                var whoDunIt = payload.sender.login;
+                return gitHubFacade.getUserDetails(whoDunIt, auth).then(function (user) {
+                    return helpers.getDiscussionForIssue(jiveApi, placeUrl,payload.issue.id).then(function (discussion) {
+                        var title = (user.name || user.login) + " " + payload.action + " issue: " + payload.issue.title;
+                        var formattedData = tileFormatter.formatActivityData(
+                            title, payload.issue.body, (user.name || user.login), user.email, discussion.resources.html.ref);
+                        jive.extstreams.pushActivity(instance, formattedData);
+                    });
+                })
+            }
         });
 };

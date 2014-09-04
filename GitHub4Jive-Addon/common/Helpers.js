@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-var jive = require("jive-sdk");
-
 exports.getDiscussionForIssue = function (jiveApi, place,issueId){
     return jiveApi.getByExtProp("github4jiveIssueId", issueId).then(function (contents) {
         if(contents.list){

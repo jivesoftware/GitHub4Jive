@@ -17,7 +17,7 @@
 var jive = require("jive-sdk");
 var gitHubFacade = require("../../../common/GitHubFacade");
 var JiveContentBuilder = require("../../../common/JiveContentBuilder");
-var helpers = require("./helpers");
+var helpers = require("../../../common/Helpers");
 
 var strategyBase = require("./../../../common/strategies/EventStrategyBase");
 var issueCommentStrategy = Object.create(strategyBase);

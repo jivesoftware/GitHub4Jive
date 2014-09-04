@@ -7,6 +7,8 @@
 
     <script type="text/javascript" charset="utf-8" src="/javascripts/shared.js"></script>
     <script src="/javascripts/jquery-1.8.3.js"></script>
+    <script src="/javascripts/jquery.validate.min.js"></script>
+    <script src="/javascripts/additional-methods.min.js"></script>
     <script src="/javascripts/coreapi-context-resolver-v3.js"></script>
     <script src="/javascripts/oauth2client.js"></script>
     <script src="/javascripts/basicOauthFlow.js"></script>
@@ -36,17 +38,19 @@
 
 <div id="j-card-action" class="j-card" style='display: none'>
     <div class="container-fluid" id="todo_panel">
-        <div class="form-group">
-            <label>Issue Title:</label>
-            <textarea type="textarea" id="Title" required class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Body: (Optional)</label>
-            <textarea type="textarea" id="Body"  class="form-control"></textarea><br>
-        </div>
-        <div class="text-center">
-            <button class="btn btn-primary" id="btn_issue">Create Issue</button>
-        </div>
+        <form id="newIssue">
+            <div class="form-group">
+                <label>Issue Title:</label>
+                <textarea type="textarea" id="Title" required class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Body: (Optional)</label>
+                <textarea type="textarea" id="Body"  class="form-control"></textarea><br>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" id="btn_issue">Create Issue</button>
+            </div>
+        </form>
     </div>
 </div>
 </body>

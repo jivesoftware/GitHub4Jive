@@ -124,7 +124,7 @@ var updateTileInstance = function (newTile) {
             return processTileInstance(newTile);
         });
     }
-}
+};
 
 var setupAll = function(){
     jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {

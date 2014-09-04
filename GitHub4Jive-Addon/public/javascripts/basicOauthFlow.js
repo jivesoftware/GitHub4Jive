@@ -3,30 +3,31 @@
  *
  * The following html is required for basicOAuthFlow to work
  *
+
  <div id="j-card-authentication" class="j-card" >
      <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
      <div>
-         <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
-         <div id="github4jive-jive-authorize-success" style="display: none;">
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+        <div id="github4jive-jive-authorize-success" style="display: none;">
             <span>Jive Authorized - OK</span>
-         </div>
+        </div>
      </div>
      <br/>
      <div>
-         <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
-         <div id="github4jive-github-authorize-success" style="display: none;">
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+        <div id="github4jive-github-authorize-success" style="display: none;">
             <span>GitHub Authorized - OK</span>
-         </div>
+        </div>
      </div>
  </div>
 
  <div id="j-card-configuration" class="j-card" style="display: none;">
      <br/>
      <div class="form-group">
-         <label for="projectList">Reposoitory: </label>
-         <div class="bootstrap-select-overlay">
+        <label for="projectList">Repository: </label>
+        <div class="bootstrap-select-overlay">
             <span id="loader" ><span></span></span><select id="projectList" class="form-control"></select>
-         </div>
+        </div>
      </div>
      <div class="form-group">
         <input id="github4jive-enable-submit" type="button" value="Save" class="btn btn-primary"/>
@@ -53,6 +54,10 @@ var jiveDone = false;
 var githubDone = false;
 
 var host;
+
+
+
+$("body").append("<link />")
 
 function AllAuthorized() {
     $("#j-card-authentication").hide();
@@ -150,6 +155,7 @@ var app = {
     currentViewerID: -1,
     initGadget: function () {
         console.log('initGadget ...');
+
     },
 
 

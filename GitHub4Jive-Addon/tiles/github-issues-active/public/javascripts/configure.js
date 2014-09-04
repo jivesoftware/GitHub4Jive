@@ -16,7 +16,9 @@ $(function () {
         }
 
         // prepopulate the sequence input dialog
-        $("input[name=post_activity]").val([config["posting"]]);
+        var posting = config.posting || "off";
+        $("input[name=post_activity]").val(posting);
+        $("#activityToggle ."+posting).addClass("active");
 
         $(document).bind("github4jiveConfigDone",function () {
             var status = $("input[name=post_activity]:checked").val();

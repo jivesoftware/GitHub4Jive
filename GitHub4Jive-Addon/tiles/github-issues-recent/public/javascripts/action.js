@@ -1,4 +1,12 @@
 
+$(function () {
+    try {
+        $('.btn').button();
+    }catch(error){
+        console.log("Bootstrap js needs to be included", error)
+    }
+})
+
 function populateCommentsTable(repo, issueNumber) {
     // get the data ...
     var bodyPayload = { body: ""};

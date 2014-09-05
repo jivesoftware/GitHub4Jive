@@ -20,7 +20,7 @@ $(document).bind("github4jiveAuthorized", function () {
                 window.setTimeout(function () {
                     window.top.location.href = document.referrer;
                     //osapi.jive.core.container.closeApp();//makes it a little clunky online with latency
-                }, 3000);
+                }, 1000);
             });
         }
         function changeIssueState(state) {
@@ -45,7 +45,7 @@ $(document).bind("github4jiveAuthorized", function () {
 
                 }else{
 
-                    replaceStatusText("The issue has been "+(state == "open" ? "reopened" : "closed") );
+                    replaceStatusText("The issue has been "+(state == "open" ? "reopened" : "closed" + ".") );
                 }
 
             });
@@ -54,7 +54,7 @@ $(document).bind("github4jiveAuthorized", function () {
 
         if(stateAction == "close"){
             if(extPropClosed){
-                replaceStatusText("The issue is already closed. Refresh your discussion page.");
+                replaceStatusText("The issue is already closed.");
             }else{
                 changeIssueState("closed");
             }
@@ -64,7 +64,7 @@ $(document).bind("github4jiveAuthorized", function () {
                 changeIssueState("open");
             }
             else {
-                replaceStatusText("The issue is already open. Refresh your discussion page.");
+                replaceStatusText("The issue is already open.");
             }
         }else{
             replaceStatusText(function () {

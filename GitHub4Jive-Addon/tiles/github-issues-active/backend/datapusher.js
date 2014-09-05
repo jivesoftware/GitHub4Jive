@@ -18,6 +18,8 @@ var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
 var gitHub = require("../../../common/GitHubFacade");
+var JiveApi = require("../../../common/JiveApiFacade");
+var JiveOAuth = require("../../../common/JiveOauth");
 var placeStore = require("../../../common/PlaceStore");
 var tileFormatter = require("../../../common/TileFormatter");
 var StrategySetBuilder = require("./StrategySetBuilder");
@@ -58,14 +60,18 @@ function uniqueTile(lhs, rhs){
 var setupInstance = function(instance){
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
-        var setupOptions = {
-            owner: linked.github.repoOwner,
-            repo: linked.github.repo,
-            gitHubToken: linked.github.token.access_token,
-            placeUrl: linked.placeUrl,
-            instance: instance
-        };
-        return setupOptions;
+        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var jiveAuth = new JiveOAuth(place, linked.jive.access_token, linked.jive.refresh_token);
+            var setupOptions = {
+                owner: linked.github.repoOwner,
+                repo: linked.github.repo,
+                jiveApi: new JiveApi(community,jiveAuth),
+                gitHubToken: linked.github.token.access_token,
+                placeUrl: linked.placeUrl,
+                instance: instance
+            };
+            return setupOptions;
+        });
     });
 };
 

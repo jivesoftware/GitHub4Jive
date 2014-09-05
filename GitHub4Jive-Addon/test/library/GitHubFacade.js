@@ -136,7 +136,7 @@ function GitHubFacadeTests(){
         });
     });
 
-    describe("#subscribeToGitHubEvent", function(){
+    describe("#subscribeToGitHubEvent. Make sure user has access to webhooks for these to pass", function(){
         var receivedGitHubEvent = false;
         var subscriptionToken;
         it("should return a token when complete to later unsubscribe", function(){
@@ -184,7 +184,7 @@ function GitHubFacadeTests(){
         })
     });
 
-    describe("#unsubscribeFromGitHubEvent", function(){
+    describe("#unsubscribeFromGitHubEvent. Make sure user has access to webhooks for these to pass", function(){
         it("should take the initial subscription token back to unsubscribe", function(){
             var subscriptionPromise = git.subscribeToRepoEvent(owner, repo, git.Events.Issues, auth, function(payload){});
             return subscriptionPromise.then(function(token){

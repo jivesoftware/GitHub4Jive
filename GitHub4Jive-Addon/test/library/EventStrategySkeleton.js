@@ -25,7 +25,7 @@ chai.use(chaiAsPromised);
 var StrategySkeleton = require("../../common/strategies/EventStrategySkeleton");
 var TestStrategyBuilder = require("./strategies/testStrategyBuilder");
 
-describe.only("EventStrategySkeleton", function () {
+describe("EventStrategySkeleton", function () {
 
 
     it("should throw with no predicate", function () {

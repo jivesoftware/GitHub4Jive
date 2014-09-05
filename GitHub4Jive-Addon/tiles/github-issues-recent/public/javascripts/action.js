@@ -65,9 +65,12 @@ jive.tile.onOpen(function (config, options) {
         }).execute(function (response) {
 
             //alert( "status=" + response.status) ;
-            if ((response.status >= 400 && response.status <= 599) || !JSON.parse(response.content).success) {
-                alert("ERROR!" + JSON.stringify(response.content));
+            var content = JSON.parse(response.content);
+            if ((response.status >= 400 && response.status <= 599) || !content.success) {
+                osapi.jive.core.container.sendNotification({message: content.message, severity: 'error'});
                 //toggleState();
+            }else{
+                osapi.jive.core.container.sendNotification({message: "Labels have been applied", severity: 'success'});
             }
 
         });
@@ -80,7 +83,6 @@ jive.tile.onOpen(function (config, options) {
 
     $("#btn_close").click(function () {
         // close the issue
-
         var bodyPayload = {
             "state": "closed"
         };
@@ -104,40 +106,4 @@ jive.tile.onOpen(function (config, options) {
         });
 
     });  // end btn_close
-
-
-
-    $("#btn_comment").click(function () {
-        var comment = $("#comment").val();
-        if (comment.length == 0) {
-            // really need to trim up comment and such before doing all of this, but this is first pass!
-            alert("can't post an empty comment");
-            return;
-        }
-
-        var bodyPayload = { newComment: comment};
-        osapi.http.post({
-            'href': host + '/github/place/newComment?' +
-                "ts=" + new Date().getTime() +
-                "&place=" + encodeURIComponent(placeUrl) +
-                "&repo=" + config.repo +
-                "&number=" + config.number,
-            headers: { 'Content-Type': ['application/json'] },
-            'noCache': true,
-            'authz': 'signed',
-            'body': bodyPayload
-        }).execute(function (response) {
-            if (response.status >= 400 && response.status <= 599) {
-                alert("ERROR (comment post)!" + JSON.stringify(response.content));
-            }
-            else {
-                $("#comment").val("");       // clear out the comment ...
-                populateCommentsTable( config.repo, config.number);
-            }
-        });
-    }); // end btn_comment
-
-
-
-
 });

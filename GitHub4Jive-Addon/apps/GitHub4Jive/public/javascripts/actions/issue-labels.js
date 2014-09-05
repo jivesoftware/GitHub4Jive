@@ -30,7 +30,7 @@ $(function () {
             if(props.github4jiveIssueLabels){
                 var labels = JSON.parse(props.github4jiveIssueLabels);
                 for(var i = 0; i < labels.length; i++){
-                    var labelInput = $("input[value='"+labels[i].name+"'",labelGroup);
+                    var labelInput = $("input[value='"+labels[i].name+"']",labelGroup);
                     toggleChecked(labelInput);
                 }
             }

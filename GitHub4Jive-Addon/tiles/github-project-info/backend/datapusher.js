@@ -35,11 +35,12 @@ var processTileInstance = function(instance) {
             return gitFacade.getRepository(linked.github.repoOwner, linked.github.repo, auth).then(function (repo) {
                 var dataToPush = tileFormatter.formatTableData(repo.full_name, [
                     {name: "Last Updated", value: new Date(repo.pushed_at).toDateString()},
-                    {name: "Clone Url", value: repo.clone_url},
                     {name: "Open Issues", value: repo.open_issues_count.toString()},
-                    {name: "Subscribers", value: repo.subscribers_count.toString()}
+                    {name: "Subscribers", value: repo.subscribers_count.toString()},
+                    {name: "Forks", value: repo.forks_count.toString()}
 
                 ]);
+                dataToPush.action = {"url":repo.html_url , "text": "Go To Repository"};
                 jive.tiles.pushData(instance, {"data": dataToPush});
             });
         })
@@ -73,7 +74,7 @@ var pushData = function() {
  */
 exports.task = [
     {
-        'interval' : 60000,
+        'interval' : 10000,
         'handler' : pushData
     }
 ];

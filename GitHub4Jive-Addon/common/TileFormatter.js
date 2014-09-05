@@ -95,9 +95,11 @@ function formatTableEntry(item, keys) {
     }
     var nameKey = keys.name || "name";
     var valueKey = keys.value || "value";
+    var urlKey = keys.url || "url";
     return {
         name: chop(item[nameKey], 25),
-        value: chop(item[valueKey], 50)
+        value: chop(item[valueKey], 50),
+        url: item[urlKey]
     }
 }
 
@@ -128,11 +130,7 @@ exports.formatListData = function(title, items, keys){
 
     return {
         title: chop(title, 50),
-        contents: formattedItems,
-        action: {
-            text: 'Github' ,
-            'url': 'https://www.github.com'
-        }
+        contents: formattedItems
     };
 };
 

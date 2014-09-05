@@ -54,9 +54,10 @@ function decorateIssuesWithColoredIcons(issues){
 function decorateIssuesWithActions(issues){
 
 
-    issues.forEach(function(issue){
+    issues.forEach(function(issue, repository){
         issue["action"] = {
-            url :( issue.jiveContentLink || issue.html_url)
+            url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
+            context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels, discussionLink: issue.jiveContentLink  }
         };
     });
     return issues;
@@ -86,8 +87,6 @@ function processTileInstance(instance) {
                             var jiveApi = new JiveApi(community, jiveAuth);
 
                             return decorateIssuesWithJiveContentLinks(jiveApi, place, issues).then(function (issues) {
-
-
                                 var decoratedIssues = decorateIssuesWithColoredIcons(issues);
 
                                 decoratedIssues = decorateIssuesWithActions(decoratedIssues, fullName);
@@ -163,7 +162,7 @@ exports.onBootstrap = setupAll;
 
 exports.task = [
     {
-        'interval' : 60000,
+        'interval' : 10000,
         'handler' : pushData
     }
 ];

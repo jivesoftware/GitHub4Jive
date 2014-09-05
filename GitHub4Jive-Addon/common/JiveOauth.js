@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 var jive = require("jive-sdk");
-var placeStore = require("./PlaceStore");
+
 
 function JiveOauth(placeUrl,accessToken, refreshToken){
     this.accessToken = accessToken;
@@ -27,6 +27,10 @@ function JiveOauth(placeUrl,accessToken, refreshToken){
                 placeStore.save(placeUrl,{jive:newTokens});
             };
 }
+
+module.exports = JiveOauth;
+//move circular require after export to avoid circular dependency bug
+var placeStore = require("./PlaceStore");
 
 JiveOauth.prototype.applyTo = function(url, body, headers){
     return {
@@ -41,4 +45,3 @@ JiveOauth.prototype.applyTo = function(url, body, headers){
     };
 };
 
-module.exports = JiveOauth;

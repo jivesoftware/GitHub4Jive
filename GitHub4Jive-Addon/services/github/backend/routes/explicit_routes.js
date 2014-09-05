@@ -1,6 +1,6 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
-var gitHubController = require("../../../../common/GitHubController");
+var gitHubController = require("../GitHubController");
 var config = require("../../../../jiveclientconfiguration.json");
 var service = require("../services");
 

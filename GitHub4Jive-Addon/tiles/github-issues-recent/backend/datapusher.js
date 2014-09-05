@@ -19,6 +19,11 @@ var jive = require("jive-sdk");
 var q = require("q");
 var COMMONS_DIRECTORY = "../../../common/";
 
+var JiveApi = require(COMMONS_DIRECTORY + "JiveApiFacade");
+var JiveOAuth = require(COMMONS_DIRECTORY + "JiveOAuth");
+var JiveDecorator = require(COMMONS_DIRECTORY + "JiveDecorators");
+
+
 var placeStore = require(COMMONS_DIRECTORY+ "PlaceStore");
 var gitFacade = require(COMMONS_DIRECTORY+ "GitHubFacade")
 var tileFormatter = require(COMMONS_DIRECTORY+ "TileFormatter");
@@ -46,14 +51,21 @@ function decorateIssuesWithColoredIcons(issues){
     return issues;
 }
 
-function decorateIssuesWithActions(issues, repository){
+function decorateIssuesWithActions(issues){
+
+
     issues.forEach(function(issue){
         issue["action"] = {
-            url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
-                context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels  }
+            url :( issue.jiveContentLink || issue.html_url)
         };
     });
     return issues;
+}
+
+function decorateIssuesWithJiveContentLinks(jiveApi, place, issues){
+    return q.all(issues.map(function (issue) {
+        return JiveDecorator.decorateIssueWithJiveContent(jiveApi, place, issue);
+    }));
 }
 
 function processTileInstance(instance) {
@@ -62,18 +74,32 @@ function processTileInstance(instance) {
         return placeStore.getPlaceByUrl(place).then(function (linked) {
             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
             return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10, "open")
-            .then(function (issues) {
-                var fullName = linked.github.repoOwner+"/"+ linked.github.repo;
-                if(issues.length == 0){
-                    jive.tiles.pushData(instance, {data: tileFormatter.emptyListData(fullName,"No open issues")});
-                }else {
-                    var decoratedIssues = decorateIssuesWithColoredIcons(issues);
+                .then(function (issues) {
+                    var fullName = linked.github.repoOwner + "/" + linked.github.repo;
+                    if (issues.length == 0) {
+                        jive.tiles.pushData(instance,
+                            {data: tileFormatter.emptyListData(fullName, "No open issues")});
+                    }
+                    else {
+                        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+                            var jiveAuth = new JiveOAuth(place, linked.jive.access_token, linked.jive.refresh_token);
+                            var jiveApi = new JiveApi(community, jiveAuth);
 
-                    decoratedIssues = decorateIssuesWithActions(decoratedIssues, fullName);
-                    var formattedIssues = tileFormatter.formatListData(fullName, decoratedIssues, {"text": "title"});
-                    jive.tiles.pushData(instance, {data: formattedIssues});
-                }
-            })
+                            return decorateIssuesWithJiveContentLinks(jiveApi, place, issues).then(function (issues) {
+
+
+                                var decoratedIssues = decorateIssuesWithColoredIcons(issues);
+
+                                decoratedIssues = decorateIssuesWithActions(decoratedIssues, fullName);
+                                var formattedIssues = tileFormatter.formatListData(fullName, decoratedIssues,
+                                    {"text": "title"});
+                                jive.tiles.pushData(instance, {data: formattedIssues});
+
+                            });
+
+                        });
+                    }
+                });
         });
     }
 }

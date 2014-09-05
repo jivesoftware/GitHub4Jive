@@ -16,7 +16,7 @@ $(document).bind("github4jiveAuthorized", function () {
         function replaceStatusText(appendage){
             statusText.children().hide(500).promise().done(function () {
                 statusText.append("<h2>"+appendage+"</h2>");
-                statusText.after("<br/><p>The page will reload momentarily. You will be able to recover a comment in progress.</p>")
+                statusText.append("<br/><p>The page will reload momentarily. You will be able to recover a comment in progress.</p>")
                 window.setTimeout(function () {
                     window.top.location.href = document.referrer;
                     //osapi.jive.core.container.closeApp();//makes it a little clunky online with latency

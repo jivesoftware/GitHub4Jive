@@ -348,4 +348,9 @@ if(realTile){
         id: "com.jivesoftware.addon.github4jive.discussion.closeIssue",
         callback: app.handleContext
     });
+
+    gadgets.actions.updateAction({
+        id: "com.jivesoftware.addon.github4jive.discussion.changeLabels",
+        callback: app.handleContext
+    });
 }

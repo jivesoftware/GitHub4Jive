@@ -70,11 +70,7 @@ ul {
     padding: 5px 10px;
 }
 
-.btn.open{
-    background-color: #cccccc;
-}
-
-.btn.closed{
+.btn.closed,.btn.open{
     background-color: #cccccc;
 }
 
@@ -86,25 +82,8 @@ ul {
     background-color: #bd2c00;
 }
 
-.btn.bug{
-    background-color: #fc2929;
-}
-.btn.duplicate{
+.btn.greyInActive{
     background-color: #cccccc;
-}
-.btn.enhancement{
-    background-color: #84b6eb;
-}
-.btn.invalid{
-    background-color: #e6e6e6;
-    color:black;
-}
-.btn.question{
-    background-color: #cc317c;
-}
-.btn.wontfix{
-    background-color: #ffffff;
-    color:black;
 }
 
 .btn.bug:hover,.btn.bug.active{

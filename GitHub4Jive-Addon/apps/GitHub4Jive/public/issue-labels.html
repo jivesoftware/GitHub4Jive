@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <script src="/javascripts/jquery-1.11.1.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/javascripts/shared.js"></script>
+    <script type="text/javascript" charset="utf-8" src="javascripts/actions/issue-labels.js"></script>
+    <script src="/javascripts/coreapi-context-resolver-v3.js"></script>
+    <script src="/javascripts/oauth2client.js"></script>
+    <script src="/javascripts/basicOauthFlow.js"></script>
+</head>
+
+<body>
+<script>
+</script>
+<div id="j-card-authentication" class="j-card" >
+    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+    <div>
+        <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
+        <div id="github4jive-jive-authorize-success" style="display: none;">
+            <span>Jive Authorized - OK</span>
+        </div>
+    </div>
+    <br/>
+    <div>
+        <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
+        <div id="github4jive-github-authorize-success" style="display: none;">
+            <span>GitHub Authorized - OK</span>
+        </div>
+    </div>
+</div>
+
+<div id="j-card-action" class="j-card" style='display: none'>
+    <div class="container-fluid" id="todo_panel">
+        <div class="row">
+            <div class="col-xs-2 ">
+                <span class="h3">#<span id="issue"></span></span>
+            </div>
+            <div class="col-xs-10">
+                <a id="gitHubLink" href="https://www.github.com" target="_blank"><span id="issueTitle" class="h3"></span></a>
+            </div>
+        </div>
+        <div class="row space-top">
+            <div class="col-xs-12 text-center">
+                <div id="labels" class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary btn-sm bug greyInActive">
+                        <input type="checkbox" name="options" value="bug"><span>Bug</span>
+                    </label>
+                    <label class="btn btn-primary btn-sm duplicate greyInActive">
+                        <input type="checkbox" name="options" value="duplicate"><span>Duplicate</span>
+                    </label>
+                    <label class="btn btn-primary btn-sm enhancement greyInActive">
+                        <input type="checkbox" name="options" value="enhancement"><span>Enhancement</span>
+                    </label>
+                    <label class="btn btn-primary btn-sm question greyInActive">
+                        <input type="checkbox" name="options" value="question"><span>Question</span>
+                    </label>
+                    <label class="btn btn-primary btn-sm invalid greyInActive">
+                        <input type="checkbox" name="options" value="invalid"><span>Invalid</span>
+                    </label>
+                    <label class="btn btn-primary btn-sm wontfix greyInActive">
+                        <input type="checkbox" name="options" value="wontfix"><span>Won't Fix</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row space-top">
+            <div class="col-xs-12 text-center">
+                <button id="saveLabels" class="btn btn-primary btn-sm ">Apply Labels</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

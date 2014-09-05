@@ -62,6 +62,12 @@
                           url="{context.extprops.github4jiveIssueLink}"
                           icon="images/icon16.png" />
 
+                    <action id="com.jivesoftware.addon.github4jive.discussion.changeLabels"
+                          path="jive/actions/content/*?filter=exists(context.extprops.github4jiveIssueLink)"
+                          label="Edit Labels"
+                          view="github4jive-issue-labels"
+                          icon="images/icon16.png" />
+
                     <action id="com.jivesoftware.addon.github4jive.discussion.closeIssue"
                           path="jive/actions/content/*?filter=equals(context.extprops.github4jiveIssueClosed,false)"
                           label="Close Issue"
@@ -156,7 +162,7 @@
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="600" preferred_width="800"/>
-  <Content type="html" view="github4jive-issue-modify" href="issue-modify.html" preferred_height="400" />
+  <Content type="html" view="github4jive-issue-labels" href="issue-labels.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-close" href="issue-close.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-reopen" href="issue-reopen.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />

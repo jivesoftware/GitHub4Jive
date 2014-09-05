@@ -51,10 +51,10 @@ function decorateIssuesWithColoredIcons(issues){
     return issues;
 }
 
-function decorateIssuesWithActions(issues){
+function decorateIssuesWithActions(issues, repository){
 
 
-    issues.forEach(function(issue, repository){
+    issues.forEach(function(issue){
         issue["action"] = {
             url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
             context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels, discussionLink: issue.jiveContentLink  }
@@ -162,7 +162,7 @@ exports.onBootstrap = setupAll;
 
 exports.task = [
     {
-        'interval' : 10000,
+        'interval' : 60000,
         'handler' : pushData
     }
 ];

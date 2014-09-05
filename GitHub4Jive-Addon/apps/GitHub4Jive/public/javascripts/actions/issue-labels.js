@@ -23,7 +23,7 @@ $(function () {
             }
 
 
-            $("#issueNumber").html(props.github4jiveIssueNumber);
+            $("#issue").html(props.github4jiveIssueNumber);
             var matches = contentObject.subject.match(/\[[\w-\/]*\](.*)/);
             $("#issueTitle").html(matches[1]);
 

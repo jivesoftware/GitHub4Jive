@@ -26,6 +26,8 @@ module.exports = issueStrategy;
 
 issueStrategy.name = "Issue";
 
+var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "invalid", "wontfix"];
+
 issueStrategy.setup = function(setupOptions){
 
     var jiveApi = setupOptions.jiveApi;
@@ -45,13 +47,29 @@ issueStrategy.setup = function(setupOptions){
         };
     }
 
+    function editGitHubTags(discussion, gitData) {
+        var tags = discussion.tags.map(function (tag) {//Grab all tags that are not GitHub labels
+            if (POSSIBLE_GITHUB_TAGS.indexOf(tag) < 0) {//not a github tag then keep it
+                return tag;
+            }
+        });
+        gitData.issue.labels.forEach(function (label) {//Then add all labels currently on the issue
+            tags.push(label.name);
+        });
+        return tags;
+    }
+
+    function formatDiscussionSubject(gitData) {
+        return "[" + owner + "/" + repo + "-" + gitData.issue.number + "] " + gitData.issue.title;
+    }
+
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
         if(gitData.action === "opened") {
             jive.logger.info("New Issue! Creating a discussion for it.");
             var builder = new JiveContentBuilder();
             var content = builder.discussion()
                 .parentPlace(placeID)
-                .subject("[" + owner + "/" + repo +"-" + gitData.issue.number + "] " + gitData.issue.title)
+                .subject(formatDiscussionSubject(gitData))
                 .body(gitData.issue.body)
                 .build();
             jiveApi.create(content).then(function (contentResponse) {
@@ -78,11 +96,9 @@ issueStrategy.setup = function(setupOptions){
             });
         }else if(gitData.action === "labeled" || gitData.action == "unlabeled"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData))
+                jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
+                var tags = editGitHubTags(discussion, gitData);
                 var builder = new JiveContentBuilder(discussion);
-                var tags = gitData.issue.labels.map(function (label) {
-                    return label.name;
-                })
                 var content = builder.discussion()
                     .tags(tags)
                     .build();

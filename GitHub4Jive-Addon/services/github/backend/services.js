@@ -1,5 +1,5 @@
 var jive = require('jive-sdk');
-var Q = require("q");
+var q = require("q");
 var https = require("https");
 var url = require('url');
 
@@ -89,9 +89,7 @@ function setupJiveHook(linked){
             return doWebhook(linked.jive.access_token);
         })
 
-    }else return Q(function () {
-        return;
-    });
+    }else return q();
 }
 
 exports.onConfigurationChange = function(req, res){

@@ -21,7 +21,7 @@
 var jive = require("jive-sdk")
 var https = require("https");
 var url = require('url');
-var Q = require("q");
+var q = require("q");
 
 var placeStore = require("github4jive/PlaceStore");
 var gitHubFacade = require("github4jive/GitHubFacade");
@@ -89,7 +89,7 @@ exports.getPlaceIssues = function (req, res) {
                  return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
                     var jAuth = new JiveAuth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
                     var japi = new JiveApi(community, jAuth);
-                    Q.all(issues.map(function (issue) {
+                    q.all(issues.map(function (issue) {
                         return jiveDecorator.decorateIssueWithJiveContent(japi,placeUrl, issue);
                     })).then(function (decIssues) {
                         contentResponse(res, decIssues);

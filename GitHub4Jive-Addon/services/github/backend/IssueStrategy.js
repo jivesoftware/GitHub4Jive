@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 var jive = require("jive-sdk");
-var Q = require("q");
 
 var gitHubFacade = require("github4jive/GitHubFacade");
 var JiveContentBuilder = require("github4jive/JiveContentBuilder");

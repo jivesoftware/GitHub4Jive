@@ -18,7 +18,7 @@ var chai = require('chai')
     , expect = chai.expect
     , should = chai.should();
 var chaiAsPromised = require("chai-as-promised");
-var Q = require("q");
+var q = require("q");
 var sinon = require('sinon');
 
 chai.use(chaiAsPromised);
@@ -73,12 +73,12 @@ describe("JiveApiFacade", function () {
             this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
                 // test basic auth
                 if ( headers['Authorization'] !== basic.applyTo(null, null, {})['headers']['Authorization'] ) {
-                    return Q.reject({ 'statusCode': 400 });
+                    return q.reject({ 'statusCode': 400 });
                 }
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q({
+                    return q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -89,7 +89,7 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else {
-                    return Q({
+                    return q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 }
@@ -113,19 +113,19 @@ describe("JiveApiFacade", function () {
             var oAuth = new JiveOAuthLoader(null,tempOAuthToken ,tempOAuthRefreshToken);
             var oAuthFacade = new JiveFacadeLoader(community,oAuth);
 
-            this.stub(jive.community, "findByCommunity").returns(Q(community));
+            this.stub(jive.community, "findByCommunity").returns(q(community));
 
             // simulate what the Jive server is expected to return
             var contentID = 1000;
             this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
                 // test basic auth
                 if ( headers['Authorization'] !== 'Bearer ' + tempOAuthToken ) {
-                    return Q.reject({ 'statusCode': 400 });
+                    return q.reject({ 'statusCode': 400 });
                 }
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q({
+                    return q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -136,12 +136,12 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else if ( method === 'DELETE' ) {
-                    return Q({
+                    return q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 } else if ( method === 'GET' ) {
                     if ( url.indexOf(community.jiveUrl + '/api/core/v3/extprops/gitID/1234') == 0 ) {
-                        return Q({
+                        return q({
                             'statusCode' : 200,
                             'entity' : {
                                 'list': [
@@ -158,7 +158,7 @@ describe("JiveApiFacade", function () {
                         });
                     }
                     if ( url.indexOf(community.jiveUrl+ '/api/core/v3/contents/' + contentID ) == 0 ) {
-                        return Q({
+                        return q({
                             'statusCode' : 200,
                             'entity' : {
                                 'resources' : {
@@ -178,7 +178,7 @@ describe("JiveApiFacade", function () {
                     response.should.have.property("success");
                     response.success.should.be.true;
                     return oAuthFacade.getByExtProp("gitID", 1234).then(function (response) {
-                        return Q.all(response.list.map(function (content) {
+                        return q.all(response.list.map(function (content) {
                                 content.should.have.property("retrieveAllExtProps").and.be.a("function");
                                 return content.retrieveAllExtProps().then(function (props) {
                                     Object.keys(props).length.should.be.above(0);
@@ -201,12 +201,12 @@ describe("JiveApiFacade", function () {
             this.stub(jive.util, "buildRequest", function( url, method, postBody, headers ) {
                 // test basic auth
                 if ( headers['Authorization'] !== basic.applyTo(null, null, {})['headers']['Authorization'] ) {
-                    return Q.reject({ 'statusCode': 400 });
+                    return q.reject({ 'statusCode': 400 });
                 }
 
                 // if post, then return entity for contentID 1000 (expected by the test)
                 if ( method === 'POST' ) {
-                    return Q({
+                    return q({
                         'statusCode' : 201,
                         'entity' : {
                             'resources' : {
@@ -217,7 +217,7 @@ describe("JiveApiFacade", function () {
                         }
                     });
                 } else {
-                    return Q({
+                    return q({
                         'statusCode' : url.indexOf('/contents/' + contentID) > -1 ? 204  : 500
                     });
                 }

@@ -22,7 +22,7 @@ var chai = require('chai')
     , expect = chai.expect
     , should = chai.should();
 var chaiAsPromised = require("chai-as-promised");
-var Q = require("q");
+var q = require("q");
 
 chai.use(chaiAsPromised);
 
@@ -60,12 +60,12 @@ function GitHubFacadeTests(){
     describe("#getChangeList", function(){
         /*
          * Below is an example of the Chai as Promised fluent assertions. To test multiple assertions in a
-         * single test you must wrap it in Q.all so that all the resulting promises are collected into one
+         * single test you must wrap it in q.all so that all the resulting promises are collected into one
          * to be returned to Mocha.
          * */
         it("should return an array of objects", function(){
             var changeListPromise = git.getChangeList(owner, repo, auth);
-            return Q.all([
+            return q.all([
                 changeListPromise.should.eventually.be.an("array"),
                 changeListPromise.should.eventually.have.length.above(0),
                 changeListPromise.should.eventually.have.length.below(6),
@@ -91,7 +91,7 @@ function GitHubFacadeTests(){
 
         it("should contain an entry for all repositories the owner can push to.", function(){
             var repositoriesPromise = git.getCompleteRepositoryListForUser(specificUser, auth);
-            return Q.all([
+            return q.all([
                 repositoriesPromise.should.eventually.be.an("array"),
                 repositoriesPromise.should.eventually.have.length.above(0),
                 repositoriesPromise.then(function(repos){
@@ -110,7 +110,7 @@ function GitHubFacadeTests(){
 
         it("should return an array of objects", function(){
             var repoIssuesPromise = git.getRepositoryIssues(owner, repo, auth);
-            return Q.all([
+            return q.all([
                 repoIssuesPromise.should.eventually.be.an("array"),
                 repoIssuesPromise.should.eventually.have.length.above(0),
                 repoIssuesPromise.then(function(issues){

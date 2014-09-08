@@ -34,7 +34,7 @@ var auth = require("./GitHubUserAuth.json")
 var specificUser = auth.username;
 
 function GitHubFacadeTests(){
-    var git = require("github4jive/common/GitHubFacade");
+    var git = require("github4jive/GitHubFacade");
     it("should not be null", function(){
         should.exist(git);
     });

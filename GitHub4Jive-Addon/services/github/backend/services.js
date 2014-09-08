@@ -3,15 +3,15 @@ var Q = require("q");
 var https = require("https");
 var url = require('url');
 
-var JiveFacade = require("github4jive/common/JiveApiFacade");
-var JiveOauth = require("github4jive/common/JiveOauth");
+var JiveFacade = require("github4jive/JiveApiFacade");
+var JiveOauth = require("github4jive/JiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
-var placeStore = require("github4jive/common/PlaceStore");
+var placeStore = require("github4jive/PlaceStore");
 
 
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues().issueComments();
-var StrategySkeleton = require( "github4jive/common/strategies/EventStrategySkeleton");
+var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 
 function uniquePlace(lhs, rhs) {
     return lhs.placeUrl === rhs.placeUrl;

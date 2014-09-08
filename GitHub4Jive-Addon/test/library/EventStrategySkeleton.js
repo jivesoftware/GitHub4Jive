@@ -22,7 +22,7 @@ var Q = require("q");
 
 chai.use(chaiAsPromised);
 
-var StrategySkeleton = require("github4jive/common/strategies/EventStrategySkeleton");
+var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 var TestStrategyBuilder = require("./strategies/testStrategyBuilder");
 
 describe("EventStrategySkeleton", function () {

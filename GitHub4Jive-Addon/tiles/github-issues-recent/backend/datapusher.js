@@ -19,16 +19,16 @@ var jive = require("jive-sdk");
 var q = require("q");
 
 
-var JiveApi = require("github4jive/common/JiveApiFacade");
-var JiveOAuth = require("github4jive/common/JiveOauth");
-var JiveDecorator = require("github4jive/common/JiveDecorators");
+var JiveApi = require("github4jive/JiveApiFacade");
+var JiveOAuth = require("github4jive/JiveOauth");
+var JiveDecorator = require("github4jive/JiveDecorators");
 
 
-var placeStore = require("github4jive/common/PlaceStore");
-var gitFacade = require("github4jive/common/GitHubFacade")
-var tileFormatter = require("github4jive/common/TileFormatter");
+var placeStore = require("github4jive/PlaceStore");
+var gitFacade = require("github4jive/GitHubFacade")
+var tileFormatter = require("github4jive/TileFormatter");
 var StrategyBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require("github4jive/common/strategies/EventStrategySkeleton");
+var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 
 
 var builder = new StrategyBuilder();

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 var q = require("q");
-var strategyBase = require("github4jive/common/strategies/EventStrategyBase");
+var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var testStrategy2 = Object.create(strategyBase);
 
 testStrategy2.setup = function(setupOptions){

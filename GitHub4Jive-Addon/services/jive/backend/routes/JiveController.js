@@ -137,7 +137,7 @@ function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
         var state = props.github4jiveIssueClosed ? "closed" : "open";
         return gitFacade.changeIssueState(linked.github.repoOwner, linked.github.repo,
             props.github4jiveIssueNumber, state, auth).then(function () {
-                return japi.attachProps(discussionUrl, props);
+                return japi.attachPropsToContent(discussionUrl, props);
             });
     }else {
         return;

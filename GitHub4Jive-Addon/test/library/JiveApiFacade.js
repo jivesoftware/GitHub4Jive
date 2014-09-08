@@ -108,7 +108,7 @@ describe("JiveApiFacade", function () {
         });
     });
 
-    describe("#attachProps", function () {
+    describe("#attachPropsToContent", function () {
         it("should return true when complete", function () {
             var oAuth = new JiveOAuthLoader(null,tempOAuthToken ,tempOAuthRefreshToken);
             var oAuthFacade = new JiveFacadeLoader(community,oAuth);
@@ -174,7 +174,7 @@ describe("JiveApiFacade", function () {
 
             return createContent(oAuthFacade, "discussion").then(function (response) {
                 var contentID = response.apiID;
-                return oAuthFacade.attachProps(contentID,{gitID: 1234}).then(function (response) {
+                return oAuthFacade.attachPropsToContent(contentID,{gitID: 1234}).then(function (response) {
                     response.should.have.property("success");
                     response.success.should.be.true;
                     return oAuthFacade.getByExtProp("gitID", 1234).then(function (response) {

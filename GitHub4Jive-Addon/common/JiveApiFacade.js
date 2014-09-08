@@ -156,8 +156,14 @@ JiveApiFacade.prototype.create = function(post){
     }));
 };
 
+/*
+ * Update an api resource.
+ * @param {object} put the object to be PUT(updated) back onto the server
+ * @return {promise} the response from the update operation
+ */
+
 JiveApiFacade.prototype.update = function (put) {
-    var url = communityAPIURL(this) + "contents/" + put.contentID;
+    var url = put.resources.self.ref;
     var headers = {};
     var options = this.authenticator.applyTo(url,put, headers);
     options['method'] = 'PUT';
@@ -207,36 +213,15 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
     );
 };
 
-
 /*
- * This is not working at the moment
- */
-//JiveApiFacade.prototype.commentOn = function (contentID, comment) {
-//    var url  = communityAPIURL(this) + "contents/" + contentID + "/comments"
-//    var headers = {};
-//    var options = this.authenticator.applyTo(url,comment, headers);
-//    options['method'] = 'POST';
-//    return catchErrorResponse(
-//        jive.community.doRequest(this.community, options ).then(
-//            function (response) {
-//                return decorateResponseWithSuccess(response, 201);
-//
-//            },
-//            function (response) {
-//                comment.type = "message";
-//                return this.replyToDiscussion(contentID, comment);
-//            })
-//    );
-//}
-
-/*
- * Attach external properties to a piece of content
- * @param string parentID The content ID for the content to attach properties to
+ * Attach and replace external properties to a piece of content. Retrieve current ext props
+ * and append/modify to save other properties
+ * @param string parentID The contentID for the content to attach properties to
  * @param object props All fields will be converted to properties
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
-JiveApiFacade.prototype.attachProps = function(parentID,props){
+JiveApiFacade.prototype.attachPropsToContent = function(parentID,props){
     var url = communityAPIURL(this) + "contents/" + parentID ;
     if(parentID.indexOf("http") == 0){//if full id is passed in
         url = parentID;
@@ -252,6 +237,13 @@ JiveApiFacade.prototype.attachProps = function(parentID,props){
     );
 };
 
+/*
+ * Attach and replace external properties on a discussion replyRetrieve current ext props
+ * and append/modify to save other properties
+ * @param string message ID
+ * @param object props All fields will be converted to properties
+ * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
+ */
 JiveApiFacade.prototype.attachPropsToReply = function(parentID,props){
     var url = communityAPIURL(this) + "messages/" + parentID + "/extprops";
     var headers = {};
@@ -290,6 +282,12 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
     }));
 };
 
+/*
+ * Get all external properties attached to given uri. This simply gets the object at the uri
+ * and then uses it's resources member to retrieve the external properties.
+ * @param {string} uri The uri or full uri that corresponds to an api resource.
+ * @return {promise} promise contains the external properties object or an erroneous response
+ */
 JiveApiFacade.prototype.getAllExtProps = function (uri) {
 
     var url = communityAPIURL(this) + uri;
@@ -313,6 +311,13 @@ JiveApiFacade.prototype.getAllExtProps = function (uri) {
     }));
 };
 
+/*
+ * Mark a particular piece of content as final. It does no check for possible outcome types.
+ * At this point in time its only use is for discussions which can always be marked final. If the content is already
+ * marked final than this succeeds.
+ * @param {string} contentID the id of the piece of content to be marked final
+ * @return {promise} the response is returned in the promise
+ */
 JiveApiFacade.prototype.markFinal = function(contentID){
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
     var headers = {};
@@ -324,6 +329,11 @@ JiveApiFacade.prototype.markFinal = function(contentID){
     }));
 };
 
+/*
+ * Retrieve the outcomes that are currently on a piece of content.
+ * @param {string} contentID the id of the piece of content to be marked final
+ * @return {promise} the response is returned in the promise
+ */
 JiveApiFacade.prototype.getOutcomes = function(contentID){
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
     var headers = {};
@@ -334,6 +344,11 @@ JiveApiFacade.prototype.getOutcomes = function(contentID){
     }));
 };
 
+/*
+ * Remove the final outcome from a piece of content. If it was not already marked than it returns true.
+ * @param {string} contentID the id of the piece of content to be marked final
+ * @return {promise} the response is returned. Except when the content was not already marked a simple object with field success is returned.
+ */
 JiveApiFacade.prototype.unMarkFinal = function(contentID){
     var community = this.community;
     var url = communityAPIURL(this) + "outcomes/" ;
@@ -344,7 +359,7 @@ JiveApiFacade.prototype.unMarkFinal = function(contentID){
         outcomes.entity.list.forEach(function (outcome) {
             if(outcome.outcomeType.name == "finalized"){
                 outcomeId = outcome.id;
-                return false;
+                return false;//break out of foreach
             }
         });
         if(outcomeId == null){//was not marked final return successful
@@ -360,7 +375,12 @@ JiveApiFacade.prototype.unMarkFinal = function(contentID){
     });
 };
 
-
+/*
+ * Mark a discussion assumed answered.
+ * @param {object} discussion. Must pass entire object because the object is modified and then PUT
+ * back onto the server.
+ * @return {promise} returns the response from the PUT operation
+ */
 JiveApiFacade.prototype.answer = function (discussion) {
     if(!discussion.question){
         throw Error("This discussion is not a question.");
@@ -386,7 +406,15 @@ function unMarkAnsweredComment(community,authenticator, comment){
         return decorateResponseWithSuccess(response, 200);
     }));
 }
-
+/*
+ * Remove the current answer on a discussion either assumed or specified reply.
+ * NOTE: Due to an api restriction, state cannot be immediately reset to open. To get around this,
+ * the first reply is marked as the answer and then unmarked. This resets the discussion to open.
+ * If there is no replies when this is called than a reply will be created.
+ * @param {object} discussion. Must pass entire object because the object is modified and then PUT
+ * back onto the server.
+ * @
+ */
 JiveApiFacade.prototype.removeAnswer = function(discussion){
     if(!discussion.question){
         throw Error("This discussion is not a question.");

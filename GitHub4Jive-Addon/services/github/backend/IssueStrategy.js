@@ -57,14 +57,14 @@ issueStrategy.setup = function(setupOptions){
             jiveApi.create(content).then(function (contentResponse) {
                 var contentID = contentResponse.apiID;
                 //attach ext props to get discussion later
-                return jiveApi.attachProps(contentID, createExtProps(gitData));
+                return jiveApi.attachPropsToContent(contentID, createExtProps(gitData));
             });
 
         }else if(gitData.action === "reopened"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 return jiveApi.removeAnswer(discussion).then(function () {
                     return jiveApi.unMarkFinal(discussion.contentID).then(function () {
-                        return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
+                        return jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
                     });
                 });
             });
@@ -72,13 +72,13 @@ issueStrategy.setup = function(setupOptions){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
                 return jiveApi.answer(discussion).then(function () {
                     return jiveApi.markFinal(discussion.contentID).then(function () {
-                        return jiveApi.attachProps(discussion.contentID, createExtProps(gitData));
+                        return jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
                     });
                 });
             });
         }else if(gitData.action === "labeled" || gitData.action == "unlabeled"){
             helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
-                jiveApi.attachProps(discussion.contentID, createExtProps(gitData))
+                jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData))
                 var builder = new JiveContentBuilder(discussion);
                 var tags = gitData.issue.labels.map(function (label) {
                     return label.name;

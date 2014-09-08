@@ -15,10 +15,10 @@
  */
 var jive = require("jive-sdk");
 
-var gitHubFacade = require("github4jive/GitHubFacade");
-var JiveContentBuilder = require("github4jive/JiveContentBuilder");
-var tileFormatter = require("github4jive/TileFormatter");
-var helpers = require("github4jive/Helpers");
+var gitHubFacade = require("github4jive/gitHubFacade");
+var JiveContentBuilder = require("github4jive/jiveContentBuilder");
+var tileFormatter = require("github4jive/tileFormatter");
+var helpers = require("github4jive/helpers");
 
 var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);

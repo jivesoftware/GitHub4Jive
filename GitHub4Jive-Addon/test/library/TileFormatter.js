@@ -22,7 +22,7 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 describe("TileFormatter", function(){
-    var formatter = require("github4jive/TileFormatter");
+    var formatter = require("github4jive/tileFormatter");
     it("should not be null", function(){
        should.exist(formatter);
     });

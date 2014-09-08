@@ -17,9 +17,9 @@
 var jive = require("jive-sdk");
 var q = require('q');
 
-var placeStore = require("github4jive/PlaceStore");
-var gitFacade = require("github4jive/GitHubFacade");
-var tileFormatter = require("github4jive/TileFormatter");
+var placeStore = require("github4jive/placeStore");
+var gitFacade = require("github4jive/gitHubFacade");
+var tileFormatter = require("github4jive/tileFormatter");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
 

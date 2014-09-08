@@ -3,10 +3,10 @@ var q = require("q");
 var https = require("https");
 var url = require('url');
 
-var JiveFacade = require("github4jive/JiveApiFacade");
-var JiveOauth = require("github4jive/JiveOauth");
+var JiveFacade = require("github4jive/jiveApiFacade");
+var JiveOauth = require("github4jive/jiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
-var placeStore = require("github4jive/PlaceStore");
+var placeStore = require("github4jive/placeStore");
 
 
 var builder = new StrategyBuilder();

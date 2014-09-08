@@ -87,22 +87,22 @@ ul {
 }
 
 .btn.bug:hover,.btn.bug.active{
-    background-color: #ac1010;
+    background-color: #fc2929;
 }
 .btn.duplicate:hover,.btn.duplicate.active{
     background-color: #999999;
 }
 .btn.enhancement:hover,.btn.enhancement.active{
-    background-color: #64a6c6;
+    background-color: #84b6eb;
 }
 .btn.invalid:hover,.btn.invalid.active{
-    background-color: #c6c6c6;
+    background-color: #e6e6e6;
     color:black;
 }
 .btn.question:hover,.btn.question.active{
-    background-color: #aa255c ;
+    background-color: #cc317c ;
 }
 .btn.wontfix:hover,.btn.wontfix.active{
-    background-color: #000000;
-    color:white;
+    background-color: #ffffff;
+    color:black;
 }

@@ -22,7 +22,7 @@ var Q = require("q");
 
 chai.use(chaiAsPromised);
 
-var EventTokenPool = require("../../common/strategies/EventTokenPool");
+var EventTokenPool = require("github4jive/common/strategies/EventTokenPool");
 
 describe("EventTokenPool", function () {
     describe("#addToken", function () {

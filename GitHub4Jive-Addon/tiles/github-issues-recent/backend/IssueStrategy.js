@@ -16,9 +16,9 @@
 var jive = require("jive-sdk");
 var Q = require("q");
 
-var gitHubFacade = require("../../../common/GitHubFacade");
+var gitHubFacade = require("github4jive/common/GitHubFacade");
 
-var strategyBase = require("./../../../common/strategies/EventStrategyBase");
+var strategyBase = require("github4jive/common/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 

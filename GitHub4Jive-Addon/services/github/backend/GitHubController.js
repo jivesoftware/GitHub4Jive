@@ -23,11 +23,11 @@ var https = require("https");
 var url = require('url');
 var Q = require("q");
 
-var placeStore = require("./../../../common/PlaceStore");
-var gitHubFacade = require("./../../../common/GitHubFacade");
-var jiveDecorator = require("./../../../common/JiveDecorators");
-var JiveApi = require("./../../../common/JiveApiFacade");
-var JiveAuth = require("./../../../common/JiveOauth");
+var placeStore = require("github4jive/common/PlaceStore");
+var gitHubFacade = require("github4jive/common/GitHubFacade");
+var jiveDecorator = require("github4jive/common/JiveDecorators");
+var JiveApi = require("github4jive/common/JiveApiFacade");
+var JiveAuth = require("github4jive/common/JiveOauth");
 
 
 function ErrorResponse(res,error){

@@ -23,10 +23,10 @@ var sinon = require('sinon');
 
 chai.use(chaiAsPromised);
 var jive = require("jive-sdk");
-var JiveFacadeLoader = require("../../common/JiveApiFacade");
-var JiveBasicLoader = require("../../common/JiveBasicAuth");
-var JiveOAuthLoader = require("../../common/JiveOauth");
-var ContentBuilder = require("../../common/JiveContentBuilder");
+var JiveFacadeLoader = require("github4jive/common/JiveApiFacade");
+var JiveBasicLoader = require("github4jive/common/JiveBasicAuth");
+var JiveOAuthLoader = require("github4jive/common/JiveOauth");
+var ContentBuilder = require("github4jive/common/JiveContentBuilder");
 
 var community = {jiveUrl: "http://localhost:8080"};
 var tempOAuthToken = jive.util.guid();

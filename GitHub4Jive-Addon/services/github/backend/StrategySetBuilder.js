@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-var strategyBuilderBase = require("./../../../common/strategies/StrategySetBuilderBase");
+var strategyBuilderBase = require("github4jive/common/strategies/StrategySetBuilderBase");
 
 function builder(){
     strategyBuilderBase.apply(this);

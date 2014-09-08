@@ -18,10 +18,10 @@ var https = require("https");
 var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
-var gitFacade = require("../../../../common/GitHubFacade");
-var JiveApi = require("../../../../common/JiveApiFacade");
-var JiveOauth = require("../../../../common/JiveOauth");
-var placeStore = require("../../../../common/PlaceStore");
+var gitFacade = require("github4jive/common/GitHubFacade");
+var JiveApi = require("github4jive/common/JiveApiFacade");
+var JiveOauth = require("github4jive/common/JiveOauth");
+var placeStore = require("github4jive/common/PlaceStore");
 
 
 exports.placeCurrentConfig = function (req, res) {

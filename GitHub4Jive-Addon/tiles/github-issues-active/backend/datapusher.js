@@ -17,13 +17,13 @@
 var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
-var gitHub = require("../../../common/GitHubFacade");
-var JiveApi = require("../../../common/JiveApiFacade");
-var JiveOAuth = require("../../../common/JiveOauth");
-var placeStore = require("../../../common/PlaceStore");
-var tileFormatter = require("../../../common/TileFormatter");
+var gitHub = require("github4jive/common/GitHubFacade");
+var JiveApi = require("github4jive/common/JiveApiFacade");
+var JiveOAuth = require("github4jive/common/JiveOauth");
+var placeStore = require("github4jive/common/PlaceStore");
+var tileFormatter = require("github4jive/common/TileFormatter");
 var StrategySetBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require("../../../common/strategies/EventStrategySkeleton");
+var StrategySkeleton = require("github4jive/common/strategies/EventStrategySkeleton");
 
 var stratSetScaffolding = new StrategySetBuilder().issues();
 

@@ -7,7 +7,7 @@
                 "value": "Needed"
             }
         ]},
-    "displayName" : "github-project-info",
+    "displayName" : "G4J Repository Info",
     "name" : "github-project-info",
     "description" : "github-project-info",
     "style": "TABLE",

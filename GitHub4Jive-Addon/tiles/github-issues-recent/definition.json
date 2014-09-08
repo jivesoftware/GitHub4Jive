@@ -8,7 +8,7 @@
                "listStyle" : "contentList"
         }
     },
-    "displayName" : "github-issues-recent",
+    "displayName" : "G4J Recent Issues",
     "name" : "github-issues-recent",
     "description" : "github-issues-recent",
     "style" : "LIST",

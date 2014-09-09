@@ -2,7 +2,6 @@ var jive = require('jive-sdk');
 var fs = require('fs');
 var gitHubController = require("../GitHubController");
 var config = require("../../../../jiveclientconfiguration.json");
-var service = require("../services");
 
 /*
  * This endpoint is required for the GitHubFacade to deliver GitHub payloads
@@ -22,16 +21,6 @@ exports.repositoryListForUser = {
     'verb' : 'get',
     'path' : '/github/user/repos',
     'route' : gitHubController.getUserRepos
-};
-
-/*
- * This endpoint triggers the service to update the specified place. Call it
- * when a place changes its repository.
- */
-exports.ConfigurationUpdateTrigger = {
-    'verb': 'post',
-    'path': "/github/place/trigger",
-    'route': service.onConfigurationChange
 };
 
 /*

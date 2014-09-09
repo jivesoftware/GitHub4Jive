@@ -207,7 +207,7 @@ var app = {
 
                         //double check server side configuration with ext props
                         osapi.http.get({
-                            'href': host + '/jive/place/isConfigured?' +
+                            'href': host + '/github4jive/place/isConfigured?' +
                                 "&ts=" + new Date().getTime() +
                                 "&place=" + encodeURIComponent(placeUrl),
                             //"&query=" + query,
@@ -271,7 +271,7 @@ var app = {
                 }).execute(function (resp) {
                     console.log('resp: {' + JSON.stringify(resp) + '}');
                     osapi.http.post({
-                        'href': host + "/github/place/trigger?" +
+                        'href': host + "/github4jive/place/trigger?" +
                             "ts=" + new Date().getTime() +
                             "&place=" + encodeURIComponent(placeUrl),
                         'format': 'json',

@@ -24,42 +24,6 @@ var JiveOauth = require("github4jive/jiveOauth");
 var placeStore = require("github4jive/placeStore");
 
 
-exports.placeCurrentConfig = function (req, res) {
-    var url_parts = url.parse(req.url, true);
-    var queryPart = url_parts.query;
-    var placeUrl = queryPart["place"];
-
-    if(!placeUrl || placeUrl === ""){
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify("Specify place api url"));
-    }
-    placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
-        var clientSideConfig = {github: false, jive: false};
-        try{
-            if(linked.github.token.access_token){
-                clientSideConfig.github = true;
-            }
-        }catch(e){
-
-        }
-        try{
-            if(linked.jive.access_token){
-                clientSideConfig.jive = true;
-            }
-        }catch(e){
-
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(clientSideConfig));
-    }).catch(function (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(error));
-    })
-};
-
-exports.basicTileConfig = function (req, res) {
-    res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
-};
 
 function getDiscussionUrl(message){
     return message.discussion;

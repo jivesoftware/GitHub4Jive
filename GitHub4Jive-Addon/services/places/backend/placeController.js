@@ -1,17 +1,76 @@
-var jive = require('jive-sdk');
-var q = require("q");
+/*
+ * Copyright 2014 Jive Software
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 var https = require("https");
 var url = require('url');
+var jive = require("jive-sdk");
 
 var JiveFacade = require("github4jive/jiveApiFacade");
 var JiveOauth = require("github4jive/jiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
+var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
+
 var placeStore = require("github4jive/placeStore");
-
-
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues().issueComments();
-var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
+
+
+exports.placeCurrentConfig = function (req, res) {
+    var url_parts = url.parse(req.url, true);
+    var queryPart = url_parts.query;
+    var placeUrl = queryPart["place"];
+
+    if(!placeUrl || placeUrl === ""){
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify("Specify place api url"));
+    }
+    placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
+        var clientSideConfig = {github: false, jive: false};
+        try{
+            if(linked.github.token.access_token){
+                clientSideConfig.github = true;
+            }
+        }catch(e){
+
+        }
+        try{
+            if(linked.jive.access_token){
+                clientSideConfig.jive = true;
+            }
+        }catch(e){
+
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(clientSideConfig));
+    }).catch(function (error) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(error));
+    })
+};
+
+exports.basicTileConfig = function (req, res) {
+    res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
+};
+
+
+
+
+
+
+
 
 function uniquePlace(lhs, rhs) {
     return lhs.placeUrl === rhs.placeUrl;

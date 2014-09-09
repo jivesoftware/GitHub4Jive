@@ -21,7 +21,7 @@ var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 
-issueStrategy.name = "Issue";
+issueStrategy.name = "Recent_Issue";
 
 issueStrategy.setup = function(setupOptions){
     var owner = setupOptions.owner;

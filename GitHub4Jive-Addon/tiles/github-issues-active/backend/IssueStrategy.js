@@ -24,7 +24,7 @@ var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 
-issueStrategy.name = "Issue";
+issueStrategy.name = "Active_Issue";
 
 var IGNORED_ACTIONS = ["labeled", "unlabeled","opened"];
 

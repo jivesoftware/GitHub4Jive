@@ -28,6 +28,11 @@ var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues().issueComments();
 
 
+/*
+ * Given a place api url this endpoint returns an object describing which services have been configured.
+ * @param {string} place this is a url encoded string that determines which place to get configuration status for
+ * @return {object} object with github and jive boolean members.
+ */
 exports.placeCurrentConfig = function (req, res) {
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
@@ -65,17 +70,16 @@ exports.basicTileConfig = function (req, res) {
     res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
 };
 
-
-
-
-
-
-
-
+/*
+ * used in EventStrategySkeleton
+ */
 function uniquePlace(lhs, rhs) {
     return lhs.placeUrl === rhs.placeUrl;
 }
 
+/*
+ * used in EventStrategySkeleton
+ */
 function linkedPlaceOptions(linked){
     var place = linked.placeID;
     var gitHubToken = linked.github.token.access_token;
@@ -150,7 +154,12 @@ function setupJiveHook(linked){
 
     }else return q();
 }
-
+/*
+ * this is called when the trigger route is hit. It tells the service to update the runtime configuration
+ * of a given place by tearing down old event handlers if they exist and creating new ones.
+ * @param {string} place place api url
+ * @return {object} object with success member to determine a successful update on the ui.
+ */
 exports.onConfigurationChange = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;

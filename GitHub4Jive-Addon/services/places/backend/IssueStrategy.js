@@ -27,6 +27,17 @@ issueStrategy.name = "Place_Issue";
 
 var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "invalid", "wontfix"];
 
+
+/*
+ * This strategy modifies anything in a place that is not on a tile in response to a issue state change.
+ * It could be split into separate strategies for fine grain configuration with the builder. Client code
+ * should never be calling this function directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ *
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
+ *
+ */
 issueStrategy.setup = function(setupOptions){
 
     var jiveApi = setupOptions.jiveApi;

@@ -23,8 +23,18 @@ var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var issueCommentStrategy = Object.create(strategyBase);
 module.exports = issueCommentStrategy;
 
-issueCommentStrategy.name = "IssueComments";
+issueCommentStrategy.name = "Place_IssueComments";
 
+/*
+ * This strategy modifies anything in a place that is not on a tile in response to a created issue comment.
+ * It could be split into separate strategies for fine grain configuration with the builder. Client code
+ * should never be calling this function directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ *
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
+ *
+ */
 issueCommentStrategy.setup = function(setupOptions) {
 
     var jiveApi = setupOptions.jiveApi;

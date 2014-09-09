@@ -47,10 +47,8 @@ issueStrategy.setup = function(setupOptions){
     }
 
     function editGitHubTags(discussion, gitData) {
-        var tags = discussion.tags.map(function (tag) {//Grab all tags that are not GitHub labels
-            if (POSSIBLE_GITHUB_TAGS.indexOf(tag) < 0) {//not a github tag then keep it
-                return tag;
-            }
+        var tags = discussion.tags.filter(function (tag) {//Grab all tags on the discussion that are not GitHub labels
+            return POSSIBLE_GITHUB_TAGS.indexOf(tag) < 0;
         });
         gitData.issue.labels.forEach(function (label) {//Then add all labels currently on the issue
             tags.push(label.name);

@@ -22,18 +22,18 @@ var q = require("q");
 var JiveApi = require("github4jive/JiveApiFacade");
 var JiveOAuth = require("github4jive/JiveOauth");
 var JiveDecorator = require("github4jive/jiveDecorators");
-
+var StrategyBuilder = require("./StrategySetBuilder");
+var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 
 var placeStore = require("github4jive/placeStore");
 var gitFacade = require("github4jive/gitHubFacade");
 var tileFormatter = require("github4jive/tileFormatter");
-var StrategyBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
-
 
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues();
 
+
+// contants////////////////////////////
 var colorMap = {
     'green':'https://cdn1.iconfinder.com/data/icons/function_icon_set/circle_green.png',
     'red':'https://cdn1.iconfinder.com/data/icons/function_icon_set/circle_red.png',
@@ -41,6 +41,7 @@ var colorMap = {
 };
 
 var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
+////////////////////////////////////////
 
 function decorateIssuesWithColoredIcons(issues){
     issues.forEach(function(issue){
@@ -107,13 +108,17 @@ var pushData = function () {
     jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
         return q.all(tiles.map(processTileInstance)) ;
     });
-}
+};
 
-
+/*
+ * used by EventStrategySkeleton
+ */
 function uniqueTile(lhs, rhs){
     return lhs.config.parent === rhs.config.parent;
 }
-
+/*
+ * used by EventStrategySkeleton
+ */
 var setupInstance = function(instance){
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
@@ -129,6 +134,9 @@ var setupInstance = function(instance){
     });
 };
 
+/*
+ * used by EventStrategySkeleton
+ */
 var tearDownInstance = function (instance) {
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
@@ -140,7 +148,9 @@ var tearDownInstance = function (instance) {
     });
 };
 
-
+/*
+ * Handles event handlers registration and un registration
+ */
 var strategyProvider = new StrategySkeleton(uniqueTile,setupInstance,tearDownInstance);
 
 var updateTileInstance = function (newTile) {

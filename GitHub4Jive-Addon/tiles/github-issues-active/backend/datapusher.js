@@ -27,36 +27,16 @@ var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 
 var stratSetScaffolding = new StrategySetBuilder().issues();
 
-var registeredTiles = {};
-
-function addToRegisteredHash(id, repo, token, event){
-    jive.logger.info("Successfully registered: " + repo + "-"+event+":"+token);
-    if(!registeredTiles[id]){
-        registeredTiles[id] = {};
-    }
-    registeredTiles[id][event] = token;
-}
-
-function setupIssueCommentsActivityFeed(instance, config, owner, repo, authOptions){
-    jive.logger.info("Attempting to register " + config.repoFullName + " issue comment hook");
-    return gitHub.subscribeToRepoEvent(owner, repo, gitHub.Events.IssueComment, authOptions,
-        function (payload) {
-
-            var whoDunIt = payload.sender.login;
-            return gitHub.getUserDetails(whoDunIt, authOptions).then(function (user) {
-                var title = (user.name  || user.login) + " commented on issue: " + payload.issue.title;
-                var formattedData = tileFormatter.formatActivityData(
-                    title, payload.comment.body, user.name || user.login , user.email, payload.issue.html_url);
-                jive.extstreams.pushActivity(instance, formattedData);
-            })
-
-        });
-}
-
+/*
+ * used by EventStrategySkeleton
+ */
 function uniqueTile(lhs, rhs){
     return lhs.config.parent === rhs.config.parent;
 }
 
+/*
+ * used by EventStrategySkeleton
+ */
 var setupInstance = function(instance){
     var place = instance.config.parent;
     return placeStore.getPlaceByUrl(place).then(function (linked) {
@@ -75,6 +55,9 @@ var setupInstance = function(instance){
     });
 };
 
+/*
+ * Handles event handlers registration and un registration
+ */
 var strategyProvider = new StrategySkeleton(uniqueTile,setupInstance,setupInstance);
 
 var updateTileInstance = function (newTile) {

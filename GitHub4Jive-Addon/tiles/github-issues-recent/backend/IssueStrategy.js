@@ -23,6 +23,16 @@ module.exports = issueStrategy;
 
 issueStrategy.name = "Recent_Issue";
 
+
+/*
+ * This strategy simply tells the recent issue tile to push new data anytime an issue changes state.
+ * Client code should never be calling this function directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ *
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
+ *
+ */
 issueStrategy.setup = function(setupOptions){
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;

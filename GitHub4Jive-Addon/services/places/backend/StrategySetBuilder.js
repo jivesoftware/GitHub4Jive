@@ -16,6 +16,11 @@
 
 var strategyBuilderBase = require("github4jive/strategies/StrategySetBuilderBase");
 
+/*
+ * This class is an overide of StrategySetBuilderBase
+ * It exposes the two strategies in a fluent api that supports chaining.
+ * NOTE: Build and reset should not be overridden.
+ */
 function builder(){
     strategyBuilderBase.apply(this);
 }
@@ -25,11 +30,20 @@ builder.prototype = new strategyBuilderBase();
 var issues = require("./IssueStrategy");
 var issueComments = require("./IssueCommentStrategy");
 
+
+/*
+ * Add the Issue Strategy to the set that will be built from the builder
+ * @return {object} the same builder to support chaining
+ */
 builder.prototype.issues = function(){
     this.strategies.push(issues);
     return this;
 };
 
+/*
+ * Add the Issue Comment Strategy to the set that will be built from the builder
+ * @return {object} the same builder to support chaining
+ */
 builder.prototype.issueComments = function(){
     this.strategies.push(issueComments);
     return this;

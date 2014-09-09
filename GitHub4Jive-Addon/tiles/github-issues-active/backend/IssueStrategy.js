@@ -28,6 +28,15 @@ issueStrategy.name = "Active_Issue";
 
 var IGNORED_ACTIONS = ["labeled", "unlabeled","opened"];
 
+/*
+ * This strategy pushes new state changes to the activity feed.
+ * Client code should never be calling this function directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ *
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
+ *
+ */
 issueStrategy.setup = function(setupOptions) {
 
     var jiveApi = setupOptions.jiveApi;

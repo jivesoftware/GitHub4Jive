@@ -22,7 +22,7 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 describe("JiveContentBuilder", function () {
-    var ContentBuilder = require("github4jive/jiveContentBuilder")
+    var ContentBuilder = require("github4jive/JiveContentBuilder")
 
     describe("#build", function () {
         it("should return the object being built", function () {

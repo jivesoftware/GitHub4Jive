@@ -18,8 +18,8 @@ var https = require("https");
 var url = require('url');
 var jive = require("jive-sdk");
 
-var JiveFacade = require("github4jive/jiveApiFacade");
-var JiveOauth = require("github4jive/jiveOauth");
+var JiveFacade = require("github4jive/JiveApiFacade");
+var JiveOauth = require("github4jive/JiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
 var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 

@@ -16,7 +16,7 @@
 var jive = require("jive-sdk");
 
 var gitHubFacade = require("github4jive/gitHubFacade");
-var JiveContentBuilder = require("github4jive/jiveContentBuilder");
+var JiveContentBuilder = require("github4jive/JiveContentBuilder");
 var tileFormatter = require("github4jive/tileFormatter");
 var helpers = require("github4jive/helpers");
 

@@ -19,8 +19,8 @@ var jive = require("jive-sdk");
 var q = require("q");
 
 
-var JiveApi = require("github4jive/jiveApiFacade");
-var JiveOAuth = require("github4jive/jiveOauth");
+var JiveApi = require("github4jive/JiveApiFacade");
+var JiveOAuth = require("github4jive/JiveOauth");
 var JiveDecorator = require("github4jive/jiveDecorators");
 
 

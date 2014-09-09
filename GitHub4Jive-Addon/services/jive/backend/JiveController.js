@@ -19,8 +19,8 @@ var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
 var gitFacade = require("github4jive/gitHubFacade");
-var JiveApi = require("github4jive/jiveApiFacade");
-var JiveOauth = require("github4jive/jiveOauth");
+var JiveApi = require("github4jive/JiveApiFacade");
+var JiveOauth = require("github4jive/JiveOauth");
 var placeStore = require("github4jive/placeStore");
 
 

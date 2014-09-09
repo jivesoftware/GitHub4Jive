@@ -26,8 +26,8 @@ var q = require("q");
 var placeStore = require("github4jive/placeStore");
 var gitHubFacade = require("github4jive/gitHubFacade");
 var jiveDecorator = require("github4jive/jiveDecorators");
-var JiveApi = require("github4jive/jiveApiFacade");
-var JiveAuth = require("github4jive/jiveOauth");
+var JiveApi = require("github4jive/JiveApiFacade");
+var JiveAuth = require("github4jive/JiveOauth");
 
 
 function ErrorResponse(res,error){

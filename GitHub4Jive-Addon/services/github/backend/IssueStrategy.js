@@ -23,7 +23,7 @@ var strategyBase = require("github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 
-issueStrategy.name = "Issue";
+issueStrategy.name = "Place_Issue";
 
 var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "invalid", "wontfix"];
 
@@ -99,8 +99,8 @@ issueStrategy.setup = function(setupOptions){
                 var tags = editGitHubTags(discussion, gitData);
                 var builder = new JiveContentBuilder(discussion);
                 var content = builder.discussion()
-                    .tags(tags)
-                    .build();
+                                     .tags(tags)
+                                     .build();
                 jiveApi.update(content).then(function (contentResponse) {
                     jive.logger.debug(contentResponse);
                 });

@@ -1,6 +1,6 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
-var jiveController = require("../JiveController")
+var jiveController = require("../jiveController")
 
 exports.webhookPortal = {
     'verb' : 'post',

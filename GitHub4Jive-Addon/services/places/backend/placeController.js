@@ -17,6 +17,7 @@
 var https = require("https");
 var url = require('url');
 var jive = require("jive-sdk");
+var q = require("q");
 
 var JiveFacade = require("github4jive/JiveApiFacade");
 var JiveOauth = require("github4jive/JiveOauth");

@@ -76,6 +76,7 @@ function processTileIssues(instance, linked, issues){
     }
     else {
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var place = instance.config.parent;
             var jiveAuth = new JiveOAuth(place, linked.jive.access_token, linked.jive.refresh_token);
             var jiveApi = new JiveApi(community, jiveAuth);
 

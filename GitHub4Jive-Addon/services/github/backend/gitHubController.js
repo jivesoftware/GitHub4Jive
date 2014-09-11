@@ -30,7 +30,7 @@ var JiveApi = require("github4jive/JiveApiFacade");
 var JiveAuth = require("github4jive/JiveOauth");
 
 
-function ErrorResponse(res,error){
+function errorResponse(res,error){
     console.log(error);
     res.writeHead(502, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(error));
@@ -41,7 +41,7 @@ function contentResponse(res, content){
     res.end(JSON.stringify(content));
 }
 
-function SplitRepo(fullname){
+function splitRepo(fullname){
     var parts = fullname.split("/");
     return {owner: parts[0], repo: parts[1]};
 }
@@ -56,6 +56,11 @@ function getGitHubOauthTokenForPlace(placeUrl){
     })
 }
 
+/*
+ * retrieve the list of repositories that the user who configured the place can access.
+ * @param {string} place api url
+ * @return {[object]} array of GitHub repository objects
+ */
 exports.getUserRepos = function(req, res){
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
@@ -74,10 +79,15 @@ exports.getUserRepos = function(req, res){
             });
         });
     }).catch(function(error){
-        ErrorResponse(res, error);
+        errorResponse(res, error);
     });
 };
 
+/*
+ * retrieve the list of issues for the repository linked to a place
+ * @param {string} place api url
+ * @return {[object]} array of GitHub issue objects
+ */
 exports.getPlaceIssues = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
@@ -101,15 +111,22 @@ exports.getPlaceIssues = function (req, res) {
 
         })
     }).catch(function (error) {
-        ErrorResponse(res,error);
+        errorResponse(res,error);
     })
-}
+};
 
+/*
+ * retrieve the list of comments for a given repo issue
+ * @param {string} place api url
+ * @param {integer} number of the issue in the repository
+ * @param {string} repo the fullname of the repository owner/repo. Note: can be retrieved from the record. Client already has the information though
+ * @return {[object]} array of GitHub issue objects
+ */
 exports.getIssueComments = function(req, res){
     var queryParams = url.parse(req.url, true).query;
     var issueNumber = queryParams.number;
     var placeUrl = queryParams.place;
-    var repo = SplitRepo(queryParams.repo);
+    var repo = splitRepo(queryParams.repo);
 
     getGitHubOauthTokenForPlace(placeUrl).then(function(authOptions){
         return gitHubFacade.getIssueComments(repo.owner, repo.repo, issueNumber, authOptions).then(function(comments){
@@ -123,14 +140,22 @@ exports.getIssueComments = function(req, res){
             contentResponse(res, comments);
         });
     }).catch(function(error){
-        ErrorResponse(res, error);
+        errorResponse(res, error);
     });
 };
 
+/*
+ * change the state of an issue to open or closed. No errors are thrown if the state is already in the specified state
+ * @param {string} place api url
+ * @param {integer} number of the issue in the repository
+ * @param {string} repo the fullname of the repository owner/repo. Note: can be retrieved from the record. Client already has the information though
+ * @param {string} state BODY payload. Should be "open" or "closed";
+ * @return {object} object with success member for error checking.
+ */
 exports.changeIssueState = function(req, res){
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
-    var repo = SplitRepo(queryParams.repo);
+    var repo = splitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
     var ticketID = queryParams.ticketID;
     var state =  req.body.state;
@@ -140,14 +165,22 @@ exports.changeIssueState = function(req, res){
             contentResponse(res, {success:confirmation});
         })
     }).catch(function(error){
-        ErrorResponse(res, error);
+        errorResponse(res, error);
     });
 };
 
+/*
+ * change which labels are on an issue.
+ * @param {string} place api url
+ * @param {integer} number of the issue in the repository
+ * @param {string} repo the fullname of the repository owner/repo. Note: can be retrieved from the record. Client already has the information though
+ * @param {[string]} labels BODY payload. The array should contain all labels that should be on the issue.
+ * @return {object} object with success member for error checking.
+ */
 exports.changeIssueLabels = function(req, res){
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
-    var repo = SplitRepo(queryParams.repo);
+    var repo = splitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
     var ticketID = queryParams.ticketID;
     var labels =  req.body.labels;
@@ -157,14 +190,22 @@ exports.changeIssueLabels = function(req, res){
             contentResponse(res, {success:confirmation});
         })
     }).catch(function(error){
-        ErrorResponse(res, error);
+        errorResponse(res, error);
     });
-}
+};
 
+/*
+ * create a new comment on an issue. Currently, this function does not prepend the Jive user information
+ * that is applied from a normal Jive comment in a discussion.
+ * @param {string} place api url
+ * @param {integer} number of the issue in the repository
+ * @param {string} repo the fullname of the repository owner/repo. Note: can be retrieved from the record. Client already has the information though
+ * @return {object} object with success member for error checking.
+ */
 exports.newComment = function(req, res){
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
-    var repo = SplitRepo(queryParams.repo);
+    var repo = splitRepo(queryParams.repo);
     var issueNumber = queryParams.number;
 
     var comment = req.body.newComment;
@@ -174,11 +215,18 @@ exports.newComment = function(req, res){
             contentResponse(res, {success:confirmation});
         });
     }).catch(function(error){
-        ErrorResponse(res, error);
+        errorResponse(res, error);
     });
 
 };
 
+/*
+ * create a new issue on the linked repository
+ * @param {string} place api url
+ * @param {string} title BODY payload
+ * @param {string} body BODY payload  the body of the issue
+ * @return {object} object with success member for error checking.
+ */
 exports.newIssue = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
@@ -187,7 +235,7 @@ exports.newIssue = function (req, res) {
     var body = req.body.body;
 
     if(!title){
-        ErrorResponse(res, Error("Title cannot be empty"));
+        errorResponse(res, Error("Title cannot be empty"));
     }else{
         getLinkedPlace(placeUrl).then(function(linked){
             var authOptions = gitHubFacade.createOauthObject(linked.github.token.access_token);
@@ -196,13 +244,17 @@ exports.newIssue = function (req, res) {
                     contentResponse(res, {success:confirmation});
                 })
                 .catch(function (error) {
-                    ErrorResponse(res, error);
+                    errorResponse(res, error);
                 })
         });
 
     }
-}
+};
 
+/*
+ * This endpoint handles POSTS from GitHub. It relays payloads to the gitHubFacade for registered event handlers.
+ * There is currently no validation that the request is from GitHub
+ */
 exports.gitHubWebHookPortal = function(req, res){
     var event = req.headers["x-github-event"];
     var data = req.body;

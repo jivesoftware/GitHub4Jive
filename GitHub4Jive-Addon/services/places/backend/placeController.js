@@ -115,8 +115,11 @@ function updatePlace(linked){
     return strategyProvider.addOrUpdate(linked, stratSetScaffolding).then(function () {
         setupJiveHook(linked);
     })
-};
+}
 
+/*
+ * Start all event handlers for all places when the service starts
+ */
 exports.onBootstrap = function() {
     placeStore.getAllPlaces().then(function (places) {
         places.forEach(updatePlace);

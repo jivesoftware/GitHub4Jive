@@ -162,6 +162,10 @@ function sequentiallyProcessPayloads(payloads, index){
     })
 }
 
+/*
+ * This endpoint handles POSTS from Jive. These webhook payloads are processed in this controller.
+ * There is currently no validation that the request is from Jive.
+ */
 exports.webHookPortal = function (req, res) {
     var hookPayloads = req.body.sort(function (a,b) {
             return new Date(a.activity.published).getTime() - new Date(b.activity.published).getTime();
@@ -176,4 +180,4 @@ exports.webHookPortal = function (req, res) {
     });
 
 
-}
+};

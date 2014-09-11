@@ -115,7 +115,7 @@ describe.only("JiveContentBuilder", function () {
             })
         });
 
-        it("should throw when body is empty", function () {
+        it("should not throw when body is empty", function () {
             var builder = new ContentBuilder();
 
             var emptyBodies = [function () {
@@ -130,7 +130,7 @@ describe.only("JiveContentBuilder", function () {
             }];
 
             emptyBodies.forEach(function (f) {
-                expect(f).to.throw(builder.EMPTY_BODY);
+                expect(f).to.not.throw(builder.EMPTY_BODY);
             });
         });
 

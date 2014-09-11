@@ -41,15 +41,16 @@ function getPlace(place) {
 function getJiveApi(linked) {
     return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
         var jiveAuth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
-        var japi = new JiveApi(community, jiveAuth);
-        return japi;
+        return new JiveApi(community, jiveAuth);
     });
 }
+
 function hydrateObject(japi, webHookObject) {
     return japi.get(webHookObject.id).then(function (message) {
         return message.entity;
     });
 }
+
 function createGitHubComment(place, hookPayload) {
     var comment = hookPayload.object;
     return getPlace(place).then(function (linked) {
@@ -75,17 +76,16 @@ function createGitHubComment(place, hookPayload) {
                             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
                             return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
                                 issueNumber, gitComment, auth).then(function (response) {
-                                })
+                            })
                         });
                     });
-                })
+                });
             });
         });
     });
 }
 
-function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
-{
+function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose){
     props.github4jiveIssueClosed = props.github4jiveIssueClosed ? JSON.parse(props.github4jiveIssueClosed) : false;
     if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
         var auth = gitFacade.createOauthObject(linked.github.token.access_token);
@@ -97,16 +97,21 @@ function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
             });
     }
 }
-function processPayload(hookPayload)
-{
+
+var ISSUE_EVENTS = ["jive:outcome_set","jive:correct_answer_set","jive:outcome_removed","jive:correct_answer_removed"];
+
+function processPayload(hookPayload){
     var place = hookPayload.target.id;
     var event = hookPayload.verb;
     var obj = hookPayload.object;
     jive.logger.debug(hookPayload.object);
     if(event == "jive:replied" && hookPayload.object.summary){//ignore blank comments that may be created for remove answer hack
         return createGitHubComment(place, hookPayload);
-    }else if(event == "jive:outcome_set" || event == "jive:correct_answer_set" || event == "jive:outcome_removed" || event ==  "jive:correct_answer_removed"){
-        if(event == "jive:outcome_set"){
+    }else if(ISSUE_EVENTS.indexOf(event) >= 0 ){
+
+        //currently, EAE does not emit events for outcome remove or answer removed so there are no cases for those in this branch
+
+        if(event == "jive:outcome_set"){//discussion marked final etc
             return getPlace(place).then(function (linked) {
                 return getJiveApi(linked).then(function (japi) {
                     return hydrateObject(japi, obj).then(function (discussion) {
@@ -116,7 +121,7 @@ function processPayload(hookPayload)
                     });
                 });
             });
-        }else  if (obj.objectType == "jive:message" ){
+        }else  if (obj.objectType == "jive:message" ){//message was marked correct
                 return getPlace(place).then(function (linked) {
                     return getJiveApi(linked).then(function (japi) {
                         return hydrateObject(japi, obj).then(function (message) {
@@ -134,7 +139,8 @@ function processPayload(hookPayload)
     }else{
         return q();
     }
-};
+    //return a promise to enable the sequential processing of events
+}
 
 function sequentiallyProcessPayloads(payloads, index){
     var payload = payloads[index];
@@ -162,6 +168,4 @@ exports.webHookPortal = function (req, res) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(error));
     });
-
-
 };

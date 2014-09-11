@@ -59,6 +59,12 @@ var host;
 
 $("body").append("<link />")
 
+/*
+ * This function is called when both GitHub and Jive have authorized the user.
+ * The j-card-configuration id is unhid. And the github4jiveAuthorized Event
+ * is thrown for custom configurations to setup their forms. The configuration
+ * panel should have a select list with id "projectList" to populate the repository list.
+ */
 function AllAuthorized() {
     $("#j-card-authentication").hide();
     $("#j-card-configuration").show();
@@ -105,13 +111,10 @@ function ProceedWhenReady() {
     }
 }
 
-var onLoadCallback = function (config, identifiers) {
-    onLoadContext = {
-        config: config,
-        identifiers: identifiers
-    };
-};
-
+/*
+ * @param {string} system must be either "jive" or "github"
+ * @param {function} successfulCallback the function to call when the Oauth dance completes
+ */
 function setupOAuthFor(system, successCallBack) {
     var ticketErrorCallback = function () {
         console.log('ticketErrorCallback error');
@@ -149,6 +152,26 @@ function setupOAuthFor(system, successCallBack) {
     }).launch({'viewerID': viewerID});
 }
 
+function setupGitHubOAuth(){
+    setupOAuthFor("github", function (ticketID) {
+        if (ticketID) {
+            githubDone = true;
+            $('#github4jive-github-authorize').slideUp('fast');
+            $('#github4jive-github-authorize-success').slideDown('fast', ProceedWhenReady);
+        }
+    });
+}
+
+function setupJiveOauth(){
+    setupOAuthFor("jive", function (ticketID) {
+        if (ticketID) {
+            jiveDone = true;
+            $('#github4jive-jive-authorize').slideUp('fast');
+            $('#github4jive-jive-authorize-success').slideDown('fast', ProceedWhenReady);
+        }
+    });
+}
+
 var app = {
 
     currentView: gadgets.views.getCurrentView().getName(),
@@ -165,7 +188,7 @@ var app = {
 
             osapi.jive.corev3.resolveContext(context, function (result) {
 
-                if(result.content.contentID){//Content Action.
+                if(result.content.contentID){// called from Content Action.
                     contentObject = result.content;
                     placeUrl = result.content.parentPlace.uri;
 
@@ -174,30 +197,16 @@ var app = {
                     placeUrl = result.content.resources.self.ref;
                 }
 
+                setupGitHubOAuth();
+                setupJiveOauth();
 
-
-                setupOAuthFor("github", function (ticketID) {
-                    if (ticketID) {
-                        githubDone = true;
-                        $('#github4jive-github-authorize').slideUp('fast');
-                        $('#github4jive-github-authorize-success').slideDown('fast', ProceedWhenReady);
-                    }
-                });
-
-                setupOAuthFor("jive", function (ticketID) {
-                    if (ticketID) {
-                        jiveDone = true;
-                        $('#github4jive-jive-authorize').slideUp('fast');
-                        $('#github4jive-jive-authorize-success').slideDown('fast', ProceedWhenReady);
-                    }
-                });
-
+                //This function is used right below it.
                 function setupPlaceConfig(p) {
 
                     place = p;
                     place.getExtProps().execute(function (props) {
                         placeProps = props.content;
-                        if ("true" === placeProps.github4jiveEnabled) {//&& placeProps.github4jiveGitHubAccessToken && placeProps.github4jiveJiveAccessToken) {
+                        if ("true" === placeProps.github4jiveEnabled) {
                             console.log('initializing UI for already configured place');
                             previousRepo = placeProps.github4jiveRepoOwner + "/" + placeProps.github4jiveRepo;
                         }
@@ -210,7 +219,6 @@ var app = {
                             'href': host + '/github4jive/place/isConfigured?' +
                                 "&ts=" + new Date().getTime() +
                                 "&place=" + encodeURIComponent(placeUrl),
-                            //"&query=" + query,
                             'format': 'json',
                             'authz': 'signed'
                         }).execute(function (response) {
@@ -218,26 +226,23 @@ var app = {
                                 githubDone = config.github;
                                 jiveDone = config.jive;
 
+                                //make ui changes based on which systems are configured
                                 if (BothAreDone()) {
                                     AllAuthorized();
                                 }
                                 else {
                                     if (config.github) {
-                                        $('#github4jive-github-authorize-success').slideDown('fast', function () {
-                                        });
+                                        $('#github4jive-github-authorize-success').slideDown('fast');
                                     }
                                     else {
-                                        $('#github4jive-github-authorize').slideDown('fast', function () {
-                                        });
+                                        $('#github4jive-github-authorize').slideDown('fast');
                                     }
 
                                     if (config.jive) {
-                                        $('#github4jive-jive-authorize-success').slideDown('fast', function () {
-                                        });
+                                        $('#github4jive-jive-authorize-success').slideDown('fast');
                                     }
                                     else {
-                                        $('#github4jive-jive-authorize').slideDown('fast', function () {
-                                        });
+                                        $('#github4jive-jive-authorize').slideDown('fast');
                                     }
                                     gadgets.window.adjustHeight();
                                 }
@@ -245,8 +250,9 @@ var app = {
                         );
 
                     });
-                };
+                }
 
+                //if place was not picked up from the context resolver then grab it from the url
                 if(!place){
                     osapi.jive.corev3.places.get({"uri": placeUrl}).execute(setupPlaceConfig);
                 }else{
@@ -259,7 +265,6 @@ var app = {
                 console.log('Saving GitHub4Jive Repository Information');
 
                 console.log('context has content callback');
-                //TODO: BULLET-PROOF/UN HARD CODE THE LOGIC HERE, REVISIT ONCE THE FLOW IS BETTER BAKED - RR
                 var fullName = $("#projectList option:selected").text();
                 var parts = fullName.split("/");
                 var owner = parts[0];
@@ -281,7 +286,7 @@ var app = {
                         $(document).trigger("github4jiveConfigDone");
                     });
                 });
-                });
+            });
         }
     }
 };

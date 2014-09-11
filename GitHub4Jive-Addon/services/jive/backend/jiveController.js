@@ -23,8 +23,6 @@ var JiveApi = require("github4jive/JiveApiFacade");
 var JiveOauth = require("github4jive/JiveOauth");
 var placeStore = require("github4jive/placeStore");
 
-
-
 function getDiscussionUrl(message){
     return message.discussion;
 }
@@ -60,9 +58,7 @@ function createGitHubComment(place, hookPayload) {
             return message.retrieveAllExtProps().then(function (commentprops) {
 
                     if (commentprops.fromGitHub) {//Check for a comment created from GitHub
-                        return q(function () {
-                            return;
-                        })
+                        return q();
                     }
                     var discussion = getDiscussionUrl(message);
                     return japi.getAllExtProps(discussion).then(function (props) {
@@ -80,15 +76,11 @@ function createGitHubComment(place, hookPayload) {
                             return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
                                 issueNumber, gitComment, auth).then(function (response) {
                                 })
-                        })
-
+                        });
                     });
-
                 })
             });
         });
-
-
     });
 }
 
@@ -103,8 +95,6 @@ function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose)
             props.github4jiveIssueNumber, state, auth).then(function () {
                 return japi.attachPropsToContent(discussionUrl, props);
             });
-    }else {
-        return;
     }
 }
 function processPayload(hookPayload)
@@ -113,7 +103,7 @@ function processPayload(hookPayload)
     var event = hookPayload.verb;
     var obj = hookPayload.object;
     jive.logger.debug(hookPayload.object);
-    if(event == "jive:replied" ){
+    if(event == "jive:replied" && hookPayload.object.summary){//ignore blank comments that may be created for remove answer hack
         return createGitHubComment(place, hookPayload);
     }else if(event == "jive:outcome_set" || event == "jive:correct_answer_set" || event == "jive:outcome_removed" || event ==  "jive:correct_answer_removed"){
         if(event == "jive:outcome_set"){
@@ -126,7 +116,7 @@ function processPayload(hookPayload)
                     });
                 });
             });
-        }else  if (obj.objectType == "jive:message"){
+        }else  if (obj.objectType == "jive:message" ){
                 return getPlace(place).then(function (linked) {
                     return getJiveApi(linked).then(function (japi) {
                         return hydrateObject(japi, obj).then(function (message) {
@@ -139,27 +129,21 @@ function processPayload(hookPayload)
                 });
 
         }else{
-            return q(function () {
-                return;
-            });
+            return q();
         }
     }else{
-        return q(function () {
-            return;
-        });
+        return q();
     }
 };
 
 function sequentiallyProcessPayloads(payloads, index){
     var payload = payloads[index];
     if(!payload){
-        return q(function () {
-            return;
-        })
+        return q();
     }
     return processPayload(payload.activity).then(function () {
         return sequentiallyProcessPayloads(payloads, ++index);
-    })
+    });
 }
 
 /*

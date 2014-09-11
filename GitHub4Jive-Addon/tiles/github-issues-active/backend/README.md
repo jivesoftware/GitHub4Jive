@@ -12,17 +12,17 @@ the GitHub event handlers for current instances that are configured to post acti
 
 
 When a new tile registers a new set of GitHub event handlers are created for the new
-instance. These are handled by the [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies)
+instance. These are handled by the [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#EventStrategySkeleton)
 instance called strategyProvider.
 
 When a tile is updated the instance's event handlers are destroyed and then reconstructed
-with any new values. This is also handled with the  [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies).
+with any new values. This is also handled with the  [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#EventStrategySkeleton).
 
 
 issueStrategy.js
 ----------------
 
-This overrides the [EventStrategyBase](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies)
+This overrides the [EventStrategyBase](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#EventStrategyBase)
 and listens for a GitHub issue state change event. If it is reopened, closed, or relabeled
 then a activity entry is generated with corresponding message and link to relevant discusssion.
 
@@ -33,10 +33,10 @@ because the datapusher itself ironically does not do any pushing.
 StrategySetBuilder.js
 ---------------------
 
-This overrides the [StrategySetBuilderBase](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies)
+This overrides the [StrategySetBuilderBase](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#StrategySetBuilderBase)
 class that provides the framework for setting up and tearing down multiple strategies at runtime. 
 This implementation is rather simple because it only exposes a single strategy. The builder is used
-with the [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies)
+with the [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#EventStrategySkeleton)
 to provide the set of strategies to create for each tile instance.
 
 Another strategy could be added to listen for comments on issues that do not have linked 

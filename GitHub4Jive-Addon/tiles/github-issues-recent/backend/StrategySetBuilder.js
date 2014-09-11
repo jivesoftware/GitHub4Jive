@@ -27,7 +27,7 @@ function builder(){
 builder.prototype = new strategyBuilderBase();
 
 
-var issues = require("./IssueStrategy");
+var issues = require("./issueStrategy");
 
 builder.prototype.issues = function(){
     this.strategies.push(issues);

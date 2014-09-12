@@ -6,7 +6,7 @@ with rich discussions and quick access to GitHub resources, all from within Jive
 services, web hooks, and cartridges are used to make this experience both natural and
 powerful.
 
-*For architecture details and development notes for each component, please see the corresponding `.developer_notes.md` in the component directory: [Add-on developer notes](GitHub4Jive-Addon/.developer-notes.md), [Cartridge developer notes](GitHub4Jive-Cartridge/.developer-notes.md).*
+*For architecture details and development notes for each component, please see the corresponding `README.md` in the component directory: [Add-on developer notes](GitHub4Jive-Addon/.developer-notes.md), [Cartridge developer notes](GitHub4Jive-Cartridge/.developer-notes.md).*
 
 # User Stories
 

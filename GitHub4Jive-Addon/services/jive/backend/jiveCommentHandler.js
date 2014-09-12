@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
+var q = require("q");
 var gitFacade = require("github4jive/gitHubFacade");
 var helpers = require("./helpers");
 

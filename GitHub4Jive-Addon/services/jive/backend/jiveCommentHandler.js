@@ -37,15 +37,19 @@ exports.createGitHubComment = function (hookPayload) {
             return helpers.hydrateObject(japi, comment).then(function (message) {
                 return message.retrieveAllExtProps().then(function (commentprops) {
 
-                    if (commentprops.fromGitHub) {//Check for a comment created from GitHub
+                    if (commentprops.fromGitHub) {//Check for a comment originally from GitHub
                         return q();
                     }
+
+                    //then check if the comment was even on a linked discussion
                     var discussion = helpers.getDiscussionUrl(message);
                     return japi.getAllExtProps(discussion).then(function (props) {
                         var issueNumber = props.github4jiveIssueNumber;
-                        if (!issueNumber) {//Discussion is not linked to an issue
-                            return;
+                        if (!issueNumber) {//Discussion is not linked to an issue so we can throw this payload out
+                            return q();
                         }
+
+                        //finally, create the comment on GitHub with relevant user data
                         return japi.get(hookPayload.object.author.id).then(function (user) {
                             user = user.entity;
                             var userPage = user.resources.html.ref;
@@ -53,7 +57,7 @@ exports.createGitHubComment = function (hookPayload) {
                             var auth = gitFacade.createOauthObject(linked.github.token.access_token);
                             return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
                                 issueNumber, gitComment, auth).then(function (response) {
-                                })
+                            })
                         });
                     });
                 });

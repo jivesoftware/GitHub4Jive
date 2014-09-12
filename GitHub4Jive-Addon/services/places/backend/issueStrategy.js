@@ -65,13 +65,13 @@ function createIssueDiscussion(placeID, gitData, jiveApi) {
     jive.logger.info("New Issue! Creating a discussion for it.");
     var builder = new JiveContentBuilder();
     var content = builder.discussion()
-        .parentPlace(placeID)
-        .subject(formatDiscussionSubject(gitData))
-        .body(gitData.issue.body)
-        .build();
+                        .parentPlace(placeID)
+                        .subject(formatDiscussionSubject(gitData))
+                        .body(gitData.issue.body)
+                        .build();
     jiveApi.create(content).then(function (contentResponse) {
         var contentID = contentResponse.apiID;
-        //attach ext props to get discussion later
+        //attach ext props to query for discussion later
         return jiveApi.attachPropsToContent(contentID, createExtProps(gitData));
     });
 }
@@ -127,7 +127,7 @@ issueStrategy.setup = function(setupOptions){
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
         switch(gitData.action) {
-            case "opened":
+            case "opened": // Issue just created on GitHub
                 createIssueDiscussion(placeID, gitData, jiveApi);
                 break;
             case "reopened":

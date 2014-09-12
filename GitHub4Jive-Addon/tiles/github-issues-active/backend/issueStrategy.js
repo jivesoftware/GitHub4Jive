@@ -28,6 +28,14 @@ issueStrategy.name = "Active_Issue";
 
 var IGNORED_ACTIONS = ["labeled", "unlabeled","opened"];
 
+function notAnIgnoredAction(action){
+    return IGNORED_ACTIONS.indexOf( action) < 0;
+}
+
+function formatActivityHeadline(user, payload) {
+    return (user.name || user.login) + " " + payload.action + " issue: " + payload.issue.title;
+}
+
 /*
  * This strategy pushes new state changes to the activity feed.
  * Client code should never be calling this function directly. It should be called from the StrategySetBuilderBase.
@@ -37,6 +45,7 @@ var IGNORED_ACTIONS = ["labeled", "unlabeled","opened"];
  * SetupOptions are provided by a placeController.
  *
  */
+
 issueStrategy.setup = function(setupOptions) {
 
     var jiveApi = setupOptions.jiveApi;
@@ -49,15 +58,16 @@ issueStrategy.setup = function(setupOptions) {
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth,
         function (payload) {
-
-
-            if(IGNORED_ACTIONS.indexOf( payload.action) < 0) {
+            if(notAnIgnoredAction(payload.action)) {
                 var whoDunIt = payload.sender.login;
                 return gitHubFacade.getUserDetails(whoDunIt, auth).then(function (user) {
                     return helpers.getDiscussionForIssue(jiveApi, placeUrl,payload.issue.id).then(function (discussion) {
-                        var title = (user.name || user.login) + " " + payload.action + " issue: " + payload.issue.title;
+                        var title = formatActivityHeadline(user, payload);
                         var formattedData = tileFormatter.formatActivityData(
-                            title, payload.issue.body, (user.name || user.login), user.email,  (discussion ? discussion.resources.html.ref : payload.issue.html_url));
+                            title, payload.issue.body,
+                            (user.name || user.login),
+                            user.email,
+                            (discussion ? discussion.resources.html.ref : payload.issue.html_url));
                         jive.extstreams.pushActivity(instance, formattedData);
                     });
                 })

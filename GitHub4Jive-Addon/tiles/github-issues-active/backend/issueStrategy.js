@@ -57,7 +57,7 @@ issueStrategy.setup = function(setupOptions) {
                     return helpers.getDiscussionForIssue(jiveApi, placeUrl,payload.issue.id).then(function (discussion) {
                         var title = (user.name || user.login) + " " + payload.action + " issue: " + payload.issue.title;
                         var formattedData = tileFormatter.formatActivityData(
-                            title, payload.issue.body, (user.name || user.login), user.email, discussion.resources.html.ref);
+                            title, payload.issue.body, (user.name || user.login), user.email,  (discussion ? discussion.resources.html.ref : payload.issue.html_url));
                         jive.extstreams.pushActivity(instance, formattedData);
                     });
                 })

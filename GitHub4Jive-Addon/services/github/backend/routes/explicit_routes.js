@@ -10,7 +10,6 @@ var config = require("../../../../jiveclientconfiguration.json");
 exports.GitHubWebHookPortal = {
     'path': config.github.webHookUrl,
     'verb': 'post',
-    'jiveLocked' : true,
     'route': gitHubController.gitHubWebHookPortal
 };
 

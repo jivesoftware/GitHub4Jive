@@ -21,7 +21,7 @@ var chaiAsPromised = require("chai-as-promised");
 
 chai.use(chaiAsPromised);
 
-describe.only("JiveContentBuilder", function () {
+describe("JiveContentBuilder", function () {
     var ContentBuilder = require("github4jive/JiveContentBuilder")
 
     describe("constructor", function () {

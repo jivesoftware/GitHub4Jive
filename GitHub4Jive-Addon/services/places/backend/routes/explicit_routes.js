@@ -12,7 +12,6 @@ exports.placeCurrentConfig = {
 exports.basicTileConfig = {
     'verb' : 'get',
     'path' : '/github4jive/basicTileConfig',
-    'jiveLocked' : true,
     'route' : placeController.basicTileConfig
 };
 

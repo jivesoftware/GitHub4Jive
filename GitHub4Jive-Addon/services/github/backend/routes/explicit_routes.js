@@ -10,6 +10,7 @@ var config = require("../../../../jiveclientconfiguration.json");
 exports.GitHubWebHookPortal = {
     'path': config.github.webHookUrl,
     'verb': 'post',
+    'jiveLocked' : true,
     'route': gitHubController.gitHubWebHookPortal
 };
 
@@ -20,6 +21,7 @@ exports.GitHubWebHookPortal = {
 exports.repositoryListForUser = {
     'verb' : 'get',
     'path' : '/github/user/repos',
+    'jiveLocked' : true,
     'route' : gitHubController.getUserRepos
 };
 
@@ -29,24 +31,28 @@ exports.repositoryListForUser = {
 exports.IssuesForPlace = {
     'verb' : 'get',
     'path' : '/github/place/issues',
+    'jiveLocked' : true,
     'route' : gitHubController.getPlaceIssues
 };
 
 exports.newIssue = {
     'verb' : 'post',
     'path' : '/github/place/newIssue',
+    'jiveLocked' : true,
     'route' : gitHubController.newIssue
 };
 
 exports.changeIssueState = {
     'verb' : 'post',
     'path' : '/github/place/changeIssueState',
+    'jiveLocked' : true,
     'route' : gitHubController.changeIssueState
 };
 
 exports.changeIssueLabels = {
     'verb' : 'post',
     'path' : '/github/place/changeIssueLabels',
+    'jiveLocked' : true,
     'route' : gitHubController.changeIssueLabels
 };
 
@@ -59,5 +65,6 @@ exports.commentsForIssue = {
 exports.newComment = {
     'verb' : 'post',
     'path' : '/github/place/newComment',
+    'jiveLocked' : true,
     'route' : gitHubController.newComment
 };

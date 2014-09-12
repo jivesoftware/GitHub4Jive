@@ -7,6 +7,7 @@ var service = require('./service_impl.js');
 exports.authorizeUrl = {
     'path' : '/github/oauth/authorize',
     'verb' : 'get',
+    'jiveLocked' : true,
     'route': service.authorizeUrl.bind(service)
 };
 
@@ -18,5 +19,6 @@ exports.authorizeUrl = {
 exports.oauth2Callback = {
     'path' : '/github/oauth/callback',
     'verb' : 'get',
+    'jiveLocked' : true,
     'route': service.oauth2Callback.bind(service)
 };

@@ -5,12 +5,14 @@ var placeController = require("../placeController")
 exports.placeCurrentConfig = {
     'verb' : 'get',
     'path' : '/github4jive/place/isConfigured',
+    'jiveLocked' : true,
     'route' : placeController.placeCurrentConfig
 };
 
 exports.basicTileConfig = {
     'verb' : 'get',
     'path' : '/github4jive/basicTileConfig',
+    'jiveLocked' : true,
     'route' : placeController.basicTileConfig
 };
 
@@ -21,5 +23,6 @@ exports.basicTileConfig = {
 exports.ConfigurationUpdateTrigger = {
     'verb': 'post',
     'path': "/github4jive/place/trigger",
+    'jiveLocked' : true,
     'route': placeController.onConfigurationChange
 };

@@ -1,3 +1,7 @@
+/*
+ * This file is included in apps to infer the value of host. The host variable is used
+ * to proxy calls through the service.
+ */
 var host;
 
 if( !host ) {

@@ -67,6 +67,10 @@ exports.placeCurrentConfig = function (req, res) {
     })
 };
 
+/*
+ * This returns the configuration page for a tile that requires no extra configuration to run.
+ * Ex. Recent Issues Tile and Project Info Tile
+ */
 exports.basicTileConfig = function (req, res) {
     res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
 };
@@ -109,12 +113,45 @@ function linkedPlaceOptions(linked){
     });
 }
 
+function setupJiveHook(linked){
+
+    if(!linked.jive.hookID){
+        var webhookCallback = jive.service.serviceURL() + '/webhooks?place='+ encodeURIComponent( linked.placeUrl);
+        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+            var community = community;
+
+            //register Webhook on Jive Instance
+            var accessToken = linked.jive.access_token;
+
+            return jive.webhooks.register(
+                community, "discussion", linked.placeUrl,
+                webhookCallback, accessToken
+            ).then(function (webhook) {
+                    var webhookEntity = webhook['entity'];
+                    var webhookToSave = {
+                        'object': webhookEntity['object'],
+                        'events': webhookEntity['event'],
+                        'callback': webhookEntity['callback'],
+                        'url': webhookEntity['resources']['self']['ref'],
+                        'id': webhookEntity['id']
+                    };
+
+                    //save webhook in service and placeStore to unregister later.
+                    return jive.webhooks.save(webhookToSave).then(function () {
+                        return placeStore.save(linked.placeUrl, {jive:{hookID:webhookEntity.id}});
+                    })
+                });
+        })
+
+    }else return q();
+}
+
 var strategyProvider = new StrategySkeleton(uniquePlace,linkedPlaceOptions,linkedPlaceOptions);
 
 function updatePlace(linked){
     return strategyProvider.addOrUpdate(linked, stratSetScaffolding).then(function () {
         setupJiveHook(linked);
-    })
+    });
 }
 
 /*
@@ -126,38 +163,6 @@ exports.onBootstrap = function() {
     });
 };
 
-function setupJiveHook(linked){
-
-    if(!linked.jive.hookID){
-        var webhookCallback = jive.service.serviceURL() + '/webhooks?place='+ encodeURIComponent( linked.placeUrl);
-        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-            var community = community;
-
-            function doWebhook(accessToken) {
-                jive.webhooks.register(
-                    community, "discussion", linked.placeUrl,
-                    webhookCallback, accessToken
-                ).then(function (webhook) {
-                        var webhookEntity = webhook['entity'];
-                        var webhookToSave = {
-                            'object': webhookEntity['object'],
-                            'events': webhookEntity['event'],
-                            'callback': webhookEntity['callback'],
-                            'url': webhookEntity['resources']['self']['ref'],
-                            'id': webhookEntity['id']
-                        };
-
-                        return jive.webhooks.save(webhookToSave).then(function () {
-                            return placeStore.save(linked.placeUrl, {jive:{hookID:webhookEntity.id}});
-                        })
-                    });
-            }
-
-            return doWebhook(linked.jive.access_token);
-        })
-
-    }else return q();
-}
 /*
  * this is called when the trigger route is hit. It tells the service to update the runtime configuration
  * of a given place by tearing down old event handlers if they exist and creating new ones.

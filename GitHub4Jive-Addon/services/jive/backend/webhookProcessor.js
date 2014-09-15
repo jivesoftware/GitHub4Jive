@@ -19,9 +19,13 @@ var q = require("q");
 
 var helpers = require("./helpers");
 var jiveCommentHandler = require("./jiveCommentHandler");
-var issueStateChangeHanlder = require("./issueStateChangeHandlers");
+var issueStateChangeHandler = require("./issueStateChangeHandlers");
 
 var ISSUE_EVENTS = ["jive:outcome_set","jive:correct_answer_set","jive:outcome_removed","jive:correct_answer_removed"];
+
+function itIsReply(event, hookPayload) {
+    return event == "jive:replied" && hookPayload.object.summary;//ignore blank comments that may be created for remove answer hack
+}
 
 function itIsAnIssueStateChangeEvent(event){
     return ISSUE_EVENTS.indexOf(event) >= 0;
@@ -35,17 +39,13 @@ function processIssueStateChange(payload){
     //currently, EAE does not emit events for outcome remove or answer removed so there are no cases for those in this branch
     if(event == "jive:outcome_set"){
         //discussion marked final etc
-        return issueStateChangeHanlder.changeIssueStateFromOutcome(place, obj);
+        return issueStateChangeHandler.changeIssueStateFromOutcome(place, obj);
     }else  if (obj.objectType == "jive:message" ){
         //message was marked correct
-        return issueStateChangeHanlder.changeIssueStateFromMarkedAnswer(place, obj);
+        return issueStateChangeHandler.changeIssueStateFromMarkedAnswer(place, obj);
     }else{
         return q();
     }
-}
-
-function itIsReply(event, hookPayload) {
-    return event == "jive:replied" && hookPayload.object.summary;//ignore blank comments that may be created for remove answer hack
 }
 
 function processPayload(hookPayload){
@@ -57,9 +57,10 @@ function processPayload(hookPayload){
     }else if( itIsAnIssueStateChangeEvent(event)){
         return processIssueStateChange(hookPayload);
     }else{
+        //return an empty promise to enable the sequential processing of events
         return q();
     }
-    //return a promise to enable the sequential processing of events
+
 }
 
 function  sequentiallyProcessPayloads(payloads, index){
@@ -80,6 +81,6 @@ function  sequentiallyProcessPayloads(payloads, index){
  */
 exports.sequentiallyProcessPayloads = function(payloads){
     return sequentiallyProcessPayloads(payloads,0).then(function () {
-        return q();
+        return q();//hides result of last payload processing.
     });
 };

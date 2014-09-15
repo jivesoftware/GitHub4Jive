@@ -81,7 +81,6 @@ issueCommentStrategy.setup = function(setupOptions) {
         var gitComment = gitData.comment.body;
 
         if(commentDidNotOriginateFromJive(gitComment)){
-
             helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
                 .then(function (discussion) {
                     addCommentToDiscussion(jiveApi, gitData, auth, discussion);

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Before running these instructions:
+Before running, follow these instructions:
 
 1. You need to be able to install add-ons on the Jive server being used for this tutorial. Registered developers can use the [Jive Developer Sandbox](https://sandbox.jiveon.com/), which has the sandbox property turned on.
 2. Your development system must be accessible to the Jive server. Consider using a cloud-based IDE (such as [Nitrous.IO](https://www.nitrous.io/)) for this tutorial.

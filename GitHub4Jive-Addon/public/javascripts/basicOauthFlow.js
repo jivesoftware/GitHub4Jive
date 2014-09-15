@@ -111,11 +111,12 @@ function ProceedWhenReady() {
     }
 }
 
-/*
+/**
  * @param {string} system must be either "jive" or "github"
+ * @param {integer} popupWidth in pixels
  * @param {function} successfulCallback the function to call when the Oauth dance completes
  */
-function setupOAuthFor(system, successCallBack) {
+function setupOAuthFor(system,popupWidth, successCallBack) {
     var ticketErrorCallback = function () {
         console.log('ticketErrorCallback error');
     };
@@ -148,12 +149,15 @@ function setupOAuthFor(system, successCallBack) {
         onLoadCallback: onLoadCallback,
         authorizeUrl: authorizeUrl,
         jiveOAuth2Dance: system === "jive",
-        context: {"place": placeUrl}
+        context: {"place": placeUrl},
+        popupWindowWidth: popupWidth || 350,
+        popupWindowHeight: 500
+
     }).launch({'viewerID': viewerID});
 }
 
 function setupGitHubOAuth(){
-    setupOAuthFor("github", function (ticketID) {
+    setupOAuthFor("github",500, function (ticketID) {
         if (ticketID) {
             githubDone = true;
             $('#github4jive-github-authorize').slideUp('fast');
@@ -163,7 +167,7 @@ function setupGitHubOAuth(){
 }
 
 function setupJiveOauth(){
-    setupOAuthFor("jive", function (ticketID) {
+    setupOAuthFor("jive",350, function (ticketID) {
         if (ticketID) {
             jiveDone = true;
             $('#github4jive-jive-authorize').slideUp('fast');

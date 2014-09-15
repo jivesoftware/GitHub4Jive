@@ -1,6 +1,6 @@
-var realTile = Boolean(jive.tile);
-jive.tile = jive.tile || {};
-var OAuth2ServerFlow = null;
+var realTile = Boolean(jive.tile);//flag for later usage determination.
+jive.tile = jive.tile || {};//if is not defined then define it so that callback ticket can be set internally.
+var OAuth2ServerFlow = null;//defined here so it is visible in other files.
 
 
 if(!gadgets.oauth || !gadgets.oauth.Popup){
@@ -26,7 +26,8 @@ if(!gadgets.oauth || !gadgets.oauth.Popup){
         var context = options['context'];
         var extraAuthParams = options['extraAuthParams'];
         var popupWindowHeight = options['popupWindowHeight'] || '600';
-        var popupWindowWidth = options['popupWindowWidth'] || '310';
+        var popupWindowWidth = options['popupWindowWidth'] || '400';
+        var popupWindowProps = options['popUpWindowProps'];
 
         var doOAuthDance = function (viewerID, oauth2CallbackUrl, jiveTenantID) {
             // do any preparation things necessary
@@ -78,7 +79,7 @@ if(!gadgets.oauth || !gadgets.oauth.Popup){
 
                 $(grantDOMElementID).click(
                     new gadgets.oauth.Popup(data.url,
-                            'width=' + popupWindowWidth + ',height=' + popupWindowHeight + ',scrollbars=yes',
+                        popupWindowProps || ( 'width=' + popupWindowWidth + ',height=' + popupWindowHeight + ',scrollbars=yes'),
                         openCallback, closeCallback
                     ).createOpenerOnClick());
 

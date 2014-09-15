@@ -56,7 +56,7 @@ function getGitHubOauthTokenForPlace(placeUrl){
     })
 }
 
-/*
+/**
  * retrieve the list of repositories that the user who configured the place can access.
  * @param {string} place api url
  * @return {[object]} array of GitHub repository objects
@@ -83,7 +83,7 @@ exports.getUserRepos = function(req, res){
     });
 };
 
-/*
+/**
  * retrieve the list of issues for the repository linked to a place
  * @param {string} place api url
  * @return {[object]} array of GitHub issue objects
@@ -115,7 +115,7 @@ exports.getPlaceIssues = function (req, res) {
     })
 };
 
-/*
+/**
  * retrieve the list of comments for a given repo issue
  * @param {string} place api url
  * @param {integer} number of the issue in the repository
@@ -144,7 +144,7 @@ exports.getIssueComments = function(req, res){
     });
 };
 
-/*
+/**
  * change the state of an issue to open or closed. No errors are thrown if the state is already in the specified state
  * @param {string} place api url
  * @param {integer} number of the issue in the repository
@@ -169,7 +169,7 @@ exports.changeIssueState = function(req, res){
     });
 };
 
-/*
+/**
  * change which labels are on an issue.
  * @param {string} place api url
  * @param {integer} number of the issue in the repository
@@ -194,7 +194,7 @@ exports.changeIssueLabels = function(req, res){
     });
 };
 
-/*
+/**
  * create a new comment on an issue. Currently, this function does not prepend the Jive user information
  * that is applied from a normal Jive comment in a discussion.
  * @param {string} place api url
@@ -220,7 +220,7 @@ exports.newComment = function(req, res){
 
 };
 
-/*
+/**
  * create a new issue on the linked repository
  * @param {string} place api url
  * @param {string} title BODY payload
@@ -251,7 +251,7 @@ exports.newIssue = function (req, res) {
     }
 };
 
-/*
+/**
  * This endpoint handles POSTS from GitHub. It relays payloads to the gitHubFacade for registered event handlers.
  * There is currently no validation that the request is from GitHub
  */

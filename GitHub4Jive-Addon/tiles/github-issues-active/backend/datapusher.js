@@ -27,14 +27,14 @@ var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
 
 var stratSetScaffolding = new StrategySetBuilder().issues();
 
-/*
+/**
  * used by EventStrategySkeleton
  */
 function uniqueTile(lhs, rhs){
     return lhs.config.parent === rhs.config.parent;
 }
 
-/*
+/**
  * used by EventStrategySkeleton
  */
 var setupInstance = function(instance){
@@ -55,7 +55,7 @@ var setupInstance = function(instance){
     });
 };
 
-/*
+/**
  * Handles event handlers registration and un registration
  */
 var strategyProvider = new StrategySkeleton(uniqueTile,setupInstance,setupInstance);

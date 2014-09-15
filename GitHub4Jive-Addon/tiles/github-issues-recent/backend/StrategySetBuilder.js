@@ -16,7 +16,7 @@
 
 var strategyBuilderBase = require("github4jive/strategies/StrategySetBuilderBase");
 
-/*
+/**
  * This class is an overide of StrategySetBuilderBase
  * It exposes the two strategies in a fluent api that supports chaining.
  * NOTE: Build and reset should not be overridden.

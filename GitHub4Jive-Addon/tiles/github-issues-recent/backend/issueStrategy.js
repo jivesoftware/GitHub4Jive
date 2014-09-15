@@ -24,7 +24,7 @@ module.exports = issueStrategy;
 issueStrategy.name = "Recent_Issue";
 
 
-/*
+/**
  * This strategy simply tells the recent issue tile to push new data anytime an issue changes state.
  * The reason the processing logic isn't here is because it is primarily used from the datapusher itself.
  * Thus a reference to the processing function is all that is necessary.

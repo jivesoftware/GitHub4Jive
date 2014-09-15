@@ -3,7 +3,7 @@ var fs = require('fs');
 var gitHubController = require("../gitHubController");
 var config = require("../../../../jiveclientconfiguration.json");
 
-/*
+/**
  * This endpoint is required for the GitHubFacade to deliver GitHub payloads
  * to registered event handlers.
  */
@@ -13,7 +13,7 @@ exports.GitHubWebHookPortal = {
     'route': gitHubController.gitHubWebHookPortal
 };
 
-/*
+/**
  * This endpoint is used extensively for configuration. This allows a user to get
  * the list of possible repositories that can be accessed by the GitHub4Jive system.
  */
@@ -24,7 +24,7 @@ exports.repositoryListForUser = {
     'route' : gitHubController.getUserRepos
 };
 
-/*
+/**
  * Retrieve all issues for the repository currently linked to a place
  */
 exports.IssuesForPlace = {

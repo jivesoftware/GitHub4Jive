@@ -1,6 +1,6 @@
 var service = require('./service_impl.js');
 
-/*
+/**
  * These are required routes to handle the basicOauthFlow.js process.
  */
 
@@ -11,7 +11,7 @@ exports.authorizeUrl = {
     'route': service.authorizeUrl.bind(service)
 };
 
-/*
+/**
  * This callback is called after GitHub has received the authorization from the user.
  * The oauth token is stored here.
  */

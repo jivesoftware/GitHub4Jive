@@ -1,0 +1,6 @@
+{
+    "name": "github4jive-cartridge",
+    "displayName": "GitHub4Jive Cartridge",
+    "patterns": ["www.google.com"],
+    "zipFileName":"github4jive-cartridge.zip"
+}

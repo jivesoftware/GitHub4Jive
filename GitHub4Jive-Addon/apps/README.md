@@ -1,6 +1,9 @@
 GitHub for Jive - Developer Notes
 =================================
 
+The GitHub4Jive app contains all of the app actions as well as the place tab page that
+shows all issues. When modifying or adding to this directory please check to see if any
+client side javascript and css can be shared with tile through the root public directory.
 
 
 User Stories

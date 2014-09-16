@@ -84,28 +84,34 @@ Tile configuration should include the following html to authenticate and configu
 <code>
 ```html
 <div id="j-card-authentication" class="j-card" >
-    <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
-    <div>
+     <p>The remote systems (Jive &amp; GitHub) require you to grant access before proceeding.</p>
+     <div>
         <a id="github4jive-jive-authorize" href="javascript:void(0);" style="display: none;">Authorize Jive</a>
         <div id="github4jive-jive-authorize-success" style="display: none;">
             <span>Jive Authorized - OK</span>
         </div>
-    </div>
-    <br/>
-    <div>
+     </div>
+     <br/>
+     <div>
         <a id="github4jive-github-authorize" href="javascript:void(0);" style="display: none;">Authorize GitHub</a>
         <div id="github4jive-github-authorize-success" style="display: none;">
             <span>GitHub Authorized - OK</span>
         </div>
-    </div>
-</div>
+     </div>
+ </div>
 
-<div id="j-card-configuration" class="j-card" style="display: none;">
-    <p>
-        Repo: <select id="projectList"></select>
-    </p>
-    <input id="github4jive-enable-submit" type="button" value="Save" />
-</div>
+ <div id="j-card-configuration" class="j-card" style="display: none;">
+     <br/>
+     <div class="form-group">
+        <label for="projectList">Repository: </label>
+        <div class="bootstrap-select-overlay">
+            <span id="loader" ><span></span></span><select id="projectList" class="form-control"></select>
+        </div>
+     </div>
+     <div class="form-group">
+        <input id="github4jive-enable-submit" type="button" value="Save" class="btn btn-primary"/>
+     </div>
+ </div>
 ```
 </code>
 

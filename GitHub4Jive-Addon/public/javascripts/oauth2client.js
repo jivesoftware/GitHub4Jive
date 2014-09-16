@@ -101,6 +101,9 @@ if(!gadgets.oauth || !gadgets.oauth.Popup){
                     // state
                     var identifiers = realTile ? jive.tile.getIdentifiers() : {};
                     var viewerID = addOptions.viewerID || identifiers['viewer'];   // user ID
+                    if(!realTile && !viewerID){
+                        osapi.jive.core.container.sendNotification({message: 'Apps must pass viewerID into OAuth 2 launch function', severity: 'error'});
+                    }
                     var ticket = config["ticketID"]; // may or may not be there
                     var oauth2CallbackUrl = realTile ? jive.tile.getOAuth2CallbackUrl() :
                         function () {

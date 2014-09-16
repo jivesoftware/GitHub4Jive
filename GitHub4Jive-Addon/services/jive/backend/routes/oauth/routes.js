@@ -10,6 +10,5 @@ exports.authorizeUrl = {
 exports.oauth2Callback = {
     'path' : '/jive/oauth/callback',
     'verb' : 'get',
-    'jiveLocked' : true,
     'route': service.oauth2Callback.bind(service)
 };

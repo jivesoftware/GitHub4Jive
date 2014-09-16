@@ -19,6 +19,5 @@ exports.authorizeUrl = {
 exports.oauth2Callback = {
     'path' : '/github/oauth/callback',
     'verb' : 'get',
-    'jiveLocked' : true,
     'route': service.oauth2Callback.bind(service)
 };

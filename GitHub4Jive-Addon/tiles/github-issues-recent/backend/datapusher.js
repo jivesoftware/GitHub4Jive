@@ -94,6 +94,11 @@ function processTileIssues(instance, linked, issues){
     }
 }
 
+/**
+ * This function is referenced in IssueStrategy through the setupOptions provided by SetupInstance function.
+ * The strategy uses it to update the tile on any change to an issue.
+ * @param {object} instance of a tile
+ */
 function processTileInstance(instance) {
     if ( instance.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
         var place = instance.config.parent;

@@ -76,7 +76,7 @@ function createIssueDiscussion(placeID, gitData, jiveApi) {
     });
 }
 
-function closeDiscussion(jiveApi, placeUrl, gitData) {
+function reopenDiscussion(jiveApi, placeUrl, gitData) {
     helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
         return jiveApi.removeAnswer(discussion).then(function () {
             return jiveApi.unMarkFinal(discussion.contentID).then(function () {
@@ -86,7 +86,7 @@ function closeDiscussion(jiveApi, placeUrl, gitData) {
     });
 }
 
-function reopenDiscussion(jiveApi, placeUrl, gitData) {
+function closeDiscussion(jiveApi, placeUrl, gitData) {
     helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
         return jiveApi.answer(discussion).then(function () {
             return jiveApi.markFinal(discussion.contentID).then(function () {
@@ -131,10 +131,10 @@ issueStrategy.setup = function(setupOptions){
                 createIssueDiscussion(placeID, gitData, jiveApi);
                 break;
             case "reopened":
-                closeDiscussion(jiveApi, placeUrl, gitData);
+                reopenDiscussion(jiveApi, placeUrl, gitData);
                 break;
             case "closed":
-                reopenDiscussion(jiveApi, placeUrl, gitData);
+                closeDiscussion(jiveApi, placeUrl, gitData);
                 break;
             case "labeled":
             case "unlabeled":

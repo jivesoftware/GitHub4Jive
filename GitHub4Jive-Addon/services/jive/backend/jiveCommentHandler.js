@@ -31,7 +31,7 @@ function formatGitComment(japi, user, userPage, hookPayload) {
  */
 exports.createGitHubComment = function (hookPayload) {
     var place = hookPayload.target.id;
-    var comment = hookPayload.object;
+    var comment = hookPayload.object;//ARON RENAME THIS TO WHATEVER YOU WANT
     return helpers.getPlace(place).then(function (linked) {
         return helpers.getJiveApi(linked).then(function (japi) {
             return helpers.hydrateObject(japi, comment).then(function (message) {

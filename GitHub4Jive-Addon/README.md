@@ -1,4 +1,4 @@
-# GitHub4Jive - Add-on Developer Notes
+# GitHub4Jive - Add-on Setup Instructions
 
 ## Prerequisites
 

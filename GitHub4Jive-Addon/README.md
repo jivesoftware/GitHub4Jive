@@ -46,9 +46,12 @@ The following instructions should help you get the GitHub4Jive project onto the 
 
 You can now create a group or project within the Jive Sandbox and select the GitHub4Jive place template (found within the *Other* category) to get started.
 
-##To develop and test the cartridge you must add
+## Cartridge Development
+
+To develop and test the Jive cartridge, add
 
     "type": "jab-cartridges-app" 
     
-to the extensionInfo object in jiveclientconfiguration.json. Otherwise, the SDK will not package the cartridge into the add-on.
-This was done so that those that have access to upload a cartridge can and those that don't are not hung up.
+to the `extensionInfo` object in `jiveclientconfiguration.json`.
+
+Without this entry, the SDK will not package the cartridge into the add-on.

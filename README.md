@@ -8,7 +8,18 @@ powerful.
 
 # Get Started
 
-For setup instructions, refer to the corresponding `README.md` in the add-on directory: [Add-on Setup Instructions](GitHub4Jive-Addon).
+For setup instructions, refer to the corresponding `README.md` in the add-on directory: 
+
+* [Add-on Setup Instructions](GitHub4Jive-Addon)
+
+# Related Documentation
+
+* [GitHub API](https://developer.github.com/v3/)
+* [GitHub Webhooks](https://developer.github.com/webhooks/)
+* [GitHub Tutorial](https://developer.github.com/guides/getting-started/)
+* [Jive Node SDK](https://community.jivesoftware.com/docs/DOC-114053)
+* [Jive REST API](https://developers.jivesoftware.com/api/v3/cloud/rest/index.html)
+
 
 # Fork Us!
 

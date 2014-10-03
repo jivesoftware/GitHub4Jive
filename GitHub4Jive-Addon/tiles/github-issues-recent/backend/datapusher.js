@@ -19,16 +19,16 @@ var jive = require("jive-sdk");
 var q = require("q");
 
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var JiveApi = require(githubCommonLibDir + "github4jive/JiveApiFacade");
-var JiveOAuth = require(githubCommonLibDir + "github4jive/JiveOauth");
-var JiveDecorator = require(githubCommonLibDir + "github4jive/jiveDecorators");
+var libDir = process.cwd() + "/lib/";
+var JiveApi = require(libDir + "github4jive/JiveApiFacade");
+var JiveOAuth = require(libDir + "github4jive/JiveOauth");
+var JiveDecorator = require(libDir + "github4jive/jiveDecorators");
 var StrategyBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require(githubCommonLibDir + "github4jive/strategies/EventStrategySkeleton");
+var StrategySkeleton = require(libDir + "github4jive/strategies/EventStrategySkeleton");
 
-var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
-var gitFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
-var tileFormatter = require(githubCommonLibDir + "github4jive/tileFormatter");
+var placeStore = require(libDir + "github4jive/placeStore");
+var gitFacade = require(libDir + "github4jive/gitHubFacade");
+var tileFormatter = require(libDir + "github4jive/tileFormatter");
 
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues();

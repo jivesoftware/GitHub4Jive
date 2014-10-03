@@ -17,10 +17,10 @@
 var jive = require("jive-sdk");
 var q = require('q');
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
-var gitFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
-var tileFormatter = require(githubCommonLibDir + "github4jive/tileFormatter");
+var libDir = process.cwd() + "/lib/";
+var placeStore = require(libDir + "github4jive/placeStore");
+var gitFacade = require(libDir + "github4jive/gitHubFacade");
+var tileFormatter = require(libDir + "github4jive/tileFormatter");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
 

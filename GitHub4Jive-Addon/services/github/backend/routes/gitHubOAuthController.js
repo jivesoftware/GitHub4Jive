@@ -25,13 +25,14 @@ var jive = require('jive-sdk');
 var mustache = require('mustache');
 
 var sdkInstance = require('jive-sdk/jive-sdk-service/routes/oauth');
-
 var myOauth = Object.create(sdkInstance);
+var libDir = process.cwd() + "/lib/";
+var tokenStore = require( libDir + "github4jive/placeStore");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
 
 module.exports = myOauth;
-
-var githubCommonLibDir = process.cwd() + "/common/";
-var tokenStore = require( githubCommonLibDir + "github4jive/placeStore");
 
 myOauth.fetchOAuth2Conf = function() {
     jive.logger.debug("fetchOAuth2Conf ...");

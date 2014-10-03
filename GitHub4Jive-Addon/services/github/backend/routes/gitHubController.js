@@ -23,12 +23,28 @@ var https = require("https");
 var url = require('url');
 var q = require("q");
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
-var gitHubFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
-var jiveDecorator = require(githubCommonLibDir + "github4jive/jiveDecorators");
-var JiveApi = require(githubCommonLibDir + "github4jive/JiveApiFacade");
-var JiveAuth = require(githubCommonLibDir + "github4jive/JiveOauth");
+var libDir = process.cwd() + "/lib/";
+var placeStore = require(libDir + "github4jive/placeStore");
+var gitHubFacade = require(libDir + "github4jive/gitHubFacade");
+var jiveDecorator = require(libDir + "github4jive/jiveDecorators");
+var JiveApi = require(libDir + "github4jive/JiveApiFacade");
+var JiveAuth = require(libDir + "github4jive/JiveOauth");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
+
+/**
+ * This endpoint handles POSTS from GitHub. It relays payloads to the gitHubFacade for registered event handlers.
+ * There is currently no validation that the request is from GitHub
+ */
+exports.gitHubWebHookPortal = function (req, res) {
+    var event = req.headers["x-github-event"];
+    var data = req.body;
+    jive.logger.info("Received GitHub data: " + event)
+    gitHubFacade.notifyNewGitHubHookInfo(event, data);
+    res.writeHead(202);
+    res.end();
+};
 
 /**
  * Retrieve the list of repositories that the user who configured the place can access.
@@ -220,19 +236,6 @@ exports.newIssue = function (req, res) {
                 })
         });
     }
-};
-
-/**
- * This endpoint handles POSTS from GitHub. It relays payloads to the gitHubFacade for registered event handlers.
- * There is currently no validation that the request is from GitHub
- */
-exports.gitHubWebHookPortal = function (req, res) {
-    var event = req.headers["x-github-event"];
-    var data = req.body;
-    jive.logger.info("Received GitHub data: " + event)
-    gitHubFacade.notifyNewGitHubHookInfo(event, data);
-    res.writeHead(202);
-    res.end();
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

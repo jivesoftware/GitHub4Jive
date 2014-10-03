@@ -14,22 +14,12 @@
  *    limitations under the License.
  */
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var gitFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
+var libDir = process.cwd() + "/lib/";
+var gitFacade = require(libDir + "github4jive/gitHubFacade");
 var helpers = require("./helpers");
 
-function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose){
-    props.github4jiveIssueClosed = props.github4jiveIssueClosed ? JSON.parse(props.github4jiveIssueClosed) : false;
-    if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
-        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-        props.github4jiveIssueClosed = shouldClose;
-        var state = props.github4jiveIssueClosed ? "closed" : "open";
-        return gitFacade.changeIssueState(linked.github.repoOwner, linked.github.repo,
-            props.github4jiveIssueNumber, state, auth).then(function () {
-                return japi.attachPropsToContent(discussionUrl, props);
-            });
-    }
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
 
 /*
  * use this function to change the state of an issue based on a structured outcome.
@@ -68,3 +58,20 @@ exports.changeIssueStateFromMarkedAnswer = function (placeUrl, shallowMessage) {
         });
     });
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// private helpers
+
+function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose){
+    props.github4jiveIssueClosed = props.github4jiveIssueClosed ? JSON.parse(props.github4jiveIssueClosed) : false;
+    if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
+        var auth = gitFacade.createOauthObject(linked.github.token.access_token);
+        props.github4jiveIssueClosed = shouldClose;
+        var state = props.github4jiveIssueClosed ? "closed" : "open";
+        return gitFacade.changeIssueState(linked.github.repoOwner, linked.github.repo,
+                props.github4jiveIssueNumber, state, auth).then(function () {
+                return japi.attachPropsToContent(discussionUrl, props);
+            });
+    }
+}
+

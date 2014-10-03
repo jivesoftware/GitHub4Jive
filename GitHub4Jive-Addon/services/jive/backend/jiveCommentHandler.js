@@ -13,11 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-var q = require("q");
-var githubCommonLibDir = process.cwd() + "/common/";
-var gitFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
-var helpers = require("./helpers");
 
+var q = require("q");
+var libDir = process.cwd() + "/lib/";
+var gitFacade = require(libDir + "github4jive/gitHubFacade");
+var helpers = require("./helpers");
 
 function formatGitComment(japi, user, userPage, hookPayload) {
     return "<!--Jive-->\n"+ //placeHolder so that GitHubWebhook handler can tell if the comment originated from Jive

@@ -14,14 +14,37 @@
  *    limitations under the License.
  */
 
+/**
+ * This module is called to respond to any webhook postbacks from Jive.
+ * See {@link jiveController.js}
+ */
+
 var jive = require("jive-sdk");
 var q = require("q");
 
-var helpers = require("./helpers");
 var jiveCommentHandler = require("./jiveCommentHandler");
 var issueStateChangeHandler = require("./issueStateChangeHandlers");
 
-var ISSUE_EVENTS = ["jive:outcome_set", "jive:correct_answer_set", "jive:outcome_removed", "jive:correct_answer_removed"];
+var ISSUE_EVENTS = ["jive:outcome_set", "jive:correct_answer_set",
+                    "jive:outcome_removed", "jive:correct_answer_removed"];
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
+
+/*
+ * To preserve ordering of the payloads each processing call is chained recursively
+ * one after another
+ * @param {[object]} payloads Jive webhook payloads
+ * @return {promise} blank promise to wait for completion and catch errors;
+ */
+exports.sequentiallyProcessPayloads = function (payloads) {
+    return sequentiallyProcessPayloads(payloads, 0).then(function () {
+        return q(); //hides result of last payload processing.
+    });
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// private helpers
 
 function itIsReply(event, hookPayload) {
     return event == "jive:replied" && hookPayload.object.summary;//ignore blank comments that may be created for remove answer hack
@@ -73,14 +96,3 @@ function sequentiallyProcessPayloads(payloads, index) {
     });
 }
 
-/*
- * To preserve ordering of the payloads each processing call is chained recursively
- * one after another
- * @param {[object]} payloads Jive webhook payloads
- * @return {promise} blank promise to wait for completion and catch errors;
- */
-exports.sequentiallyProcessPayloads = function (payloads) {
-    return sequentiallyProcessPayloads(payloads, 0).then(function () {
-        return q();//hides result of last payload processing.
-    });
-};

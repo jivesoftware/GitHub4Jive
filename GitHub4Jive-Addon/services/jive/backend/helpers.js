@@ -13,12 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
 var jive = require("jive-sdk");
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
-var JiveApi = require(githubCommonLibDir + "github4jive/JiveApiFacade");
-var JiveOauth = require(githubCommonLibDir + "github4jive/JiveOauth");
+var libDir = process.cwd() + "/lib/";
+var placeStore = require(libDir + "github4jive/placeStore");
+var JiveApi = require(libDir + "github4jive/JiveApiFacade");
+var JiveOauth = require(libDir + "github4jive/JiveOauth");
 
 /*
  * get the parent discussion url from a message object

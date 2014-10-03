@@ -19,7 +19,10 @@ var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
 
-var processor = require("./webhookProcessor");
+var processor = require("./../webhookProcessor");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
 
 /*
  * This endpoint handles POSTS from Jive. These webhook payloads are processed in this controller.

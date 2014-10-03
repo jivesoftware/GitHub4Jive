@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var strategyBuilderBase = require(githubCommonLibDir + "github4jive/strategies/StrategySetBuilderBase");
+var libDir = process.cwd() + "/lib/";
+var strategyBuilderBase = require(libDir + "github4jive/strategies/StrategySetBuilderBase");
 
 /**
  * This class is an overide of StrategySetBuilderBase

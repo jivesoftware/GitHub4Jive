@@ -15,10 +15,10 @@
  */
 var jive = require("jive-sdk");
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var gitHubFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
+var libDir = process.cwd() + "/lib/";
+var gitHubFacade = require(libDir + "github4jive/gitHubFacade");
 
-var strategyBase = require(githubCommonLibDir + "github4jive/strategies/EventStrategyBase");
+var strategyBase = require(libDir + "github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 

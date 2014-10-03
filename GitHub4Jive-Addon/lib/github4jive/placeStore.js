@@ -19,24 +19,9 @@ var q = require("q");
 var store = jive.service.persistence();
 var JiveApi = require("./JiveApiFacade");
 var JiveOauth = require("./JiveOauth");
+var objectMerge = require("object-merge");
 
 var STORE_NAME = "places";
-
-function recursiveOverwrite(record,newObject){
-    if (typeof(newObject) === "object" || typeof newObject === "array") {
-        for(var m in newObject) {
-            if(record[m]){
-                recursiveOverwrite(record[m], newObject[m]);
-            }else {
-                record[m] = newObject[m];
-            }
-        }
-
-    }else{
-        record = newObject;
-    }
-
-}
 
 function extend(origin, add) {
   // Don't do anything if add isn't an object
@@ -66,7 +51,7 @@ exports.save = function(placeUrl, newObject, dontStamp){
     }
     return store.findByID(STORE_NAME, placeUrl).then(function (found) {
         var record = found || {};
-        extend(record, newObject);
+        record = objectMerge(JSON.parse(JSON.stringify(record)), newObject || {});
         var delimitter = "/";
         var tokens = placeUrl.split(delimitter);
         var domainTokens = tokens.slice(0, 3);
@@ -94,13 +79,14 @@ exports.invalidateCache = function(placeUrl){
     return self.save(placeUrl).then(function (record) {
         return pullExternalPropertiesIn(self, record);
     })
-}
+};
 
 function pullExternalPropertiesIn(self,linked){
-    if(linked &&
+    if (
+        linked &&
         linked.jive &&
-        (linked.github && (!linked.github.repoOwner || !linked.github.repo)
-            || linked.invalidCache)){
+        (linked.github && (!linked.github.repoOwner || !linked.github.repo) || linked.invalidCache)
+     ){
         //cache repo information
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
             var jauth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);

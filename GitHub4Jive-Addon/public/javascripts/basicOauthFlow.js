@@ -48,7 +48,7 @@
 
  */
 
-var place, placeUrl, placeProps,previousRepo;
+var place, placeUrl, placeProps, previousRepo;
 var contentObject;
 var jiveDone = false;
 var githubDone = false;
@@ -56,8 +56,7 @@ var githubDone = false;
 var host;
 
 
-
-$("body").append("<link />")
+$("body").append("<link />");
 
 /*
  * This function is called when both GitHub and Jive have authorized the user.
@@ -116,7 +115,7 @@ function ProceedWhenReady() {
  * @param {integer} popupWidth in pixels
  * @param {function} successfulCallback the function to call when the Oauth dance completes
  */
-function setupOAuthFor(system,popupWidth, successCallBack) {
+function setupOAuthFor(system, popupWidth, successCallBack) {
     var ticketErrorCallback = function () {
         console.log('ticketErrorCallback error');
     };
@@ -156,8 +155,8 @@ function setupOAuthFor(system,popupWidth, successCallBack) {
     }).launch({'viewerID': viewerID});
 }
 
-function setupGitHubOAuth(){
-    setupOAuthFor("github",500, function (ticketID) {
+function setupGitHubOAuth() {
+    setupOAuthFor("github", 500, function (ticketID) {
         if (ticketID) {
             githubDone = true;
             $('#github4jive-github-authorize').slideUp('fast');
@@ -166,8 +165,8 @@ function setupGitHubOAuth(){
     });
 }
 
-function setupJiveOauth(){
-    setupOAuthFor("jive",350, function (ticketID) {
+function setupJiveOauth() {
+    setupOAuthFor("jive", 350, function (ticketID) {
         if (ticketID) {
             jiveDone = true;
             $('#github4jive-jive-authorize').slideUp('fast');
@@ -192,11 +191,11 @@ var app = {
 
             osapi.jive.corev3.resolveContext(context, function (result) {
 
-                if(result.content.contentID){// called from Content Action.
+                if (result.content.contentID) {// called from Content Action.
                     contentObject = result.content;
                     placeUrl = result.content.parentPlace.uri;
 
-                }else{
+                } else {
                     place = result.content;
                     placeUrl = result.content.resources.self.ref;
                 }
@@ -257,9 +256,9 @@ var app = {
                 }
 
                 //if place was not picked up from the context resolver then grab it from the url
-                if(!place){
+                if (!place) {
                     osapi.jive.corev3.places.get({"uri": placeUrl}).execute(setupPlaceConfig);
-                }else{
+                } else {
                     setupPlaceConfig(place);
                 }
 
@@ -298,7 +297,7 @@ var app = {
 gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget));
 
 //defined in oAuth2Client
-if(realTile){
+if (realTile) {
 
 
     // register a listener for embedded experience context
@@ -306,18 +305,18 @@ if(realTile){
         var data = opensocial.data.getDataContext().getDataSet(key);
 
         var resolverTransform = data.container;
-        if(resolverTransform.type == 600){
+        if (resolverTransform.type == 600) {
             resolverTransform.type = "osapi.jive.core.Project";
         }
-        if(resolverTransform.type == 700){
+        if (resolverTransform.type == 700) {
             resolverTransform.type = "osapi.jive.core.Group";
         }
-        if(resolverTransform.type == 14){
+        if (resolverTransform.type == 14) {
             resolverTransform.type = "osapi.jive.core.Space";
         }
         app.handleContext(resolverTransform);
     });
-}else{
+} else {
     gadgets.actions.updateAction({
         id: "com.jivesoftware.addon.github4jive.group.config",
         callback: app.handleContext

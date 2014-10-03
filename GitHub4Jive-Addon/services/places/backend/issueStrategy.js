@@ -13,6 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
+/*
+ * This strategy modifies anything in a place that is not on a tile in response to a issue state change.
+ * It could be split into separate strategies for fine grain configuration with the builder. Client code
+ * should never be calling the setup function below directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ */
+
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
@@ -28,16 +36,44 @@ issueStrategy.name = "Place_Issue";
 
 var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "invalid", "wontfix"];
 
+//////////////////////////////////////////////////////////////
+// public
 
 /*
- * This strategy modifies anything in a place that is not on a tile in response to a issue state change.
- * It could be split into separate strategies for fine grain configuration with the builder. Client code
- * should never be calling the setup function below directly. It should be called from the StrategySetBuilderBase.
- * Which is invoked from the StrategySet.setup function returned from builder.build().
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
  */
+issueStrategy.setup = function(setupOptions){
 
+    var jiveApi = setupOptions.jiveApi;
+    var owner = setupOptions.owner;
+    var repo = setupOptions.repo;
+    var placeID = setupOptions.placeID;
+    var placeUrl = setupOptions.placeUrl;
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
-//////////////// private functions /////////////////////////////////////////////
+    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
+        switch(gitData.action) {
+            case "opened": // Issue just created on GitHub
+                createIssueDiscussion(placeID, gitData, jiveApi);
+                break;
+            case "reopened":
+                reopenDiscussion(jiveApi, placeUrl, gitData);
+                break;
+            case "closed":
+                closeDiscussion(jiveApi, placeUrl, gitData);
+                break;
+            case "labeled":
+            case "unlabeled":
+                updateDiscussionTags(jiveApi, placeUrl, gitData);
+                break
+        }
+    });
+};
+
+//////////////////////////////////////////////////////////////
+// private helpers
+
 function createExtProps(gitData) {
     return {
         "github4jiveIssueId": gitData.issue.id,
@@ -110,37 +146,3 @@ function updateDiscussionTags(jiveApi, placeUrl, gitData) {
         });
     });
 }
-//////////////////////////////////////////////////////////////
-
-/*
- * Override of EventStrategyBase.Setup
- * SetupOptions are provided by a placeController.
- */
-issueStrategy.setup = function(setupOptions){
-
-    var jiveApi = setupOptions.jiveApi;
-    var owner = setupOptions.owner;
-    var repo = setupOptions.repo;
-    var placeID = setupOptions.placeID;
-    var placeUrl = setupOptions.placeUrl;
-    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
-
-
-    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
-        switch(gitData.action) {
-            case "opened": // Issue just created on GitHub
-                createIssueDiscussion(placeID, gitData, jiveApi);
-                break;
-            case "reopened":
-                reopenDiscussion(jiveApi, placeUrl, gitData);
-                break;
-            case "closed":
-                closeDiscussion(jiveApi, placeUrl, gitData);
-                break;
-            case "labeled":
-            case "unlabeled":
-                updateDiscussionTags(jiveApi, placeUrl, gitData);
-                break
-        }
-    });
-};

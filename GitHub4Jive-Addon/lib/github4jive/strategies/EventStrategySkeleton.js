@@ -16,12 +16,12 @@
 
 var q = require("q");
 
-var INVALID_PREDICATE  = "Invalid equality predicate. Must be a function that takes two objects and return whether they are equivalent.";
+var INVALID_PREDICATE = "Invalid equality predicate. Must be a function that takes two objects and return whether they are equivalent.";
 var INVALID_OPTIONS_PROVIDER = "Invalid options provider function";
-var NULL_OBJECT  = "Cannot add or update a null object";
+var NULL_OBJECT = "Cannot add or update a null object";
 var INVALID_BUILDER = "Invalid strategy builder";
 
-function testForInvalidFunction(f){
+function testForInvalidFunction(f) {
     return !f || typeof f !== "function";
 }
 
@@ -43,11 +43,11 @@ function testForInvalidFunction(f){
  *      So you need to include all options for all strategies for respective setup/teardown functions.
  *
  */
-function StrategySkeleton(instancePredicate, setupOptionsProvider, teardownOptionsProvider){
-    if(testForInvalidFunction(instancePredicate)){
+function StrategySkeleton(instancePredicate, setupOptionsProvider, teardownOptionsProvider) {
+    if (testForInvalidFunction(instancePredicate)) {
         throw Error(INVALID_PREDICATE);
     }
-    if(testForInvalidFunction(setupOptionsProvider) || testForInvalidFunction(teardownOptionsProvider)){
+    if (testForInvalidFunction(setupOptionsProvider) || testForInvalidFunction(teardownOptionsProvider)) {
         throw Error(INVALID_OPTIONS_PROVIDER);
     }
     this.tracking = [];
@@ -61,18 +61,18 @@ StrategySkeleton.INVALID_OPTIONS_PROVIDER = INVALID_OPTIONS_PROVIDER;
 StrategySkeleton.NULL_OBJECT = NULL_OBJECT;
 StrategySkeleton.INVALID_BUILDER = INVALID_BUILDER;
 
-function wrapOptionsInPromise(options){
+function wrapOptionsInPromise(options) {
     options = options || {};
-    if(options.then){
+    if (options.then) {
         return options;
-    }else {
+    } else {
         return q(function () {
             return options;
         });
     }
 }
 
-function setupInstance(instance, options){
+function setupInstance(instance, options) {
     return wrapOptionsInPromise(options).then(function (op) {
         return instance.strategies.setup(op);
     });
@@ -83,7 +83,7 @@ function teardownInstance(instance, options) {
         return instance.strategies.teardown(op);
     });
 }
-function decorateInstanceWithStrategies(instance, strategyBuilder){
+function decorateInstanceWithStrategies(instance, strategyBuilder) {
     return instance.strategies = strategyBuilder.build();
 }
 
@@ -97,10 +97,10 @@ function decorateInstanceWithStrategies(instance, strategyBuilder){
  *
  */
 StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
-    if(!obj || typeof obj !== "object"){
+    if (!obj || typeof obj !== "object") {
         throw Error(NULL_OBJECT);
     }
-    if(!strategySetBuilder || typeof strategySetBuilder.build !== "function"){
+    if (!strategySetBuilder || typeof strategySetBuilder.build !== "function") {
         throw Error(INVALID_BUILDER);
     }
 
@@ -109,9 +109,9 @@ StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
     var tempCollection = [];
     var toTeardown;
     self.tracking.forEach(function (trackedObject) {
-        if(self.instancePredicate(trackedObject,obj )){
+        if (self.instancePredicate(trackedObject, obj)) {
             toTeardown = trackedObject;
-        }else{
+        } else {
             tempCollection.push(trackedObject);
         }
     });
@@ -139,12 +139,12 @@ StrategySkeleton.prototype.remove = function (toDelete) {
     var self = this;
     var instanceToDelete = null;
     self.tracking.forEach(function (trackedObject) {
-        if(self.instancePredicate(trackedObject,toDelete )){
+        if (self.instancePredicate(trackedObject, toDelete)) {
             instanceToDelete = trackedObject;
             return false;//break foreach
         }
     });
-    return instanceToDelete ?  teardownInstance(instanceToDelete, self.teardownOptions(instanceToDelete)) : q();
+    return instanceToDelete ? teardownInstance(instanceToDelete, self.teardownOptions(instanceToDelete)) : q();
 };
 
 module.exports = StrategySkeleton;

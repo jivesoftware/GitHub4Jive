@@ -45,7 +45,8 @@ exports.placeCurrentConfig = function (req, res) {
         res.end(JSON.stringify("Specify place api url"));
     }
     placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
-        var clientSideConfig = {github: false, jive: false};
+        var clientSideConfig = {
+            github: false, jive: false};
         try {
             if (linked.github.token.access_token) {
                 clientSideConfig.github = true;
@@ -100,6 +101,15 @@ exports.onConfigurationChange = function (req, res) {
 };
 
 /*
+ * Start all event handlers for all places when the service starts
+ */
+exports.onBootstrap = function () {
+    placeStore.getAllPlaces().then(function (places) {
+        places.forEach(updatePlace);
+    });
+};
+
+/*
  * used in EventStrategySkeleton
  */
 function uniquePlace(lhs, rhs) {
@@ -142,8 +152,6 @@ function setupJiveHook(linked) {
     if (!linked.jive.hookID) {
         var webhookCallback = jive.service.serviceURL() + '/webhooks?place=' + encodeURIComponent(linked.placeUrl);
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-            var community = community;
-
             //register Webhook on Jive Instance
             var accessToken = linked.jive.access_token;
 
@@ -165,9 +173,10 @@ function setupJiveHook(linked) {
                         return placeStore.save(linked.placeUrl, {jive: {hookID: webhookEntity.id}});
                     })
                 });
-        })
-
-    } else return q();
+        });
+    } else {
+        return q();
+    }
 }
 
 function updatePlace(linked) {

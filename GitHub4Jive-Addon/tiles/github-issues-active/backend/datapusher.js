@@ -17,13 +17,16 @@
 var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
-var gitHub = require("github4jive/gitHubFacade");
-var JiveApi = require("github4jive/JiveApiFacade");
-var JiveOAuth = require("github4jive/JiveOauth");
-var placeStore = require("github4jive/placeStore");
-var tileFormatter = require("github4jive/tileFormatter");
+
+var githubCommonLibDir = process.cwd() + "/common/";
+
+var gitHub = require(githubCommonLibDir + "github4jive/gitHubFacade");
+var JiveApi = require(githubCommonLibDir + "github4jive/JiveApiFacade");
+var JiveOAuth = require(githubCommonLibDir + "github4jive/JiveOauth");
+var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
+var tileFormatter = require(githubCommonLibDir + "github4jive/tileFormatter");
 var StrategySetBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
+var StrategySkeleton = require(githubCommonLibDir + "github4jive/strategies/EventStrategySkeleton");
 
 var stratSetScaffolding = new StrategySetBuilder().issues();
 

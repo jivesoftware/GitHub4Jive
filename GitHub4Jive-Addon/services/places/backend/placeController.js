@@ -19,12 +19,13 @@ var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
 
-var JiveFacade = require("github4jive/JiveApiFacade");
-var JiveOauth = require("github4jive/JiveOauth");
+var githubCommonLibDir = process.cwd() + "/common/";
+var JiveFacade = require(githubCommonLibDir + "github4jive/JiveApiFacade");
+var JiveOauth = require(githubCommonLibDir + "github4jive/JiveOauth");
 var StrategyBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require("github4jive/strategies/EventStrategySkeleton");
+var StrategySkeleton = require(githubCommonLibDir + "github4jive/strategies/EventStrategySkeleton");
 
-var placeStore = require("github4jive/placeStore");
+var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
 var builder = new StrategyBuilder();
 var stratSetScaffolding = builder.issues().issueComments();
 

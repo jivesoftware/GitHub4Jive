@@ -7,7 +7,8 @@ var myOauth = Object.create(sdkInstance);
 
 module.exports = myOauth;
 
-var placeStore = require("github4jive/placeStore");
+var githubCommonLibDir = process.cwd() + "/common/";
+var placeStore = require(githubCommonLibDir + "github4jive/placeStore");
 
 /////////////////////////////////////////////////////////////
 // overrides jive-sdk/routes/oauth.js to do something useful,

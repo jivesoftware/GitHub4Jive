@@ -14,7 +14,8 @@
  *    limitations under the License.
  */
 
-var gitFacade = require("github4jive/gitHubFacade");
+var githubCommonLibDir = process.cwd() + "/common/";
+var gitFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
 var helpers = require("./helpers");
 
 function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose){

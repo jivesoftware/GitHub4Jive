@@ -13,27 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+var jive = require("jive-sdk");
 
-var githubCommonLibDir = process.cwd() + "/common/";
-var strategyBuilderBase = require(githubCommonLibDir + "github4jive/strategies/StrategySetBuilderBase");
-
-/**
- * This class is an overide of StrategySetBuilderBase
- * It exposes the two strategies in a fluent api that supports chaining.
- * NOTE: Build and reset should not be overridden.
- */
-function builder(){
-    strategyBuilderBase.apply(this);
+exports.decorateIssueWithJiveContent = function (jiveApi,place, issue) {
+    if(!issue.id){
+        throw Error("Invalid Issue");
+    }
+    return jiveApi.getByExtProp("github4jiveIssueId",issue.id).then(function (found) {
+        if(found.list.length > 0){
+            found.list.forEach(function (discussion) {
+                if(discussion.parent == place){
+                    issue.jiveContentLink = discussion.resources.html.ref;
+                    return discussion;
+                }
+            })
+        }
+        return issue;
+    })
 }
-builder.prototype = new strategyBuilderBase();
-
-
-var issues = require("./issueStrategy");
-
-builder.prototype.issues = function(){
-    this.strategies.push(issues);
-    return this;
-};
-
-
-module.exports = builder;

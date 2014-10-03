@@ -21,51 +21,51 @@ var helpers = require("./helpers");
 var jiveCommentHandler = require("./jiveCommentHandler");
 var issueStateChangeHandler = require("./issueStateChangeHandlers");
 
-var ISSUE_EVENTS = ["jive:outcome_set","jive:correct_answer_set","jive:outcome_removed","jive:correct_answer_removed"];
+var ISSUE_EVENTS = ["jive:outcome_set", "jive:correct_answer_set", "jive:outcome_removed", "jive:correct_answer_removed"];
 
 function itIsReply(event, hookPayload) {
     return event == "jive:replied" && hookPayload.object.summary;//ignore blank comments that may be created for remove answer hack
 }
 
-function itIsAnIssueStateChangeEvent(event){
+function itIsAnIssueStateChangeEvent(event) {
     return ISSUE_EVENTS.indexOf(event) >= 0;
 }
 
-function processIssueStateChange(payload){
+function processIssueStateChange(payload) {
     var place = payload.target.id;
     var event = payload.verb;
     var obj = payload.object;
 
     //currently, EAE does not emit events for outcome remove or answer removed so there are no cases for those in this branch
-    if(event == "jive:outcome_set"){
+    if (event == "jive:outcome_set") {
         //discussion marked final etc
         return issueStateChangeHandler.changeIssueStateFromOutcome(place, obj);
-    }else  if (obj.objectType == "jive:message" ){
+    } else if (obj.objectType == "jive:message") {
         //message was marked correct
         return issueStateChangeHandler.changeIssueStateFromMarkedAnswer(place, obj);
-    }else{
+    } else {
         return q();
     }
 }
 
-function processPayload(hookPayload){
+function processPayload(hookPayload) {
     var event = hookPayload.verb;
     jive.logger.debug(hookPayload.object);
 
-    if(itIsReply(event, hookPayload)){
-        return jiveCommentHandler.createGitHubComment( hookPayload);
-    }else if( itIsAnIssueStateChangeEvent(event)){
+    if (itIsReply(event, hookPayload)) {
+        return jiveCommentHandler.createGitHubComment(hookPayload);
+    } else if (itIsAnIssueStateChangeEvent(event)) {
         return processIssueStateChange(hookPayload);
-    }else{
+    } else {
         //return an empty promise to enable the sequential processing of events
         return q();
     }
 
 }
 
-function  sequentiallyProcessPayloads(payloads, index){
+function sequentiallyProcessPayloads(payloads, index) {
     var payload = payloads[index];
-    if(!payload){
+    if (!payload) {
         return q();
     }
     return processPayload(payload.activity).then(function () {
@@ -79,8 +79,8 @@ function  sequentiallyProcessPayloads(payloads, index){
  * @param {[object]} payloads Jive webhook payloads
  * @return {promise} blank promise to wait for completion and catch errors;
  */
-exports.sequentiallyProcessPayloads = function(payloads){
-    return sequentiallyProcessPayloads(payloads,0).then(function () {
+exports.sequentiallyProcessPayloads = function (payloads) {
+    return sequentiallyProcessPayloads(payloads, 0).then(function () {
         return q();//hides result of last payload processing.
     });
 };

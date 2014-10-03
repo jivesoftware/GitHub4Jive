@@ -15,11 +15,12 @@
  */
 var jive = require("jive-sdk");
 
-var gitHubFacade = require("github4jive/gitHubFacade");
-var JiveContentBuilder = require("github4jive/JiveContentBuilder");
-var helpers = require("github4jive/helpers");
+var githubCommonLibDir = process.cwd() + "/common/";
+var gitHubFacade = require(githubCommonLibDir + "github4jive/gitHubFacade");
+var JiveContentBuilder = require(githubCommonLibDir + "github4jive/JiveContentBuilder");
+var helpers = require(githubCommonLibDir + "github4jive/helpers");
 
-var strategyBase = require("github4jive/strategies/EventStrategyBase");
+var strategyBase = require(githubCommonLibDir + "github4jive/strategies/EventStrategyBase");
 var issueStrategy = Object.create(strategyBase);
 module.exports = issueStrategy;
 

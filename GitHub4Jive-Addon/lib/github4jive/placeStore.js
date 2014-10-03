@@ -23,18 +23,6 @@ var objectMerge = require("object-merge");
 
 var STORE_NAME = "places";
 
-function extend(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || typeof add !== 'object') return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-}
-
 /**
  * save will store the object with the given placeUrl as the key. If the object
  * already exists then it does a recursive overwrite of members. Meaning it only

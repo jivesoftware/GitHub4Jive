@@ -144,7 +144,7 @@ exports.newIssue = function (owner, repo, title, body, authOptions) {
     return deferredTemplate(git.issues.create, {"user": owner, "repo": repo, "title": title, "body": body, "labels": []}).then(function (issue) {
         return issue && issue.title === title;
     })
-}
+};
 
 /**
  * Change the state of an issue to open or closed

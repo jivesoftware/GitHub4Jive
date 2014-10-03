@@ -1,6 +1,6 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
-var placeController = require("../placeController");
+var placeController = require("placeController");
 
 exports.placeCurrentConfig = {
     'verb' : 'get',

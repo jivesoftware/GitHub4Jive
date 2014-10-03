@@ -22,7 +22,7 @@ var helpers = require("./helpers");
 // public
 
 /*
- * use this function to change the state of an issue based on a structured outcome.
+ * Use this function to change the state of an issue based on a structured outcome.
  * @param {string} placeUrl api url for the place that contains the discussion that was marked
  * @param {object} shallowDiscussion the lightweight object given in the Jive webhook payload. Should be a discussion
  * @return {promise}
@@ -32,8 +32,10 @@ exports.changeIssueStateFromOutcome = function (placeUrl, shallowDiscussion) {
         return helpers.getJiveApi(linked).then(function (japi) {
             return helpers.hydrateObject(japi, shallowDiscussion).then(function (discussion) {
                 return discussion.retrieveAllExtProps().then(function (discussionProps) {
-                    return setGitHubIssueState(linked, japi, discussion.resources.self.ref, discussionProps,
-                        discussion.outcomeCounts ? discussion.outcomeCounts.finalized : false);
+                    return setGitHubIssueState(
+                        linked, japi, discussion.resources.self.ref, discussionProps,
+                        discussion.outcomeCounts ? discussion.outcomeCounts.finalized : false
+                    );
                 });
             });
         });
@@ -41,7 +43,7 @@ exports.changeIssueStateFromOutcome = function (placeUrl, shallowDiscussion) {
 };
 
 /*
- * use this to change the state of an issue based on a discussion reply being marked as the answer
+ * Use this to change the state of an issue based on a discussion reply being marked as the answer
  * @param {string} placeUrl api url for the place that contains the discussion that was marked
  * @param {object} shallowMessage the lightweight object given in the Jive webhook payload. Should be a message
  * @return {promise}
@@ -62,9 +64,9 @@ exports.changeIssueStateFromMarkedAnswer = function (placeUrl, shallowMessage) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // private helpers
 
-function setGitHubIssueState(linked,japi,discussionUrl,props,shouldClose){
+function setGitHubIssueState(linked, japi, discussionUrl, props, shouldClose) {
     props.github4jiveIssueClosed = props.github4jiveIssueClosed ? JSON.parse(props.github4jiveIssueClosed) : false;
-    if(props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)){
+    if (props.github4jiveIssueNumber && Boolean(shouldClose) !== Boolean(props.github4jiveIssueClosed)) {
         var auth = gitFacade.createOauthObject(linked.github.token.access_token);
         props.github4jiveIssueClosed = shouldClose;
         var state = props.github4jiveIssueClosed ? "closed" : "open";

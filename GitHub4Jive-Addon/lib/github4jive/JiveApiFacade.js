@@ -30,11 +30,11 @@ var supportedContent = {
  * @return object JiveApiFacade object
  */
 
-function JiveApiFacade(community, authDecorator){
-    if(!community.jiveUrl || !(typeof community.jiveUrl === "string")){
+function JiveApiFacade(community, authDecorator) {
+    if (!community.jiveUrl || !(typeof community.jiveUrl === "string")) {
         throw Error("Invalid Jive url in community");
     }
-    if(!authDecorator.applyTo || !(authDecorator.applyTo instanceof Function)){
+    if (!authDecorator.applyTo || !(authDecorator.applyTo instanceof Function)) {
         throw Error("Invalid Jive authenticator");
     }
     this.community = community;
@@ -43,60 +43,61 @@ function JiveApiFacade(community, authDecorator){
 }
 
 var MISSING_CONTENT_TYPE = "Missing type field.";
-var MISSING_CONTENT ="Missing content field.";
+var MISSING_CONTENT = "Missing content field.";
 var INCOMPLETE_CONTENT_TEXT_TYPE = "Incomplete content. Missing text type field";
 var MISSING_SUBJECT = "Missing subject field.";
 
 /**
  * @return {string}
  */
-function UnsupportedContentType(type){
+function UnsupportedContentType(type) {
     return "Unsupported Content Type: " + type + ".";
 }
 
-function verifyPost(post){
+function verifyPost(post) {
     var type = post.type;
-    if(!type){
+    if (!type) {
         throw Error(MISSING_CONTENT_TYPE);
     }
-    if(!supportedContent[type.toUpperCase()]){
+    if (!supportedContent[type.toUpperCase()]) {
         throw Error(UnsupportedContentType(type));
     }
-    if(!post.content){
+    if (!post.content) {
         throw Error(MISSING_CONTENT);
     }
-    if(!post.content.type){
+    if (!post.content.type) {
         throw Error(INCOMPLETE_CONTENT_TEXT_TYPE);
     }
-    if(!post.subject){
+    if (!post.subject) {
         throw Error(MISSING_SUBJECT);
     }
 
 }
 
-function communityAPIURL(facade){
+function communityAPIURL(facade) {
     return facade.community.jiveUrl + "/api/core/v3/";
 }
 
-function decorateResponseWithSuccess(res, correctStatus){
+function decorateResponseWithSuccess(res, correctStatus) {
     res.success = res.statusCode == correctStatus;
     return res;
 }
 
-function catchErrorResponse(surround){
+function catchErrorResponse(surround) {
     return surround.catch(function (response) {
         response.success = false;
         try {
             response.error = response.details.entity;
-        }catch(e){}
+        } catch (e) {
+        }
         return response;
     });
 }
 
-function decorateWithExtPropRetrievers(community, content, authenticator){
+function decorateWithExtPropRetrievers(community, content, authenticator) {
     content.retrieveAllExtProps = function () {
         var prop = content.resources.extprops;
-        if(prop.allowed.indexOf("GET") >= 0){
+        if (prop.allowed.indexOf("GET") >= 0) {
             var url = prop.ref;
             var headers = {};
             var options = authenticator.applyTo(url, null, headers);
@@ -107,7 +108,7 @@ function decorateWithExtPropRetrievers(community, content, authenticator){
                 jive.logger.error(error);
             });
 
-        }else{
+        } else {
             return q();
         }
     }
@@ -118,15 +119,15 @@ function decorateWithExtPropRetrievers(community, content, authenticator){
  * @param {string} url of the Jive api object
  * @return {object} Jive api object
  */
-JiveApiFacade.prototype.get = function(url){
+JiveApiFacade.prototype.get = function (url) {
     var headers = {};
-    var options = this.authenticator.applyTo(url,null, headers);
+    var options = this.authenticator.applyTo(url, null, headers);
     options['method'] = 'GET';
     var community = this.community;
     var authenticator = this.authenticator;
-    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
         decorateResponseWithSuccess(response, 200);
-        if(response.success) {
+        if (response.success) {
             if (!response.entity.list) {
                 var url = response.entity.resources.self.ref;
                 response.apiID = url.substr(url.lastIndexOf("/") + 1);
@@ -144,15 +145,15 @@ JiveApiFacade.prototype.get = function(url){
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
-JiveApiFacade.prototype.create = function(post){
+JiveApiFacade.prototype.create = function (post) {
     verifyPost(post);
     var url = communityAPIURL(this) + "contents";
     var headers = {};
-    var options = this.authenticator.applyTo(url,post, headers);
+    var options = this.authenticator.applyTo(url, post, headers);
     options['method'] = 'POST';
-    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
         decorateResponseWithSuccess(response, 201);
-        if(response.success){
+        if (response.success) {
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
         }
@@ -169,11 +170,11 @@ JiveApiFacade.prototype.create = function(post){
 JiveApiFacade.prototype.update = function (put) {
     var url = put.resources.self.ref;
     var headers = {};
-    var options = this.authenticator.applyTo(url,put, headers);
+    var options = this.authenticator.applyTo(url, put, headers);
     options['method'] = 'PUT';
-    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
         decorateResponseWithSuccess(response, 200);
-        if(response.success){
+        if (response.success) {
             var url = response.entity.resources.self.ref;
             response.apiID = url.substr(url.lastIndexOf("/") + 1);
         }
@@ -186,12 +187,12 @@ JiveApiFacade.prototype.update = function (put) {
  * @param string id The content id to be deleted.
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
-JiveApiFacade.prototype.destroy = function(id){
-    var url  = communityAPIURL(this) + "contents/" + id;
+JiveApiFacade.prototype.destroy = function (id) {
+    var url = communityAPIURL(this) + "contents/" + id;
     var headers = {};
-    var options = this.authenticator.applyTo(url,null, headers);
+    var options = this.authenticator.applyTo(url, null, headers);
     options['method'] = 'DELETE';
-    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
         return decorateResponseWithSuccess(response, 204);
     }));
 };
@@ -204,13 +205,13 @@ JiveApiFacade.prototype.destroy = function(id){
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  *
  */
-JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
+JiveApiFacade.prototype.replyToDiscussion = function (discussionID, reply) {
     var url = communityAPIURL(this) + "messages/contents/" + discussionID;
     var headers = {};
     var options = this.authenticator.applyTo(url, reply, headers);
     options['method'] = 'POST';
     return catchErrorResponse(
-        jive.community.doRequest(this.community, options ).then(function (response) {
+        jive.community.doRequest(this.community, options).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
 
         })
@@ -225,9 +226,9 @@ JiveApiFacade.prototype.replyToDiscussion = function(discussionID, reply){
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
-JiveApiFacade.prototype.attachPropsToContent = function(parentID,props){
-    var url = communityAPIURL(this) + "contents/" + parentID ;
-    if(parentID.indexOf("http") == 0){//if full id is passed in
+JiveApiFacade.prototype.attachPropsToContent = function (parentID, props) {
+    var url = communityAPIURL(this) + "contents/" + parentID;
+    if (parentID.indexOf("http") == 0) {//if full id is passed in
         url = parentID;
     }
     url += "/extprops";
@@ -235,7 +236,7 @@ JiveApiFacade.prototype.attachPropsToContent = function(parentID,props){
     var options = this.authenticator.applyTo(url, props, headers);
     options['method'] = 'POST';
     return catchErrorResponse(
-        jive.community.doRequest(this.community, options ).then(function (response) {
+        jive.community.doRequest(this.community, options).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
         })
     );
@@ -248,13 +249,13 @@ JiveApiFacade.prototype.attachPropsToContent = function(parentID,props){
  * @param object props All fields will be converted to properties
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
-JiveApiFacade.prototype.attachPropsToReply = function(parentID,props){
+JiveApiFacade.prototype.attachPropsToReply = function (parentID, props) {
     var url = communityAPIURL(this) + "messages/" + parentID + "/extprops";
     var headers = {};
     var options = this.authenticator.applyTo(url, props, headers);
     options['method'] = 'POST';
     return catchErrorResponse(
-        jive.community.doRequest(this.community, options ).then(function (response) {
+        jive.community.doRequest(this.community, options).then(function (response) {
             return decorateResponseWithSuccess(response, 201);
         })
     );
@@ -267,20 +268,20 @@ JiveApiFacade.prototype.attachPropsToReply = function(parentID,props){
  * @return {Promise} promise Use .then(function(result){}); to process return asynchronously
  */
 
-JiveApiFacade.prototype.getByExtProp= function (key, value) {
+JiveApiFacade.prototype.getByExtProp = function (key, value) {
     var url = communityAPIURL(this) + "extprops/" + key + "/" + value;
     var headers = {};
     var authenticator = this.authenticator;
     var options = authenticator.applyTo(url, null, headers);
     options['method'] = 'GET';
     var community = this.community;
-    return catchErrorResponse( jive.community.doRequest(this.community, options ).then(function (response) {
-        if(response.statusCode == 200){
+    return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
+        if (response.statusCode == 200) {
             response.entity.list.forEach(function (content) {
                 decorateWithExtPropRetrievers(community, content, authenticator);
             });
             return response.entity;
-        }else{
+        } else {
             return decorateResponseWithSuccess(response, 200);
         }
     }));
@@ -295,7 +296,7 @@ JiveApiFacade.prototype.getByExtProp= function (key, value) {
 JiveApiFacade.prototype.getAllExtProps = function (uri) {
 
     var url = communityAPIURL(this) + uri;
-    if(uri.indexOf("http") == 0){
+    if (uri.indexOf("http") == 0) {
         url = uri;
     }
     var headers = {};
@@ -305,10 +306,10 @@ JiveApiFacade.prototype.getAllExtProps = function (uri) {
     var authenticator = this.authenticator;
     return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
         decorateResponseWithSuccess(response, 200);
-        if(response.success){
-            decorateWithExtPropRetrievers(community,response.entity, authenticator);
+        if (response.success) {
+            decorateWithExtPropRetrievers(community, response.entity, authenticator);
             return response.entity.retrieveAllExtProps();
-        }else{
+        } else {
             return response;
         }
 
@@ -322,10 +323,10 @@ JiveApiFacade.prototype.getAllExtProps = function (uri) {
  * @param {string} contentID the id of the piece of content to be marked final
  * @return {promise} the response is returned in the promise
  */
-JiveApiFacade.prototype.markFinal = function(contentID){
+JiveApiFacade.prototype.markFinal = function (contentID) {
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
     var headers = {};
-    var body = {"outcomeType" : {"id":2}};
+    var body = {"outcomeType": {"id": 2}};
     var options = this.authenticator.applyTo(url, body, headers);
     options['method'] = 'POST';
     return catchErrorResponse(jive.community.doRequest(this.community, options).then(function (response) {
@@ -338,7 +339,7 @@ JiveApiFacade.prototype.markFinal = function(contentID){
  * @param {string} contentID the id of the piece of content to be marked final
  * @return {promise} the response is returned in the promise
  */
-JiveApiFacade.prototype.getOutcomes = function(contentID){
+JiveApiFacade.prototype.getOutcomes = function (contentID) {
     var url = communityAPIURL(this) + "contents/" + contentID + "/outcomes";
     var headers = {};
     var options = this.authenticator.applyTo(url, null, headers);
@@ -353,20 +354,20 @@ JiveApiFacade.prototype.getOutcomes = function(contentID){
  * @param {string} contentID the id of the piece of content to be marked final
  * @return {promise} the response is returned. Except when the content was not already marked a simple object with field success is returned.
  */
-JiveApiFacade.prototype.unMarkFinal = function(contentID){
+JiveApiFacade.prototype.unMarkFinal = function (contentID) {
     var community = this.community;
-    var url = communityAPIURL(this) + "outcomes/" ;
+    var url = communityAPIURL(this) + "outcomes/";
     var authenticator = this.authenticator;
     return this.getOutcomes(contentID).then(function (outcomes) {
 
         var outcomeId = null;
         outcomes.entity.list.forEach(function (outcome) {
-            if(outcome.outcomeType.name == "finalized"){
+            if (outcome.outcomeType.name == "finalized") {
                 outcomeId = outcome.id;
                 return false;//break out of foreach
             }
         });
-        if(outcomeId == null){//was not marked final return successful
+        if (outcomeId == null) {//was not marked final return successful
             return {success: true};
         }
         url += outcomeId;
@@ -386,7 +387,7 @@ JiveApiFacade.prototype.unMarkFinal = function(contentID){
  * @return {promise} returns the response from the PUT operation
  */
 JiveApiFacade.prototype.answer = function (discussion) {
-    if(!discussion.question){
+    if (!discussion.question) {
         throw Error("This discussion is not a question.");
     }
     var url = discussion.resources.self.ref;
@@ -400,8 +401,7 @@ JiveApiFacade.prototype.answer = function (discussion) {
     }));
 };
 
-function unMarkAnsweredComment(community,authenticator, comment){
-
+function unMarkAnsweredComment(community, authenticator, comment) {
     comment.answer = false;
     var headers = {};
     var options = authenticator.applyTo(comment.resources.self.ref, comment, headers);
@@ -411,13 +411,13 @@ function unMarkAnsweredComment(community,authenticator, comment){
     }));
 }
 
-function getTemporaryAnswer(api,discussion, messages){
-    if(messages.entity.list.length == 0){// stupid api design makes it possible to undo assumed resolved but only with a comment in place.
-        var blank = {type:"message", content:{type:"text/html", text:""}};
-        return api.replyToDiscussion(discussion.contentID,blank).then(function (comment) {
+function getTemporaryAnswer(api, discussion, messages) {
+    if (messages.entity.list.length == 0) {// stupid api design makes it possible to undo assumed resolved but only with a comment in place.
+        var blank = {type: "message", content: {type: "text/html", text: ""}};
+        return api.replyToDiscussion(discussion.contentID, blank).then(function (comment) {
             return comment.entity;
         });
-    }else {
+    } else {
         return  q(messages.entity.list[0]);
 
     }
@@ -431,13 +431,13 @@ function getTemporaryAnswer(api,discussion, messages){
  * back onto the server.
  * @
  */
-JiveApiFacade.prototype.removeAnswer = function(discussion){
-    if(!discussion.question){
+JiveApiFacade.prototype.removeAnswer = function (discussion) {
+    if (!discussion.question) {
         throw Error("This discussion is not a question.");
     }
-    if(discussion.resolved == "open"){
+    if (discussion.resolved == "open") {
         return q(function () {
-            return {success: true, entity:discussion};
+            return {success: true, entity: discussion};
         });
     }
 
@@ -445,19 +445,19 @@ JiveApiFacade.prototype.removeAnswer = function(discussion){
     var community = this.community;
     var authenticator = this.authenticator;
     var self = this;
-    if(discussion.answer){
+    if (discussion.answer) {
         return self.get(discussion.answer).then(function (comment) {
             return unMarkAnsweredComment(community, authenticator, comment.entity);
-        })
-    }else{
+        });
+    } else {
 
         return this.get(discussion.resources.messages.ref).then(function (messages) {
-            return getTemporaryAnswer(self,discussion,messages).then(function (tempAnswer) {
+            return getTemporaryAnswer(self, discussion, messages).then(function (tempAnswer) {
                 tempAnswer.answer = true;
                 var options = authenticator.applyTo(tempAnswer.resources.self.ref, tempAnswer, headers);
                 options['method'] = 'PUT';
                 return catchErrorResponse(jive.community.doRequest(community, options).then(function (response) {
-                    return unMarkAnsweredComment(community,authenticator, response.entity);
+                    return unMarkAnsweredComment(community, authenticator, response.entity);
                 }));
             });
         })

@@ -36,7 +36,7 @@ var issueComments = require("./issueCommentStrategy");
  * Add the Issue Strategy to the set that will be built from the builder
  * @return {object} the same builder to support chaining
  */
-builder.prototype.issues = function(){
+builder.prototype.attachGitHubIssueResponders = function(){
     this.strategies.push(issues);
     return this;
 };
@@ -45,7 +45,7 @@ builder.prototype.issues = function(){
  * Add the Issue Comment Strategy to the set that will be built from the builder
  * @return {object} the same builder to support chaining
  */
-builder.prototype.issueComments = function(){
+builder.prototype.attachGitHubIssueCommentResponders = function(){
     this.strategies.push(issueComments);
     return this;
 };

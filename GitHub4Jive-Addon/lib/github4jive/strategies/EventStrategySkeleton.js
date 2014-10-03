@@ -100,6 +100,7 @@ StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
     if (!obj || typeof obj !== "object") {
         throw Error(NULL_OBJECT);
     }
+    strategySetBuilder = strategySetBuilder || self.strategySetBuilder;
     if (!strategySetBuilder || typeof strategySetBuilder.build !== "function") {
         throw Error(INVALID_BUILDER);
     }

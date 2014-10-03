@@ -1,5 +1,5 @@
 /*
- * basicOauthFlow.js requires oauth2client.js to provide the Oauth2ServerFlow function
+ * configurePlace.js requires oauth2client.js to provide the Oauth2ServerFlow function
  *
  * The following html is required for basicOAuthFlow to work
  *
@@ -41,7 +41,7 @@
  and then close it. DO NOT close the tile by listening for github4jive-enable-submit click. This will cancel requests that
  are in progress that will break the basicOauthFlow configuration.
 
- The basicOauthFlow.js also emits "github4jiveAuthorized" when it has passed the authorization phase.  Use this event to
+ The configurePlace.js also emits "github4jiveAuthorized" when it has passed the authorization phase.  Use this event to
  initialize any elements that require querying GitHub or Jive. The repository list is automatically populated.
  The j-card-configuration and j-card-action panels will be unhidden automatically if they are present when this event
  is triggered.
@@ -54,7 +54,6 @@ var jiveDone = false;
 var githubDone = false;
 
 var host;
-
 
 $("body").append("<link />");
 
@@ -176,14 +175,11 @@ function setupJiveOauth() {
 }
 
 var app = {
-
     currentView: gadgets.views.getCurrentView().getName(),
     currentViewerID: -1,
     initGadget: function () {
         console.log('initGadget ...');
-
     },
-
 
     handleContext: function (context) {
         console.log('handleContext ...');
@@ -205,15 +201,13 @@ var app = {
 
                 //This function is used right below it.
                 function setupPlaceConfig(p) {
-
                     place = p;
                     place.getExtProps().execute(function (props) {
                         placeProps = props.content;
                         if ("true" === placeProps.github4jiveEnabled) {
                             console.log('initializing UI for already configured place');
                             previousRepo = placeProps.github4jiveRepoOwner + "/" + placeProps.github4jiveRepo;
-                        }
-                        else {
+                        } else {
                             console.log('initializing UI for UNconfigured place');
                         }
 
@@ -224,34 +218,29 @@ var app = {
                                 "&place=" + encodeURIComponent(placeUrl),
                             'format': 'json',
                             'authz': 'signed'
-                        }).execute(function (response) {
-                                var config = response.content;
-                                githubDone = config.github;
-                                jiveDone = config.jive;
+                        }).execute( function (response) {
+                            var config = response.content;
+                            githubDone = config.github;
+                            jiveDone = config.jive;
 
-                                //make ui changes based on which systems are configured
-                                if (BothAreDone()) {
-                                    AllAuthorized();
+                            //make ui changes based on which systems are configured
+                            if (BothAreDone()) {
+                                AllAuthorized();
+                            } else {
+                                if (config.github) {
+                                    $('#github4jive-github-authorize-success').slideDown('fast');
+                                } else {
+                                    $('#github4jive-github-authorize').slideDown('fast');
                                 }
-                                else {
-                                    if (config.github) {
-                                        $('#github4jive-github-authorize-success').slideDown('fast');
-                                    }
-                                    else {
-                                        $('#github4jive-github-authorize').slideDown('fast');
-                                    }
 
-                                    if (config.jive) {
-                                        $('#github4jive-jive-authorize-success').slideDown('fast');
-                                    }
-                                    else {
-                                        $('#github4jive-jive-authorize').slideDown('fast');
-                                    }
-                                    gadgets.window.adjustHeight();
+                                if (config.jive) {
+                                    $('#github4jive-jive-authorize-success').slideDown('fast');
+                                } else {
+                                    $('#github4jive-jive-authorize').slideDown('fast');
                                 }
+                                gadgets.window.adjustHeight();
                             }
-                        );
-
+                        });
                     });
                 }
 
@@ -261,23 +250,33 @@ var app = {
                 } else {
                     setupPlaceConfig(place);
                 }
-
             });
 
             $("#github4jive-enable-submit").click(function () {
                 console.log('Saving GitHub4Jive Repository Information');
-
                 console.log('context has content callback');
+
                 var fullName = $("#projectList option:selected").text();
                 var parts = fullName.split("/");
                 var owner = parts[0];
                 var repoName = parts[1];
+
+                //
+                // create extended properties on the place
+                // linking it to the remote github repo
+                //
+
                 place.createExtProps({
                     "github4jiveEnabled": true,
                     "github4jiveRepo": repoName,
                     "github4jiveRepoOwner": owner
                 }).execute(function (resp) {
                     console.log('resp: {' + JSON.stringify(resp) + '}');
+
+                    //
+                    // link the place to the remote github repo
+                    //
+
                     osapi.http.post({
                         'href': host + "/github4jive/place/trigger?" +
                             "ts=" + new Date().getTime() +
@@ -298,8 +297,6 @@ gadgets.util.registerOnLoadHandler(gadgets.util.makeClosure(app, app.initGadget)
 
 //defined in oAuth2Client
 if (realTile) {
-
-
     // register a listener for embedded experience context
     opensocial.data.getDataContext().registerListener('org.opensocial.ee.context', function (key) {
         var data = opensocial.data.getDataContext().getDataSet(key);

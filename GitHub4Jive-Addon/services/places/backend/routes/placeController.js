@@ -22,13 +22,9 @@ var q = require("q");
 var libDir = process.cwd() + "/lib/";
 var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 var JiveOauth = require(libDir + "github4jive/JiveOauth");
-var StrategyBuilder = require("./../StrategySetBuilder");
-var StrategySkeleton = require(libDir + "github4jive/strategies/EventStrategySkeleton");
-
 var placeStore = require(libDir + "github4jive/placeStore");
-var builder = new StrategyBuilder();
-var stratSetScaffolding = builder.issues().issueComments();
-var strategyProvider = new StrategySkeleton(uniquePlace, linkedPlaceOptions, linkedPlaceOptions);
+var WebhooksProcessor = require("./webhookProcessor");
+var gitHubWebhooksProcessor;
 
 /*
  * Given a place api url this endpoint returns an object describing which services have been configured.
@@ -112,13 +108,6 @@ exports.onBootstrap = function () {
 /*
  * used in EventStrategySkeleton
  */
-function uniquePlace(lhs, rhs) {
-    return lhs.placeUrl === rhs.placeUrl;
-}
-
-/*
- * used in EventStrategySkeleton
- */
 function linkedPlaceOptions(linked) {
     var place = linked.placeID;
     var gitHubToken = linked.github.token.access_token;
@@ -180,7 +169,16 @@ function setupJiveHook(linked) {
 }
 
 function updatePlace(linked) {
-    return strategyProvider.addOrUpdate(linked, stratSetScaffolding).then(function () {
+    if ( !gitHubWebhooksProcessor ) {
+        gitHubWebhooksProcessor = new WebhooksProcessor(
+            function(lhs, rhs) {
+                return lhs.placeUrl === rhs.placeUrl;
+            },
+            linkedPlaceOptions, linkedPlaceOptions
+        );
+    }
+
+    return gitHubWebhooksProcessor.addOrUpdate(linked).then(function () {
         setupJiveHook(linked);
     });
 }

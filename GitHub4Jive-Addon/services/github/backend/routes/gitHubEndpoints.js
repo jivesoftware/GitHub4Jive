@@ -87,7 +87,7 @@ exports.newComment = {
 };
 
 /**
- * These are required routes to handle the basicOauthFlow.js process.
+ * These are required routes to handle the configurePlace.js process.
  */
 
 exports.authorizeUrl = {

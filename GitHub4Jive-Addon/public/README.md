@@ -15,4 +15,4 @@ Javascript
 
 1. coreapi-context-resolver-v3.js
 1. oauth2client.js
-1. basicOauthFlow.js
+1. configurePlace.js

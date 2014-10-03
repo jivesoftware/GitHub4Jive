@@ -27,6 +27,39 @@ module.exports = issueCommentStrategy;
 
 issueCommentStrategy.name = "Place_IssueComments";
 
+/*
+ * This strategy modifies anything in a place that is not on a tile in response to a created issue comment.
+ * It could be split into separate strategies for fine grain configuration with the builder. Client code
+ * should never be calling this function directly. It should be called from the StrategySetBuilderBase.
+ * Which is invoked from the StrategySet.setup function returned from builder.build().
+ *
+ * Override of EventStrategyBase.Setup
+ * SetupOptions are provided by a placeController.
+ *
+ */
+issueCommentStrategy.setup = function(setupOptions) {
+
+    var jiveApi = setupOptions.jiveApi;
+    var owner = setupOptions.owner;
+    var repo = setupOptions.repo;
+    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
+
+    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
+        //GitHub comment event handler
+        var gitComment = gitData.comment.body;
+
+        if(commentDidNotOriginateFromJive(gitComment)){
+            helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
+                .then(function (discussion) {
+                    addCommentToDiscussion(jiveApi, gitData, auth, discussion);
+                })
+                .catch(function (error) {
+                    jive.logger.error(error);
+                });
+        }
+    });
+};
+
 function commentDidNotOriginateFromJive(gitComment) {
     return gitComment.indexOf("<!--Jive-->") != 0;
 }
@@ -61,35 +94,3 @@ function addCommentToDiscussion(jiveApi, gitData, gitAuth, discussion){
     }
 }
 
-/*
- * This strategy modifies anything in a place that is not on a tile in response to a created issue comment.
- * It could be split into separate strategies for fine grain configuration with the builder. Client code
- * should never be calling this function directly. It should be called from the StrategySetBuilderBase.
- * Which is invoked from the StrategySet.setup function returned from builder.build().
- *
- * Override of EventStrategyBase.Setup
- * SetupOptions are provided by a placeController.
- *
- */
-issueCommentStrategy.setup = function(setupOptions) {
-
-    var jiveApi = setupOptions.jiveApi;
-    var owner = setupOptions.owner;
-    var repo = setupOptions.repo;
-    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
-
-    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
-        //GitHub comment event handler
-        var gitComment = gitData.comment.body;
-
-        if(commentDidNotOriginateFromJive(gitComment)){
-            helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
-                .then(function (discussion) {
-                    addCommentToDiscussion(jiveApi, gitData, auth, discussion);
-                })
-                .catch(function (error) {
-                    jive.logger.error(error);
-            });
-        }
-    });
-};

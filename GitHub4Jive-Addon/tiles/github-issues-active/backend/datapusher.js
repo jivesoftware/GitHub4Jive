@@ -20,11 +20,9 @@ var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
 
-var gitHub = require(libDir + "github4jive/gitHubFacade");
 var JiveApi = require(libDir + "github4jive/JiveApiFacade");
 var JiveOAuth = require(libDir + "github4jive/JiveOauth");
 var placeStore = require(libDir + "github4jive/placeStore");
-var tileFormatter = require(libDir + "github4jive/tileFormatter");
 var StrategySetBuilder = require("./StrategySetBuilder");
 var StrategySkeleton = require(libDir + "github4jive/strategies/EventStrategySkeleton");
 

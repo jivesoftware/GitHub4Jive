@@ -29,15 +29,3 @@ then a activity entry is generated with corresponding message and link to releva
 It overrides the setup function and in tandem with the setupOptions provided in the dataPusher.
 Unlike the Recent Issues Tile, it does not require a reference to a processTileInstance function
 because the datapusher itself ironically does not do any pushing. 
-
-StrategySetBuilder.js
----------------------
-
-This overrides the [StrategySetBuilderBase](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#strategysetbuilderbase-abstract-class)
-class that provides the framework for setting up and tearing down multiple strategies at runtime. 
-This implementation is rather simple because it only exposes a single strategy. The builder is used
-with the [EventStrategySkeleton](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/node_modules/github4jive/strategies#eventstrategyskeleton-class)
-to provide the set of strategies to create for each tile instance.
-
-Another strategy could be added to listen for comments on issues that do not have linked 
-discussions.

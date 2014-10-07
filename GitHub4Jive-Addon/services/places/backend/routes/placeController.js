@@ -20,8 +20,6 @@ var jive = require("jive-sdk");
 var q = require("q");
 
 var libDir = process.cwd() + "/lib/";
-var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
-var JiveOauth = require(libDir + "github4jive/JiveOauth");
 var placeStore = require(libDir + "github4jive/placeStore");
 var gitHubWebhooksProcessor = require("../webhookProcessor");
 

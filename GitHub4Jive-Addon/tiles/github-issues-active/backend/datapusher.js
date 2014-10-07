@@ -17,56 +17,18 @@
 var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
-
 var libDir = process.cwd() + "/lib/";
-
-var JiveApi = require(libDir + "github4jive/JiveApiFacade");
-var JiveOAuth = require(libDir + "github4jive/JiveOauth");
-var placeStore = require(libDir + "github4jive/placeStore");
-var StrategySetBuilder = require("./StrategySetBuilder");
-var StrategySkeleton = require(libDir + "github4jive/strategies/EventStrategySkeleton");
-
-var stratSetScaffolding = new StrategySetBuilder().issues();
-
-/**
- * used by EventStrategySkeleton
- */
-function uniqueTile(lhs, rhs){
-    return lhs.config.parent === rhs.config.parent;
-}
-
-/**
- * used by EventStrategySkeleton
- */
-var setupInstance = function(instance){
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
-        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-            var jiveAuth = new JiveOAuth(place, linked.jive.access_token, linked.jive.refresh_token);
-            var setupOptions = {
-                owner: linked.github.repoOwner,
-                repo: linked.github.repo,
-                jiveApi: new JiveApi(community,jiveAuth),
-                gitHubToken: linked.github.token.access_token,
-                placeUrl: linked.placeUrl,
-                instance: instance
-            };
-            return setupOptions;
-        });
-    });
-};
+var gitHubWebhooksProcessor = require("./webhookProcessor");
 
 /**
  * Handles event handlers registration and un registration
  */
-var strategyProvider = new StrategySkeleton(uniqueTile,setupInstance,setupInstance);
 
 var updateTileInstance = function (newTile) {
     if ( newTile.name === GITHUB_ISSUES_ACTIVITY_TILE ) {
-        strategyProvider.addOrUpdate(newTile, stratSetScaffolding);
+        gitHubWebhooksProcessor.setup(newTile);
     }
 };
-
 
 exports.onBootstrap = function () {
     jive.extstreams.findByDefinitionName( GITHUB_ISSUES_ACTIVITY_TILE).then(function (instances) {

@@ -41,10 +41,6 @@ function formatActivityHeadline(user, payload) {
  * This strategy pushes new state changes to the activity feed.
  * Client code should never be calling this function directly. It should be called from the StrategySetBuilderBase.
  * Which is invoked from the StrategySet.setup function returned from builder.build().
- *
- * Override of EventStrategyBase.Setup
- * SetupOptions are provided by a placeController.
- *
  */
 
 issueStrategy.setup = function(setupOptions) {

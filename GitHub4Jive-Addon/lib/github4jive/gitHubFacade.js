@@ -627,7 +627,11 @@ function subscribeTo(git, owner, repo, gitEvent, handler) {
     wrapNextOperation(deferred, function () {
             var fullName = owner + "/" + repo;
             var hook = repoHooks[fullName];
+    
+            // check local cache of subscribed webhooks
             if (!hook) {
+                // no hook for the user/repo combination has yet been established
+                // fetch the list of subscribed webhooks from github
                 return getWebHooks(git, owner, repo).then(function (hooks) {
                     var hookPromise = null;
                     hooks.forEach(function (hookResponse) {
@@ -637,27 +641,34 @@ function subscribeTo(git, owner, repo, gitEvent, handler) {
                         }
                     });
                     if (!hookPromise) {
+                        // if the webhook does not exist remotely in github
+                        // schedule its creation
                         hookPromise = createGitHubHook(git, owner, repo, [gitEvent]);
                     }
                     return hookPromise.then(function (hookResponse) {
+                        // after hook is created remotely, locally cache it
                         var eventHandler = EventHandler(gitEvent, handler);
                         repoHooks[fullName] = {events: {}, key: hookResponse.id};
                         repoHooks[fullName].events[gitEvent] = {handlers: [eventHandler]};
+                        jive.logger.info(fullName + " has registered to", gitEvent);
                         return eventHandler.token;
                     });
                 });
-            }
-            else {
-
+            } else {
+                // a hook has already been subscribed for the user/repo combination
                 if (hookHasRegisteredEvent(hook, gitEvent)) {
+                    // the particular event has a handler
+                    // update the cached event handler
                     var eventHandler = EventHandler(gitEvent, handler);
                     hook.events[gitEvent].handlers.push(eventHandler);
                     //hack to make interface consistent
                     return promiseSeed().then(function () {
+                        jive.logger.debug(fullName + " has already registered to", gitEvent + "; updating the handler");
                         return eventHandler.token;
                     });
-                }
-                else {
+                } else {
+                    // no handler is registered for handling the particular event
+                    // add the event handler to the cache of handlers
                     var newEventList = currentSubscribedEvents(hook);
                     newEventList.push(gitEvent);
                     jive.logger.info(fullName + " has registered to", newEventList);

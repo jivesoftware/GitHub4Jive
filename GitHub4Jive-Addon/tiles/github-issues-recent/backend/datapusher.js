@@ -18,7 +18,6 @@ var jive = require("jive-sdk");
 var q = require("q");
 
 var libDir = process.cwd() + "/lib/";
-var placeStore = require(libDir + "github4jive/placeStore");
 var tileInstanceProcessor = require("./tileInstanceProcessor");
 var gitHubWebhooksProcessor = require("./webhookProcessor");
 

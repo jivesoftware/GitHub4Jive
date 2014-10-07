@@ -15,40 +15,24 @@
  */
 
 var jive = require("jive-sdk");
-
 var libDir = process.cwd() + "/lib/";
-var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
-var JiveOauth = require(libDir + "github4jive/JiveOauth");
-var placeStore = require(libDir + "github4jive/placeStore");
-var base = require(libDir + "github4jive/strategies/EventStrategySkeleton");
-var WebhooksProcessorBuilder = require(libDir + "github4jive/strategies/StrategySetBuilderBase");
+var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var issueHandler = require("./issueStrategy");
+var issueCommentHandler = require("./issueCommentStrategy");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // setup webhook processor by creating a webhook handler object
 // and attaching event handlers to it
 
 // 0. define the webhook handlers
-var issueHandler = require("./issueStrategy");
-var issueCommentHandler = require("./issueCommentStrategy");
 
-// 1. create an object which will help construct a webhook processor
-// and attach the event handlers to it
-var configurator = new WebhooksProcessorBuilder()
-  // add github issue handler
-  .addStrategy(issueHandler)
-  // add github issue comment handler
-  .addStrategy(issueCommentHandler);
+var processor = new GitHubWebhookProcessor();
+processor
+    .addStrategy(issueHandler)
+    .addStrategy(issueCommentHandler)
+    .setSetupHandlerContextProvider(linkedPlaceOptions)
+    .setTeardownHandlerContextProvider(linkedPlaceOptions);
 
-// 2. create the webhook processor object
-var processor = new base(
-  function(lhs, rhs) {
-    return lhs.placeUrl === rhs.placeUrl;
-  },
-  linkedPlaceOptions, linkedPlaceOptions
-);
-
-// 3. associate the handlers to the webhook processor
-processor.setDefaultStrategySetBuilder(configurator);
 module.exports = processor;
 
 /*

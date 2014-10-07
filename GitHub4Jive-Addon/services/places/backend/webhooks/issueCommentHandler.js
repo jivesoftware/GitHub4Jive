@@ -38,10 +38,10 @@ thisHandler.setup = function(setupOptions) {
         //GitHub comment event handler
         var gitComment = gitData.comment.body;
       
-        if(commentDidNotOriginateFromJive(gitComment)){
+        if(commentDidNotOriginateFromJive.call( self, gitComment)){
             self.helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
                 .then(function (discussion) {
-                    addCommentToDiscussion(jiveApi, gitData, auth, discussion);
+                    addCommentToDiscussion.call(self, jiveApi, gitData, auth, discussion);
                 })
                 .catch(function (error) {
                     jive.logger.error(error);

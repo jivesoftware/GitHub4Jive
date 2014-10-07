@@ -49,17 +49,17 @@ thisHandler.setup = function(setupOptions){
     return self.gitHubFacade.subscribeToRepoEvent(owner, repo, self.gitHubFacade.Events.Issues, auth, function (gitData) {
       switch(gitData.action) {
             case "opened": // Issue just created on GitHub
-                createIssueDiscussion(placeID, gitData, jiveApi);
+                createIssueDiscussion.call( self, placeID, gitData, jiveApi);
                 break;
             case "reopened":
-                reopenDiscussion(jiveApi, placeUrl, gitData);
+                reopenDiscussion.call( self, jiveApi, placeUrl, gitData);
                 break;
             case "closed":
-                closeDiscussion(jiveApi, placeUrl, gitData);
+                closeDiscussion.call( self, jiveApi, placeUrl, gitData);
                 break;
             case "labeled":
             case "unlabeled":
-                updateDiscussionTags(jiveApi, placeUrl, gitData);
+                updateDiscussionTags.call( self, jiveApi, placeUrl, gitData);
                 break
         }
     });
@@ -96,7 +96,7 @@ function createIssueDiscussion(placeID, gitData, jiveApi) {
     var self = this;
 
     jive.logger.info("New Issue! Creating a discussion for it.");
-    var builder = new self.jiveContentBuilder();
+    var builder = new (self.jiveContentBuilder)();
     var content = builder.discussion()
                         .parentPlace(placeID)
                         .subject(formatDiscussionSubject(gitData))

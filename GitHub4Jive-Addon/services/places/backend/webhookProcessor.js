@@ -15,27 +15,30 @@
  */
 
 var jive = require("jive-sdk");
+
 var libDir = process.cwd() + "/lib/";
 var JiveOauth = require(libDir + "github4jive/JiveOauth");
 var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
 var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// create a webhook processor and attaching event handlers to it
+
 var issueHandler = require("./issueStrategy");
 var issueCommentHandler = require("./issueCommentStrategy");
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// setup webhook processor by creating a webhook handler object
-// and attaching event handlers to it
+module.exports = new GitHubWebhookProcessor(
+    //
+    [ issueHandler, issueCommentHandler ],
 
-// 0. define the webhook handlers
-processor = new GitHubWebhookProcessor( 
-  [issueHandler, issueCommentHandler ],
-   function(lhs, rhs) {
+    //
+    function(lhs, rhs) {
         return lhs.placeUrl === rhs.placeUrl;
     },
+
+    //
     linkedPlaceOptions, linkedPlaceOptions
 );
-
-module.exports = processor;
 
 /*
  * Extrudes property object used in the issue, and issue comment handlers.

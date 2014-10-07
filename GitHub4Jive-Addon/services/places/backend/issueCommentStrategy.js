@@ -38,8 +38,8 @@ issueCommentStrategy.name = "Place_IssueComments";
  *
  */
 issueCommentStrategy.setup = function(setupOptions) {
-  
-    var jiveApi = setupOptions.jiveApi;
+
+  var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);

@@ -134,7 +134,8 @@ StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
       }
       else {
           decorateInstanceWithStrategies(obj, strategySetBuilder);
-          return setupInstance(obj, self.setupOptions(obj));
+          var options = self.setupOptions(obj);
+          return setupInstance(obj, options);
       }
     } catch ( e ) {
       console.trace(e);

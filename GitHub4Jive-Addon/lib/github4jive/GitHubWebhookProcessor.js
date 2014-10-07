@@ -17,51 +17,39 @@
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var JiveOauth = require(libDir + "github4jive/JiveOauth");
 var placeStore = require(libDir + "github4jive/placeStore");
 var base = require(libDir + "github4jive/strategies/EventStrategySkeleton");
 var WebhooksProcessorBuilder = require(libDir + "github4jive/strategies/StrategySetBuilderBase");
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// setup webhook processor by creating a webhook handler object
-// and attaching event handlers to it
+function GitHubWebhookProcessor( handlers, predicate, setupHandlerContextProvider, teardownHandlerContextProvider) {
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // setup webhook processor by creating a webhook handler object
+  // and attaching event handlers to it
 
-// 1. create an object which will help construct a webhook processor
-// and attach the event handlers to it
-var configurator = new WebhooksProcessorBuilder();
+  // 1. create an object which will help construct a webhook processor
+  // and attach the event handlers to it
+  var configurator = new WebhooksProcessorBuilder();
 
-// 2. create the webhook processor object
-var processor = new base(
-    function(lhs, rhs) {
-        return lhs.placeUrl === rhs.placeUrl;
-    },
-    getSetupHandlerProvider, getTeardownHandlerProvider
-);
+  // 2. create the webhook processor object
+  var processor = new base(
+      predicate,
+      setupHandlerContextProvider, 
+      teardownHandlerContextProvider
+  );
 
-processor.addStrategy = function(strategy) {
-    configurator.addStrategy(strategy);
-    return this;
-};
-
-processor.setSetupHandlerContextProvider = function(contextProvider) {
-    this.setupHandlerContextProvider = contextProvider;
-    return this;
-};
-
-processor.setTeardownHandlerContextProvider = function(contextProvider) {
-    this.teardownHandlerContextProvider = contextProvider;
-    return this;
-};
-
-// 3. associate the handlers to the webhook processor
-processor.setDefaultStrategySetBuilder(configurator);
-module.exports = processor;
-
-
-function getSetupHandlerProvider() {
-    return this.setupHandlerContextProvider || function(){ return {}; };
+  handlers.forEach( function(handler) {
+      configurator.addStrategy(handler);
+  });
+  
+  // 3. associate the handlers to the webhook processor
+  processor.setDefaultStrategySetBuilder(configurator);
+  
+  this.processor = processor;
 }
 
-function getTeardownHandlerProvider() {
-    return this.teardownHandlerContextProvider || function(){ return {}; };
-}
+GitHubWebhookProcessor.prototype.setup = function(place) {
+    var processor = this.processor;
+    return processor.addOrUpdate.call( processor, place );
+};
+
+module.exports = GitHubWebhookProcessor;

@@ -55,8 +55,10 @@ function tokenKey(strategy,options){
  * teardown does not go in reverse order because there is currently no support for dependant strategies.
  */
 function setupStrategies(strategies,index, options, tokenPool){
+  
     if(index < strategies.length) {
         var strategy = strategies[index];
+      
   
         return strategy.setup(options)
             .then(function (token) {
@@ -107,7 +109,7 @@ StrategySetBuilder.prototype.build = function () {
         strategies.push(strat);
     });
     var tokenPool = new TokenPool();
-    return {
+    var obj = {
       setup: function(options){
         return setupStrategies(strategies,0, options, tokenPool);
       },
@@ -115,6 +117,7 @@ StrategySetBuilder.prototype.build = function () {
         return teardownStrategies(strategies,0, options, tokenPool);
       }
     };
+    return obj;
 };
 
 /**

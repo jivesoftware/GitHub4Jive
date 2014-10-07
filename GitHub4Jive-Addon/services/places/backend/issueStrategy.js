@@ -51,10 +51,9 @@ issueStrategy.setup = function(setupOptions){
     var placeID = setupOptions.placeID;
     var placeUrl = setupOptions.placeUrl;
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
-  
-
+    
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
-        switch(gitData.action) {
+      switch(gitData.action) {
             case "opened": // Issue just created on GitHub
                 createIssueDiscussion(placeID, gitData, jiveApi);
                 break;

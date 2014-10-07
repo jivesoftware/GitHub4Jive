@@ -16,7 +16,9 @@
 
 var jive = require("jive-sdk");
 var libDir = process.cwd() + "/lib/";
+var JiveOauth = require(libDir + "github4jive/JiveOauth");
 var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 var issueHandler = require("./issueStrategy");
 var issueCommentHandler = require("./issueCommentStrategy");
 
@@ -25,13 +27,13 @@ var issueCommentHandler = require("./issueCommentStrategy");
 // and attaching event handlers to it
 
 // 0. define the webhook handlers
-
-var processor = new GitHubWebhookProcessor();
-processor
-    .addStrategy(issueHandler)
-    .addStrategy(issueCommentHandler)
-    .setSetupHandlerContextProvider(linkedPlaceOptions)
-    .setTeardownHandlerContextProvider(linkedPlaceOptions);
+processor = new GitHubWebhookProcessor( 
+  [issueHandler, issueCommentHandler ],
+   function(lhs, rhs) {
+        return lhs.placeUrl === rhs.placeUrl;
+    },
+    linkedPlaceOptions, linkedPlaceOptions
+);
 
 module.exports = processor;
 

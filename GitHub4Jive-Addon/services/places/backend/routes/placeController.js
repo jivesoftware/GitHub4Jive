@@ -136,7 +136,7 @@ function setupJiveHook(place) {
 }
 
 function updatePlace(place) {
-    return gitHubWebhooksProcessor.addOrUpdate(place).then(function (r) {
+    return gitHubWebhooksProcessor.setup(place).then(function (r) {
         setupJiveHook(place);
     });
 }

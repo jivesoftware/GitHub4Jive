@@ -17,9 +17,11 @@ var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
 var gitHubFacade = require(libDir + "github4jive/gitHubFacade");
-
 var strategyBase = require(libDir + "github4jive/strategies/EventStrategyBase");
+var tileInstanceProcessor = require("./tileInstanceProcessor");
+
 var issueStrategy = Object.create(strategyBase);
+
 module.exports = issueStrategy;
 
 issueStrategy.name = "Recent_Issue";
@@ -42,9 +44,8 @@ issueStrategy.setup = function(setupOptions){
     var repo = setupOptions.repo;
     var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
     var instance = setupOptions.instance;
-    var processFunction = setupOptions.processTile;
 
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function () {
-       processFunction(instance);
+        tileInstanceProcessor.processTileInstance(instance);
     });
 };

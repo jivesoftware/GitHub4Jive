@@ -18,7 +18,7 @@ var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
 var libDir = process.cwd() + "/lib/";
-var gitHubWebhooksProcessor = require("./webhookProcessor");
+var gitHubWebhooksProcessor = require("./webhooks/webhookProcessor");
 
 /**
  * Handles event handlers registration and un registration
@@ -35,7 +35,6 @@ exports.onBootstrap = function () {
         if(instances){
             instances.forEach(updateTileInstance)
         }
-
     });
 };
 

@@ -18,8 +18,7 @@ var colorMap = {
 };
 
 /**
- * This function is referenced in IssueStrategy through the setupOptions provided by SetupInstance function.
- * The strategy uses it to update the tile on any change to an issue.
+ * This is used to update the tile on any change to an issue.
  * @param {object} instance of a tile
  */
 exports.processTileInstance = function processTileInstance(instance) {

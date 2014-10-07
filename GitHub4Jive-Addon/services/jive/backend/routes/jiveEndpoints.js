@@ -16,8 +16,8 @@
 
 var jive = require('jive-sdk');
 var fs = require('fs');
-var jiveController = require("./jiveController") ;
-var service = require('./jiveOAuthController.js');
+var jiveController = require("./../jiveController") ;
+var service = require('./../jiveOAuthController.js');
 
 exports.webhookPortal = {
     'verb' : 'post',

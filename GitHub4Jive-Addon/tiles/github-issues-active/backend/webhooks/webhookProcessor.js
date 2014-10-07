@@ -19,11 +19,13 @@ var jive = require("jive-sdk");
 var libDir = process.cwd() + "/lib/";
 var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
 var placeStore = require(libDir + "github4jive/placeStore");
+var JiveApi = require(libDir + "github4jive/JiveApiFacade");
+var JiveOAuth = require(libDir + "github4jive/JiveOauth");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueStrategy");
+var issueHandler = require("./issueHandler");
 
 module.exports = new GitHubWebhookProcessor(
     //
@@ -35,7 +37,7 @@ module.exports = new GitHubWebhookProcessor(
     },
 
     //
-    setupInstance, tearDownInstance
+    setupInstance, setupInstance
 );
 
 /**
@@ -43,26 +45,17 @@ module.exports = new GitHubWebhookProcessor(
  */
 function setupInstance(instance){
     var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
-        return {
-            owner: linked.github.repoOwner,
-            repo: linked.github.repo,
-            gitHubToken: linked.github.token.access_token,
-            placeUrl: linked.placeUrl,
-            instance: instance
-        };
-    });
-}
-
-/**
- * docs - todo
- */
-function tearDownInstance(instance) {
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
-        return {
-            placeUrl: linked.placeUrl,
-            gitHubToken: linked.github.token.access_token
-        };
+    return placeStore.getPlaceByUrl(place).then(function (place) {
+        return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
+            var jiveAuth = new JiveOAuth(place, place.jive.access_token, place.jive.refresh_token);
+            return {
+                owner: place.github.repoOwner,
+                repo: place.github.repo,
+                jiveApi: new JiveApi(community, jiveAuth),
+                gitHubToken: place.github.token.access_token,
+                placeUrl: place.placeUrl,
+                instance: instance
+            };
+        });
     });
 }

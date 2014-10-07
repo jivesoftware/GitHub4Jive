@@ -17,39 +17,29 @@
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var gitHubFacade = require(libDir + "github4jive/gitHubFacade");
-var JiveContentBuilder = require(libDir + "github4jive/JiveContentBuilder");
-var helpers = require(libDir + "github4jive/helpers");
 
-var strategyBase = require(libDir +  "github4jive/strategies/EventStrategyBase");
-var issueCommentStrategy = Object.create(strategyBase);
-module.exports = issueCommentStrategy;
+var GitHubWebhookEventHandler = require(libDir + "github4jive/GitHubWebhookEventHandler");
+var thisHandler = Object.create(GitHubWebhookEventHandler);
 
-issueCommentStrategy.name = "Place_IssueComments";
+thisHandler.name = "Place_IssueComments";
+module.exports = thisHandler;
 
 /*
- * This strategy modifies anything in a place that is not on a tile in response to a created issue comment.
- * It could be split into separate strategies for fine grain configuration with the builder. Client code
- * should never be calling this function directly. It should be called from the StrategySetBuilderBase.
- * Which is invoked from the StrategySet.setup function returned from builder.build().
- *
- * Override of EventStrategyBase.Setup
- * SetupOptions are provided by a placeController.
- *
+ * This handler modifies anything in a place that is not on a tile in response to a created issue comment.
  */
-issueCommentStrategy.setup = function(setupOptions) {
-
-  var jiveApi = setupOptions.jiveApi;
+thisHandler.setup = function(setupOptions) {
+    var self = this;
+    var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
-    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
+    var auth = self.gitHubFacade.createOauthObject( setupOptions.gitHubToken);
 
-    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
+    return self.gitHubFacade.subscribeToRepoEvent(owner, repo, self.gitHubFacade.Events.IssueComment, auth, function (gitData) {
         //GitHub comment event handler
         var gitComment = gitData.comment.body;
       
         if(commentDidNotOriginateFromJive(gitComment)){
-            helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
+            self.helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
                 .then(function (discussion) {
                     addCommentToDiscussion(jiveApi, gitData, auth, discussion);
                 })
@@ -69,9 +59,11 @@ function formatGitComment(gitComment) {
 }
 
 function addCommentToDiscussion(jiveApi, gitData, gitAuth, discussion){
+    var self = this;
+
     if(discussion){
-        return gitHubFacade.getUserDetails(gitData.comment.user.login, gitAuth).then(function (user) {
-            var builder = new JiveContentBuilder();
+        return self.gitHubFacade.getUserDetails(gitData.comment.user.login, gitAuth).then(function (user) {
+            var builder = new self.jiveContentBuilder();
             var gitComment = gitData.comment.body;
             formatGitComment(gitComment);
             var comment = builder.message()

@@ -24,8 +24,8 @@ var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueStrategy");
-var issueCommentHandler = require("./issueCommentStrategy");
+var issueHandler = require("./issueHandler");
+var issueCommentHandler = require("./issueCommentHandler");
 
 module.exports = new GitHubWebhookProcessor(
     //

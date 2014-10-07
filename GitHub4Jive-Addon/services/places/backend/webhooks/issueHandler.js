@@ -15,24 +15,17 @@
  */
 
 /*
- * This strategy modifies anything in a place that is not on a tile in response to a issue state change.
- * It could be split into separate strategies for fine grain configuration with the builder. Client code
- * should never be calling the setup function below directly. It should be called from the StrategySetBuilderBase.
- * Which is invoked from the StrategySet.setup function returned from builder.build().
+ * This handler modifies anything in a place that is not on a tile in response to a issue state change.
  */
 
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var gitHubFacade = require(libDir + "github4jive/gitHubFacade");
-var JiveContentBuilder = require(libDir + "github4jive/JiveContentBuilder");
-var helpers = require(libDir + "github4jive/helpers");
+var GitHubWebhookEventHandler = require(libDir + "github4jive/GitHubWebhookEventHandler");
+var thisHandler = Object.create(GitHubWebhookEventHandler);
+thisHandler.name = "Place_Issue";
 
-var strategyBase = require(libDir + "github4jive/strategies/EventStrategyBase");
-var issueStrategy = Object.create(strategyBase);
-module.exports = issueStrategy;
-
-issueStrategy.name = "Place_Issue";
+module.exports = thisHandler;
 
 var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "invalid", "wontfix"];
 
@@ -43,16 +36,17 @@ var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "inv
  * Override of EventStrategyBase.Setup
  * SetupOptions are provided by a placeController.
  */
-issueStrategy.setup = function(setupOptions){
+thisHandler.setup = function(setupOptions){
 
+    var self = this;
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
     var placeID = setupOptions.placeID;
     var placeUrl = setupOptions.placeUrl;
-    var auth = gitHubFacade.createOauthObject( setupOptions.gitHubToken);
+    var auth = self.gitHubFacade.createOauthObject( setupOptions.gitHubToken);
     
-    return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.Issues, auth, function (gitData) {
+    return self.gitHubFacade.subscribeToRepoEvent(owner, repo, self.gitHubFacade.Events.Issues, auth, function (gitData) {
       switch(gitData.action) {
             case "opened": // Issue just created on GitHub
                 createIssueDiscussion(placeID, gitData, jiveApi);
@@ -99,8 +93,10 @@ function formatDiscussionSubject(gitData) {
 }
 
 function createIssueDiscussion(placeID, gitData, jiveApi) {
+    var self = this;
+
     jive.logger.info("New Issue! Creating a discussion for it.");
-    var builder = new JiveContentBuilder();
+    var builder = new self.jiveContentBuilder();
     var content = builder.discussion()
                         .parentPlace(placeID)
                         .subject(formatDiscussionSubject(gitData))
@@ -114,7 +110,9 @@ function createIssueDiscussion(placeID, gitData, jiveApi) {
 }
 
 function reopenDiscussion(jiveApi, placeUrl, gitData) {
-    helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+    var self = this;
+
+    self.helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
         return jiveApi.removeAnswer(discussion).then(function () {
             return jiveApi.unMarkFinal(discussion.contentID).then(function () {
                 return jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
@@ -124,7 +122,9 @@ function reopenDiscussion(jiveApi, placeUrl, gitData) {
 }
 
 function closeDiscussion(jiveApi, placeUrl, gitData) {
-    helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+    var self = this;
+
+    self.helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
         return jiveApi.answer(discussion).then(function () {
             return jiveApi.markFinal(discussion.contentID).then(function () {
                 return jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
@@ -134,10 +134,12 @@ function closeDiscussion(jiveApi, placeUrl, gitData) {
 }
 
 function updateDiscussionTags(jiveApi, placeUrl, gitData) {
-    helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
+    var self = this;
+
+    self.helpers.getDiscussionForIssue(jiveApi, placeUrl, gitData.issue.id).then(function (discussion) {
         jiveApi.attachPropsToContent(discussion.contentID, createExtProps(gitData));
         var tags = editGitHubTags(discussion, gitData);
-        var builder = new JiveContentBuilder(discussion);
+        var builder = new self.jiveContentBuilder(discussion);
         var content = builder.discussion()
             .tags(tags)
             .build();

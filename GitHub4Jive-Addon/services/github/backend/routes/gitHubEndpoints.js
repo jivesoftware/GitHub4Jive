@@ -17,9 +17,9 @@
 var jive = require('jive-sdk');
 var fs = require('fs');
 
-var gitHubController = require("./gitHubController");
 var config = jive.context.config;
-var service = require('./gitHubOAuthController.js');
+var gitHubController = require("./../gitHubController");
+var service = require('./../gitHubOAuthController.js');
 
 /**
  * This endpoint is required for the GitHubFacade to deliver GitHub payloads

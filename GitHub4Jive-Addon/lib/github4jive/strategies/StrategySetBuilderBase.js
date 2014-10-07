@@ -57,6 +57,7 @@ function tokenKey(strategy,options){
 function setupStrategies(strategies,index, options, tokenPool){
     if(index < strategies.length) {
         var strategy = strategies[index];
+  
         return strategy.setup(options)
             .then(function (token) {
                 tokenPool.addToken(tokenKey(strategy, options), token);
@@ -106,13 +107,14 @@ StrategySetBuilder.prototype.build = function () {
         strategies.push(strat);
     });
     var tokenPool = new TokenPool();
-    return {setup: function(options){
-                return setupStrategies(strategies,0, options, tokenPool);
-            },
-            teardown: function (options) {
-                return teardownStrategies(strategies,0, options, tokenPool);
-            }
-    }
+    return {
+      setup: function(options){
+        return setupStrategies(strategies,0, options, tokenPool);
+      },
+      teardown: function (options) {
+        return teardownStrategies(strategies,0, options, tokenPool);
+      }
+    };
 };
 
 /**
@@ -125,5 +127,13 @@ StrategySetBuilder.prototype.reset = function () {
     return this;
 };
 
+/*
+ * Add the Strategy to the set that will be built from the builder
+ * @return {object} the same builder to support chaining
+ */
+StrategySetBuilder.prototype.addStrategy = function(strategy){
+    this.strategies.push(strategy);
+    return this;
+};
 
 module.exports = StrategySetBuilder;

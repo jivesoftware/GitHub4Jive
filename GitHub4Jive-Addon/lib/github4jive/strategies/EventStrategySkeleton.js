@@ -74,7 +74,8 @@ function wrapOptionsInPromise(options) {
 
 function setupInstance(instance, options) {
     return wrapOptionsInPromise(options).then(function (op) {
-        return instance.strategies.setup(op);
+        var promise = instance.strategies.setup(op);
+        return promise;
     });
 }
 
@@ -84,7 +85,8 @@ function teardownInstance(instance, options) {
     });
 }
 function decorateInstanceWithStrategies(instance, strategyBuilder) {
-    return instance.strategies = strategyBuilder.build();
+    var strategies = strategyBuilder.build();
+    return instance.strategies = strategies;
 }
 
 /**
@@ -97,18 +99,21 @@ function decorateInstanceWithStrategies(instance, strategyBuilder) {
  *
  */
 StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
+    //Look for object to update
+    var self = this;
+  
     if (!obj || typeof obj !== "object") {
         throw Error(NULL_OBJECT);
     }
-    strategySetBuilder = strategySetBuilder || self.strategySetBuilder;
+
+    strategySetBuilder = strategySetBuilder || self._defaultStrategySetBuilder;
     if (!strategySetBuilder || typeof strategySetBuilder.build !== "function") {
         throw Error(INVALID_BUILDER);
     }
 
-    //Look for object to update
-    var self = this;
     var tempCollection = [];
     var toTeardown;
+
     self.tracking.forEach(function (trackedObject) {
         if (self.instancePredicate(trackedObject, obj)) {
             toTeardown = trackedObject;
@@ -120,14 +125,20 @@ StrategySkeleton.prototype.addOrUpdate = function (obj, strategySetBuilder) {
     self.tracking = tempCollection;
 
     //Update existing object or just setup a new one
-    if (toTeardown) {
-        return teardownInstance(toTeardown, self.teardownOptions(toTeardown)).then(function () {
-            return setupInstance(obj, self.setupOptions(obj));
-        });
-    }
-    else {
-        decorateInstanceWithStrategies(obj, strategySetBuilder);
-        return setupInstance(obj, self.setupOptions(obj));
+    try {
+      if (toTeardown) {
+          return teardownInstance(toTeardown, self.teardownOptions(toTeardown)).then(function () {
+              decorateInstanceWithStrategies(obj, strategySetBuilder);
+              return setupInstance(obj, self.setupOptions(obj));
+          });
+      }
+      else {
+          decorateInstanceWithStrategies(obj, strategySetBuilder);
+          return setupInstance(obj, self.setupOptions(obj));
+      }
+    } catch ( e ) {
+      console.trace(e);
+      process.exit(-1);
     }
 };
 
@@ -146,6 +157,10 @@ StrategySkeleton.prototype.remove = function (toDelete) {
         }
     });
     return instanceToDelete ? teardownInstance(instanceToDelete, self.teardownOptions(instanceToDelete)) : q();
+};
+
+StrategySkeleton.prototype.setDefaultStrategySetBuilder = function(builder) {
+    this._defaultStrategySetBuilder = builder;
 };
 
 module.exports = StrategySkeleton;

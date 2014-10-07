@@ -23,8 +23,7 @@ var libDir = process.cwd() + "/lib/";
 var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 var JiveOauth = require(libDir + "github4jive/JiveOauth");
 var placeStore = require(libDir + "github4jive/placeStore");
-var WebhooksProcessor = require("./webhookProcessor");
-var gitHubWebhooksProcessor;
+var gitHubWebhooksProcessor = require("../webhookProcessor");
 
 /*
  * Given a place api url this endpoint returns an object describing which services have been configured.
@@ -35,16 +34,16 @@ exports.placeCurrentConfig = function (req, res) {
     var url_parts = url.parse(req.url, true);
     var queryPart = url_parts.query;
     var placeUrl = queryPart["place"];
-
+  
     if (!placeUrl || placeUrl === "") {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify("Specify place api url"));
     }
-    placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
+    placeStore.getPlaceByUrl(placeUrl).then(function (place) {
         var clientSideConfig = {
             github: false, jive: false};
         try {
-            if (linked.github.token.access_token) {
+            if (place.github.token.access_token) {
                 clientSideConfig.github = true;
             }
         } catch (e) {
@@ -52,7 +51,7 @@ exports.placeCurrentConfig = function (req, res) {
         }
 
         try {
-            if (linked.jive.access_token) {
+            if (place.jive.access_token) {
                 clientSideConfig.jive = true;
             }
         } catch (e) {
@@ -71,7 +70,7 @@ exports.placeCurrentConfig = function (req, res) {
  * Ex. Recent Issues Tile and Project Info Tile
  */
 exports.basicTileConfig = function (req, res) {
-    res.render('../../../public/configuration.html', { host: jive.service.serviceURL()  });
+    res.render( process.cwd() + '/public/configuration.html', { host: jive.service.serviceURL()  });
 };
 
 /*
@@ -90,7 +89,7 @@ exports.onConfigurationChange = function (req, res) {
         res.end(JSON.stringify({success: true}));
     }).catch(function (error) {
         jive.logger.error(error);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({success: false}));
     });
 
@@ -105,47 +104,15 @@ exports.onBootstrap = function () {
     });
 };
 
-/*
- * used in EventStrategySkeleton
- */
-function linkedPlaceOptions(linked) {
-    var place = linked.placeID;
-    var gitHubToken = linked.github.token.access_token;
-    var jiveUrl = linked.jiveUrl;
-    var repo = linked.github.repo;
-    var repoOwner = linked.github.repoOwner;
-    var jiveAuth = new JiveOauth(linked.placeUrl, linked.jive.access_token, linked.jive.refresh_token);
-
-    return jive.community.findByJiveURL(jiveUrl).then(function (community) {
-        var japi = new JiveFacade(community, jiveAuth);
-        if (!repo || !repoOwner) {
-            jive.logger.error("Missing repo information for " + linked.placeUrl);
-            return {};
-        }
-        else {
-            var setupOptions = {
-                jiveApi: japi,
-                placeID: place,
-                owner: repoOwner,
-                repo: repo,
-                gitHubToken: gitHubToken,
-                placeUrl: linked.placeUrl
-            };
-            return (setupOptions);
-        }
-    });
-}
-
-function setupJiveHook(linked) {
-
-    if (!linked.jive.hookID) {
-        var webhookCallback = jive.service.serviceURL() + '/webhooks?place=' + encodeURIComponent(linked.placeUrl);
-        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
+function setupJiveHook(place) {
+    if (!place.jive.hookID) {
+        var webhookCallback = jive.service.serviceURL() + '/webhooks?place=' + encodeURIComponent(place.placeUrl);
+        return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
             //register Webhook on Jive Instance
-            var accessToken = linked.jive.access_token;
+            var accessToken = place.jive.access_token;
 
             return jive.webhooks.register(
-                    community, "discussion", linked.placeUrl,
+                    community, "discussion", place.placeUrl,
                     webhookCallback, accessToken
                 ).then(function (webhook) {
                     var webhookEntity = webhook['entity'];
@@ -159,7 +126,7 @@ function setupJiveHook(linked) {
 
                     //save webhook in service and placeStore to unregister later.
                     return jive.webhooks.save(webhookToSave).then(function () {
-                        return placeStore.save(linked.placeUrl, {jive: {hookID: webhookEntity.id}});
+                        return placeStore.save(place.placeUrl, {jive: {hookID: webhookEntity.id}});
                     })
                 });
         });
@@ -168,18 +135,9 @@ function setupJiveHook(linked) {
     }
 }
 
-function updatePlace(linked) {
-    if ( !gitHubWebhooksProcessor ) {
-        gitHubWebhooksProcessor = new WebhooksProcessor(
-            function(lhs, rhs) {
-                return lhs.placeUrl === rhs.placeUrl;
-            },
-            linkedPlaceOptions, linkedPlaceOptions
-        );
-    }
-
-    return gitHubWebhooksProcessor.addOrUpdate(linked).then(function () {
-        setupJiveHook(linked);
+function updatePlace(place) {
+    return gitHubWebhooksProcessor.addOrUpdate(place).then(function (r) {
+        setupJiveHook(place);
     });
 }
 

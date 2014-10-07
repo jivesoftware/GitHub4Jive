@@ -38,7 +38,7 @@ issueCommentStrategy.name = "Place_IssueComments";
  *
  */
 issueCommentStrategy.setup = function(setupOptions) {
-
+  
     var jiveApi = setupOptions.jiveApi;
     var owner = setupOptions.owner;
     var repo = setupOptions.repo;
@@ -47,7 +47,7 @@ issueCommentStrategy.setup = function(setupOptions) {
     return gitHubFacade.subscribeToRepoEvent(owner, repo, gitHubFacade.Events.IssueComment, auth, function (gitData) {
         //GitHub comment event handler
         var gitComment = gitData.comment.body;
-
+      
         if(commentDidNotOriginateFromJive(gitComment)){
             helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
                 .then(function (discussion) {

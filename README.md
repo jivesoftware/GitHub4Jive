@@ -14,12 +14,20 @@ For setup instructions, refer to the corresponding `README.md` in the add-on dir
 
 # Related Documentation
 
-* [GitHub API](https://developer.github.com/v3/)
-* [GitHub Webhooks](https://developer.github.com/webhooks/)
-* [GitHub Tutorial](https://developer.github.com/guides/getting-started/)
+As you play around with this project, refer to the following documentation links.
+
+**Jive-related Docs:**
+
+* [Jive Dev Platform Intro](https://developer.jivesoftware.com/intro/)
 * [Jive Node SDK](https://community.jivesoftware.com/docs/DOC-114053)
 * [Jive REST API](https://developers.jivesoftware.com/api/v3/cloud/rest/index.html)
+* [Jive Webhooks](https://developers.jivesoftware.com/api/v3/cloud/rest/WebhooksService.html)
 
+**GitHub-related Docs:**
+
+* [GitHub Tutorial](https://developer.github.com/guides/getting-started/)
+* [GitHub API](https://developer.github.com/v3/)
+* [GitHub Webhooks](https://developer.github.com/webhooks/)
 
 # Fork Us!
 

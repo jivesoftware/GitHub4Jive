@@ -24,7 +24,7 @@ thisHandler.name = "Active_Issue";
 module.exports = thisHandler;
 
 /*
- * This handler pushes new state changes to the activity feed.
+ * This handler pushes new GitHub state changes to the Jive activity feed.
  */
 
 thisHandler.setup = function(setupOptions) {
@@ -41,14 +41,18 @@ thisHandler.setup = function(setupOptions) {
         function (payload) {
             if(notAnIgnoredAction(payload.action)) {
                 var whoDunIt = payload.sender.login;
-                return self.gitHubFacade.getUserDetails(whoDunIt, auth).then(function (user) {
+                // 1. find out who the github user is
+                return self.gitHubFacade.getUserDetails(whoDunIt, auth).then(function (gitHubUser) {
+                    // 2. fetch the jive discussion that corresponds to the github issue
                     return self.helpers.getDiscussionForIssue(jiveApi, placeUrl,payload.issue.id).then(function (discussion) {
-                        var title = formatActivityHeadline(user, payload);
+                        // 3. create a Jive activity entry referencing the discussion
+                        var title = formatActivityHeadline(gitHubUser, payload);
                         var formattedData = self.tileFormatter.formatActivityData(
                             title, payload.issue.body,
-                            (user.name || user.login), user.email,
+                            (gitHubUser.name || gitHubUser.login), gitHubUser.email,
                             (discussion ? discussion.resources.html.ref : payload.issue.html_url)
                         );
+                        // 4. push the activity into Jive
                         jive.extstreams.pushActivity(instance, formattedData);
                     });
                 })

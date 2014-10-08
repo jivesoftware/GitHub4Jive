@@ -124,7 +124,7 @@ exports.getIssueComments = function (req, res) {
                     afterJiveMarker[0] = afterJiveMarker[0].substr(1); //remove space
                     comment.body = afterJiveMarker.join("]");
                 }
-            })
+            });
             contentResponse(res, comments);
         });
     }).catch(function (error) {

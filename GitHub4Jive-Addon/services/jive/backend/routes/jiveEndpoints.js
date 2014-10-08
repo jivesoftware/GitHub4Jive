@@ -19,12 +19,20 @@ var fs = require('fs');
 var jiveController = require("./../jiveController") ;
 var service = require('./../jiveOAuthController.js');
 
+/**
+ * Jive calls this service endpoint when it wants to notify the service of any events
+ * that the service has registered for.
+ */
 exports.webhookPortal = {
     'verb' : 'post',
     'path' : '/webhooks',
     'jiveLocked' : true,
     'route' : jiveController.webHookPortal
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// the following endpoints are used for acquiring an user access token for making calls
+// to Jive. They are invoked during the course of exercising the place configuration UI.
 
 exports.authorizeUrl = {
     'path' : '/jive/oauth/authorize',

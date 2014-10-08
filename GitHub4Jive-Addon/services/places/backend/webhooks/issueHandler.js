@@ -33,8 +33,7 @@ var POSSIBLE_GITHUB_TAGS = ["bug", "duplicate", "enhancement",  "question", "inv
 // public
 
 /*
- * Override of EventStrategyBase.Setup
- * SetupOptions are provided by a placeController.
+ * SetupOptions are provided by the webhookProcessor.
  */
 thisHandler.setup = function(setupOptions){
 

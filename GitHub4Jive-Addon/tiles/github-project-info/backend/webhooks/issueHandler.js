@@ -20,12 +20,12 @@ var GitHubWebhookEventHandler = require(libDir + "github4jive/GitHubWebhookEvent
 var tileInstanceProcessor = require("../tileInstanceProcessor");
 
 var thisHandler = Object.create(GitHubWebhookEventHandler);
-thisHandler.name = "Recent_Issue";
+thisHandler.name = "Project_Info";
 
 module.exports = thisHandler;
 
 /**
- * This handler tells the recent issue tile to push new data whenever an GitHub issue changes state.
+ * This handler tells the project info tile to push new data whenever a GitHub issue changes state.
  */
 thisHandler.setup = function(setupOptions){
 

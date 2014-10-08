@@ -22,8 +22,8 @@ var gitHubController = require("./../gitHubController");
 var service = require('./../gitHubOAuthController.js');
 
 /**
- * This endpoint is required for the GitHubFacade to deliver GitHub payloads
- * to registered event handlers.
+ * GitHub calls this endpoint when it wants to notify the service of
+ * events that the service has registered for.
  */
 exports.GitHubWebHookPortal = {
     'path': config.github.webHookUrl,
@@ -32,7 +32,7 @@ exports.GitHubWebHookPortal = {
 };
 
 /**
- * This endpoint is used extensively for configuration. This allows a user to get
+ * This endpoint is used by place configuration UIs. This allows a user to get
  * the list of possible repositories that can be accessed by the GitHub4Jive system.
  */
 exports.repositoryListForUser = {
@@ -41,6 +41,10 @@ exports.repositoryListForUser = {
     'jiveLocked' : true,
     'route' : gitHubController.getUserRepos
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// the following endpoints are used for proxying to GitHub.
 
 /**
  * Retrieve all issues for the repository currently linked to a place
@@ -85,6 +89,11 @@ exports.newComment = {
     'jiveLocked' : true,
     'route' : gitHubController.newComment
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// the following endpoints are used for acquiring an user access token for making calls
+// to GitHub. They are invoked during the course of exercising the place configuration UI.
 
 /**
  * These are required routes to handle the configurePlace.js process.

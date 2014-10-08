@@ -19,36 +19,9 @@ var q = require('q');
 
 var libDir = process.cwd() + "/lib/";
 var placeStore = require(libDir + "github4jive/placeStore");
-var gitFacade = require(libDir + "github4jive/gitHubFacade");
-var tileFormatter = require(libDir + "github4jive/tileFormatter");
+var tileInstanceProcessor = require("./tileInstanceProcessor");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
-
-/**
- * Handles actually pushing data to the tile instance
- * @param instance
- */
-var processTileInstance = function(instance) {
-    if ( instance.name === GITHUB_PROJECT_INFO_TILE ) {
-        var place = instance.config.parent;
-        return placeStore.getPlaceByUrl(place).then(function (linked) {
-            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-            return gitFacade.getRepository(linked.github.repoOwner, linked.github.repo, auth).then(function (repo) {
-                var dataToPush = tileFormatter.formatTableData(repo.full_name, [
-                    {name: "Last Updated", value: new Date(repo.pushed_at).toDateString()},
-                    {name: "Open Issues", value: repo.open_issues_count.toString()},
-                    {name: "Subscribers", value: repo.subscribers_count.toString()},
-                    {name: "Forks", value: repo.forks_count.toString()}
-
-                ]);
-                dataToPush.action = {"url":repo.html_url , "text": "Go To Repository"};
-                jive.tiles.pushData(instance, {"data": dataToPush});
-            });
-        })
-    }
-
-
-};
 
 /**
  * Iterates through the tile instances registered in the service, and pushes an update to it
@@ -57,7 +30,7 @@ var pushData = function() {
     var deferred = q.defer();
     jive.tiles.findByDefinitionName(GITHUB_PROJECT_INFO_TILE).then(function(instances) {
         if (instances) {
-            q.all(instances.map(processTileInstance)).then(function() {
+            q.all(instances.map(tileInstanceProcessor.processTileInstance)).then(function() {
                 deferred.resolve(); //success
             }, function() {
                 deferred.reject(); //failure
@@ -88,13 +61,13 @@ exports.eventHandlers = [
     // process tile instance whenever a new one is registered with the service
     {
         'event' : jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : processTileInstance
+        'handler' : tileInstanceProcessor.processTileInstance
     },
 
     // process tile instance whenever an existing tile instance is updated
     {
         'event' : jive.constants.globalEventNames.INSTANCE_UPDATED,
-        'handler' : processTileInstance
+        'handler' : tileInstanceProcessor.processTileInstance
     }
 ];
 

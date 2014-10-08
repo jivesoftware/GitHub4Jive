@@ -39,8 +39,8 @@ exports.processTileInstance = function(instance) {
                     {name: "Open Issues", value: repo.open_issues_count.toString()},
                     {name: "Subscribers", value: repo.subscribers_count.toString()},
                     {name: "Forks", value: repo.forks_count.toString()}
-
                 ]);
+
                 dataToPush.action = {"url":repo.html_url , "text": "Go To Repository"};
                 jive.tiles.pushData(instance, {"data": dataToPush});
             });

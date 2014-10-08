@@ -58,15 +58,15 @@ exports.onBootstrap = function(){
     });
 };
 
-/**
- * Schedules the tile update task to automatically fire every 10 seconds
- */
-exports.task = [
-    {
-        'interval' : 600000,//ten minutes
-        'handler' : pushData
-    }
-];
+// /**
+//  * Schedules the tile update task to automatically fire every 10 seconds
+//  */
+// exports.task = [
+//     {
+//         'interval' : 600000,//ten minutes
+//         'handler' : pushData
+//     }
+// ];
 
 /**
  * Defines event handlers for the tile life cycle events

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jive Software
+ * Copyright 2014 Jive Software
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,10 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 var jive = require("jive-sdk");
-var util = require("util");
-exports.route = function(req, res){
-    var conf = jive.service.options;
-    res.render('action.html', { host: jive.service.serviceURL() });
-};
+
+exports.decorateIssueWithJiveContent = function (jiveApi,place, issue) {
+    if(!issue.id){
+        throw Error("Invalid Issue");
+    }
+    return jiveApi.getByExtProp("github4jiveIssueId",issue.id).then(function (found) {
+        if(found.list.length > 0){
+            found.list.forEach(function (discussion) {
+                if(discussion.parent == place){
+                    issue.jiveContentLink = discussion.resources.html.ref;
+                    return discussion;
+                }
+            })
+        }
+        return issue;
+    })
+}

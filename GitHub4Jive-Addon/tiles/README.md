@@ -79,7 +79,7 @@ If the tile does not need additional configuration beyond attaching to a place a
 repository than add "config": "/github4jive/basicTileConfig" to its definition.json and it will 
 be configured along with all other basic tiles. No further work is necessary.
 
-<p>Use the basicOauthFlow.js file from the root public javascripts directory.
+<p>Use the configurePlace.js file from the root public javascripts directory.
 Tile configuration should include the following html to authenticate and configure the repository.</p>
 <code>
 ```html
@@ -121,7 +121,7 @@ when it has finished its configuration. Use this event to then do any additional
 and then close it. DO NOT close the tile by listening for github4jive-enable-submit click. This will cancel requests that
 are in progress that will break the basicOauthFlow configuration.
 
-The basicOauthFlow.js also emits "github4jiveAuthorized" when it has passed the authorization phase.  Use this event to
+The configurePlace.js also emits "github4jiveAuthorized" when it has passed the authorization phase.  Use this event to
 initialize any elements that require querying GitHub or Jive. The repository list is automatically populated.
 The j-card-configuration and j-card-action panels will be unhidden automatically if they are present when this event
 is triggered.

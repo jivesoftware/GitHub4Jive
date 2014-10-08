@@ -19,17 +19,20 @@ var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
 
-var processor = require("./webhookProcessor");
+var processor = require("./webhooks/webhookProcessor");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// public
 
 /*
  * This endpoint handles POSTS from Jive. These webhook payloads are processed in this controller.
- * There is currently no validation that the request is from Jive.
  */
 exports.webHookPortal = function (req, res) {
     //sort payloads oldest to newest
     var hookPayloads = req.body.sort(function (a,b) {
-            return new Date(a.activity.published).getTime() - new Date(b.activity.published).getTime();
+        return new Date(a.activity.published).getTime() - new Date(b.activity.published).getTime();
     });
+
     //now process each payload one at a time to preserve chronological order of comments
     processor.sequentiallyProcessPayloads(hookPayloads).then(function () {
         res.writeHead(200, { 'Content-Type': 'application/json' });

@@ -8,5 +8,6 @@
         "16" : "%serviceURL%/images/extension-16.png",
         "48" : "%serviceURL%/images/extension-48.png",
         "128" : "%serviceURL%/images/extension-128.png"
-    }
+    },
+    "config": "/github4jive/basicTileConfig"
 }

@@ -20,6 +20,7 @@ var q = require('q');
 var libDir = process.cwd() + "/lib/";
 var placeStore = require(libDir + "github4jive/placeStore");
 var tileInstanceProcessor = require("./tileInstanceProcessor");
+var gitHubWebhooksProcessor = require("./webhooks/webhookProcessor");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
 
@@ -43,6 +44,20 @@ var pushData = function() {
     return deferred.promise;
 };
 
+var updateTileInstance = function (newTile) {
+    if ( newTile.name === GITHUB_PROJECT_INFO_TILE ) {
+        gitHubWebhooksProcessor.setup(newTile).then(function () {
+            return tileInstanceProcessor.processTileInstance(newTile);
+        });
+    }
+};
+
+exports.onBootstrap = function(){
+    jive.tiles.findByDefinitionName( GITHUB_PROJECT_INFO_TILE ).then( function(tiles) {
+        return q.all(tiles.map(updateTileInstance));
+    });
+};
+
 /**
  * Schedules the tile update task to automatically fire every 10 seconds
  */
@@ -61,13 +76,13 @@ exports.eventHandlers = [
     // process tile instance whenever a new one is registered with the service
     {
         'event' : jive.constants.globalEventNames.NEW_INSTANCE,
-        'handler' : tileInstanceProcessor.processTileInstance
+        'handler' : updateTileInstance
     },
 
     // process tile instance whenever an existing tile instance is updated
     {
         'event' : jive.constants.globalEventNames.INSTANCE_UPDATED,
-        'handler' : tileInstanceProcessor.processTileInstance
+        'handler' : updateTileInstance
     }
 ];
 

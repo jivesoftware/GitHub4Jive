@@ -141,12 +141,6 @@
    <li>
       <a href="https://github.com/jivesoftware/jive-sdk/blob/master/jive-sdk-api/lib/community/community.js#L226">Invoke Jive APIs using access token, refresh if necessary</a>
    </li>
-   <li>
-      <a href=""></a>
-   </li>
-   <li>
-      <a href=""></a>
-   </li>
    
 </ul>
 </p>

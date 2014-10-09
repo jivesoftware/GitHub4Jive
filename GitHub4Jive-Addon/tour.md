@@ -127,7 +127,7 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookProcessor.js">GitHub webhook processor defines an issue handler</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51">Issue Handler creates a discussion when invoked on GitHub issue creation</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51">Issue Handler creates a Jive discussion when invoked on GitHub issue creation</a>
    </li>
    <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveContentBuilder.js#L88">Create a Jive discussion entity</a>
@@ -150,3 +150,18 @@
    
 </ul>
 </p>
+
+<h1>Reply to Jive Discussion on GitHub issue comment</h1>
+<p>
+<ul>
+   <li>
+      <a href=""></a>
+   </li>
+   <li>
+      <a href=""></a>
+   </li>
+   
+</ul>
+</p>
+
+

@@ -8,9 +8,9 @@ powerful.
 
 # Get Started
 
-For setup instructions, refer to the corresponding `README.md` in the add-on directory: 
+For setup instructions, refer to the corresponding `README.md` in each subdirectory: 
 
-* [Add-on Setup Instructions](GitHub4Jive-Addon)
+* [Add-on Setup Instructions (tiles, stream, REST, webhooks, cartridge)](GitHub4Jive-Addon)
 
 # Related Documentation
 

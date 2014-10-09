@@ -25,7 +25,7 @@
 </ul>
 </p>
 
-<h1>Jive tile registration + GitHub webhooks setup</h1>
+<h1>Jive tile registration -> Setup GitHub webhooks</h1>
 <p>
 <ul>
    <li>
@@ -48,7 +48,7 @@
 </ul>
 </p>
 
-<h1>Update Jive tiles on GitHub issue create</h1>
+<h1>GitHub issue create -> Update Jive tiles</h1>
 <p>
 <ul>
    <li>
@@ -73,7 +73,7 @@
 </ul>
 </p>
 
-<h1>Update Jive tiles on GitHub issue close</h1>
+<h1>GitHub issue close -> Update Jive Tiles</h1>
 <p>
 <ul>
    <li>
@@ -111,7 +111,7 @@
 </ul>
 </p>
 
-<h1>Create Jive Discussion on GitHub issue create</h1>
+<h1>GitHub issue create -> Create Jive siscussion</h1>
 <p>
 <ul>
    <li>
@@ -151,7 +151,7 @@
 </ul>
 </p>
 
-<h1>Reply to Jive Discussion on GitHub issue comment</h1>
+<h1>GitHub issue comment -> Jive Discussion reply</h1>
 <p>
 <ul>
    <li>

@@ -29,26 +29,26 @@ module.exports = new GitHubWebhookProcessor(
     //
     [ issueHandler ],
 
-    // test for unique tile
+    // equivalence tests for unique tile instances
     function(lhs, rhs) {
         return lhs.config.parent === rhs.config.parent;
     },
 
     //
-    setupInstance, tearDownInstance
+    setupInstanceHandler, tearDownInstanceHandler
 );
 
 /**
  * docs - todo
  */
-function setupInstance(instance){
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
+function setupInstanceHandler(instance){
+    var placeURL = instance.config.parent;
+    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
-            owner: linked.github.repoOwner,
-            repo: linked.github.repo,
-            gitHubToken: linked.github.token.access_token,
-            placeUrl: linked.placeUrl,
+            owner: place.github.repoOwner,
+            repo: place.github.repo,
+            gitHubToken: place.github.token.access_token,
+            placeUrl: place.placeUrl,
             instance: instance
         };
     });
@@ -57,12 +57,12 @@ function setupInstance(instance){
 /**
  * docs - todo
  */
-function tearDownInstance(instance) {
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
+function tearDownInstanceHandler(instance) {
+    var placeURL = instance.config.parent;
+    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
-            placeUrl: linked.placeUrl,
-            gitHubToken: linked.github.token.access_token
+            placeUrl: place.placeUrl,
+            gitHubToken: place.github.token.access_token
         };
     });
 }

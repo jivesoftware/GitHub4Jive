@@ -25,7 +25,7 @@
 </ul>
 </p>
 
-<h1>Tile instance registration</h1>
+<h1>Setup GitHub webhooks on tile instance registration</h1>
 <p>
 <ul>
    <li>

@@ -68,6 +68,10 @@
     <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js - Recent issues tile - recent issues datapush</a>
     </li>
+    
+    <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125 - Use gitHubFacade to fetch most recent repo issues from GitHub</a> 
+    </li>
 
   </ul>
 </p>

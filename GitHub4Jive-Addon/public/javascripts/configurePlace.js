@@ -1,7 +1,7 @@
 /*
  * configurePlace.js requires oauth2client.js to provide the Oauth2ServerFlow function
  *
- * The following html is required for basicOAuthFlow to work
+ * The following html is required for configurePlace.js to work
  *
 
  <div id="j-card-authentication" class="j-card" >

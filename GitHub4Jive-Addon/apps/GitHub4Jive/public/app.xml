@@ -120,45 +120,8 @@
 		</Param>  
 	</Require>
 
-    <!-- OAuth Services: https://developers.jivesoftware.com/community/docs/DOC-1161 -->
-    <!--
-    <OAuth>
-      <Service name="example">
-        <Access url="http://api.example.com/oauth/access_token" method="POST" />
-        <Request url="http://api.example.com/oauth/request_token" method="POST" />
-        <Authorization url="http://api.example.com/oauth/authorize" />
-      </Service>
-    </OAuth>
-    -->
-
-    <!-- Lifecycle Events: https://developers.jivesoftware.com/community/docs/DOC-1119 -->
-    <!--
-    <Link rel="event.addapp" href="http://www.example.com/add" />
-    <Link rel="event.removeapp" href="http://www.example.com/remove" />
-    -->
-
-    <!-- Preloaded Content: http://wiki.opensocial.org/index.php?title=Remote_Data_Requests_%28v0.9%29#Preloading_data -->
-    <!--
-    <Preload href="http://www.example.com" />
-    -->
-
   </ModulePrefs>
 
-  <!-- User Preferences: http://code.google.com/apis/gadgets/docs/reference.html#Userprefs_Ref -->
-  <!--
-  <UserPref name="where_i_live" display_name="Where I Live" datatype="string" default_value="" required="false" />
-  <UserPref name="subscribe_to_newsletter" display_name="Subscribe to Newsletter" datatype="bool" default_value="" required="false" />
-  <UserPref name="difficulty"
-       display_name="Difficulty"
-       datatype="enum"
-       default_value="2">
-    <EnumValue value="1" display_value="Easy"/>
-    <EnumValue value="2" display_value="Medium"/>
-    <EnumValue value="3" display_value="Hard"/>
-  </UserPref>
-  -->
-
-  <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
   <Content type="html" view="home,canvas" href="canvas.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-embed" href="issue-embed.html" preferred_height="400" />
   <Content type="html" view="github4jive-issue-new" href="issue-new.html" preferred_height="600" preferred_width="800"/>
@@ -168,11 +131,5 @@
   <Content type="html" view="github4jive-issue-view" href="issue-view.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-config" href="place-config.html" preferred_height="400" />
   <Content type="html" view="github4jive-place-tab" href="place-tab.html" preferred_height="400" />
-
-
-  <!--
-  <Content type="html" view="home" href="home.html" preferred_height="400" />
-  <Content type="html" view="canvas" href="canvas.html" />
-  -->
 
 </Module>

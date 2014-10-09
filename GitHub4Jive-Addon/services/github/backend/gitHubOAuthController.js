@@ -27,7 +27,7 @@ var mustache = require('mustache');
 var sdkInstance = require('jive-sdk/jive-sdk-service/routes/oauth');
 var myOauth = Object.create(sdkInstance);
 var libDir = process.cwd() + "/lib/";
-var tokenStore = require( libDir + "github4jive/placeStore");
+var placeStore = require( libDir + "github4jive/placeStore");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // public
@@ -69,12 +69,12 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
       token: token
     }};
 
-    tokenStore.save( placeRef, toStore).then( function() {
+    placeStore.save( placeRef, toStore).then( function() {
         callback({'ticket': tokenID });
     });
 };
 
 myOauth.getTokenStore = function() {
-    return tokenStore;
+    return placeStore;
 };
 

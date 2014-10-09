@@ -66,11 +66,11 @@ function addCommentToDiscussion(jiveApi, gitData, gitAuth, discussion){
             var builder = new self.jiveContentBuilder();
             var gitComment = gitData.comment.body;
             formatGitComment(gitComment);
-            var comment = builder.message()
+            var jiveReply = builder.message()
                 .body(gitComment)
                 .onBehalfOf(user.email || "", user.login)
                 .build();
-            return jiveApi.replyToDiscussion(discussion.contentID , comment).then(function (response) {
+            return jiveApi.replyToDiscussion(discussion.contentID , jiveReply).then(function (response) {
                 if (!response.success) {
                     jive.logger.error("Error creating comment on " + discussion.subject, response);
                 }else{

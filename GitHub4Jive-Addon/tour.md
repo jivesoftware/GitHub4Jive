@@ -124,10 +124,28 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L80">Kick off GitHub and Jive webhooks setup</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookProcessor.js">GitHub webhook processor</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookProcessor.js">GitHub webhook processor defines an issue handler</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51">Github Webhook Issue Handler creates a discussion when invoked on GitHub issue creation</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51">Issue Handler creates a discussion when invoked on GitHub issue creation</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveContentBuilder.js#L88">Create a Jive discussion entity</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L70">Create extended props for Jive discussion (binding it to remote GitHub issue)</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L229">Call Jive to add extended props to Jive discussion</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/jive-sdk/blob/master/jive-sdk-api/lib/community/community.js#L226">Invoke Jive APIs using access token, refresh if necessary</a>
+   </li>
+   <li>
+      <a href=""></a>
+   </li>
+   <li>
+      <a href=""></a>
    </li>
    
 </ul>

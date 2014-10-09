@@ -1,4 +1,4 @@
-<h1>Place configuration</h1>
+<h1>Capture Jive and GitHub access tokens</h1>
 <p>
 <ul>
    <li>
@@ -21,21 +21,6 @@
    </li>
    <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js">Logic for storing Jive access token</a>
-   </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/routes/placeEndpoints.js#L22">Endpoint for triggering place webhook setup</a>
-   </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L80">Kick off webhook setup</a>
-   </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookProcessor.js">GitHub webhook processor - setting up</a>
-   </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Github Webhook processor - Issue Handler</a>
-   </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Github Webhook processor - Issue Comment Handler</a>
    </li>
 </ul>
 </p>
@@ -85,5 +70,32 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">Use gitHubFacade to fetch most recent repo issues from GitHub</a> 
    </li>
    
+</ul>
+</p>
+
+<h1>Place configuration</h1>
+<p>
+<ul>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon">Service structure</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199">Config modal JS</a> 
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/routes/placeEndpoints.js#L22">Endpoint for triggering place webhook setup</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L80">Kick off webhook setup</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookProcessor.js">GitHub webhook processor - setting up</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Github Webhook processor - Issue Handler</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Github Webhook processor - Issue Comment Handler</a>
+   </li>
 </ul>
 </p>

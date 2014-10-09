@@ -48,7 +48,7 @@
 </ul>
 </p>
 
-<h1>GitHub issue create -> Update Jive tiles</h1>
+<h1>Create GitHub issue -> Update Jive tiles</h1>
 <p>
 <ul>
    <li>
@@ -73,7 +73,7 @@
 </ul>
 </p>
 
-<h1>GitHub issue close -> Update Jive Tiles</h1>
+<h1>Close GitHub issue via Tile Action -> Update Jive Tiles</h1>
 <p>
 <ul>
    <li>
@@ -111,7 +111,7 @@
 </ul>
 </p>
 
-<h1>GitHub issue create -> Create Jive siscussion</h1>
+<h1>Create GitHub issue -> Create Jive discussion</h1>
 <p>
 <ul>
    <li>
@@ -151,7 +151,7 @@
 </ul>
 </p>
 
-<h1>GitHub issue comment -> Jive Discussion reply</h1>
+<h1>Comment GitHub issue -> Jive Discussion reply</h1>
 <p>
 <ul>
    <li>

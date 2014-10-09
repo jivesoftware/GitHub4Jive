@@ -5,22 +5,22 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon">Service structure</a>
    </li>
    <li>  
-      <a href='https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/configuration.html'>(Front End) Config modal HTML</a>
+      <a href='https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/configuration.html'>(Front End) Invoke config modal HTML</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199">(Front End) Config modal JS</a> 
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199">(Front End) Config JS launches 3-legged OAuth with Jive + GitHub</a> 
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102">Endpoint for capturing GitHub access token</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102">Browser invokes service endpoint for capturing GitHub access token</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubOAuthController.js#L42">Logic for storing GitHub access token</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubOAuthController.js#L42">Service stores GitHub access token</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js">Endpoint for capturing Jive access token</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js">Browser invokes service endpoint for capturing Jive access token</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js">Logic for storing Jive access token</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js">Service stores Jive access token</a>
    </li>
 </ul>
 </p>
@@ -32,17 +32,17 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/tiles">Tiles home</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js#L54">Recent issues tile registration handler</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js#L54">Service handles tile registration call from Jive</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js">Recent issues tile - setup github webhook processor</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js">Tile registration handler sets up github webhook processor</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js">Recent issues tile - github issue state change handler</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js">The GitHub issue state change webhook handler</a>
    </li>
    
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211">Subscribe to github repo event</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211">Subscribing to GitHub repo event</a>
    </li>
 
 </ul>
@@ -64,10 +64,10 @@
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Execute Recent Issues tile datapush handler</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">Recent issues datapush</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">Recent issues are pushed to Jive</a>
    </li>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">Use gitHubFacade to fetch most recent repo issues from GitHub</a> 
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">Using gitHubFacade to fetch most recent repo issues from GitHub</a> 
    </li>
    
 </ul>
@@ -77,11 +77,11 @@
 <p>
 <ul>
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js#L77">Push tile entry action context (in tileInstanceProcessor)</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js#L77">Define tile action context as part of tile push</a>
    </li>
 
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/routes/action/get.js">Define tile entry action route</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/routes/action/get.js">Define the tile entry action route (powers the modal)</a>
    </li>
 
    <li>
@@ -93,11 +93,11 @@
    </li>
 
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L66">Endpoint for proxying close issue call to GitHub</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L66">Invoke endpoint for proxying close issue calls to GitHub</a>
    </li>
 
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L143">Controller which performs close issue proxy call to GitHub</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L143">Serive performs close issue proxy call to GitHub</a>
    </li>
    
    <li>
@@ -105,7 +105,7 @@
    </li>
    
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Recent Issues tile datapush handler is invoked by GitHub on issue close</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Update recent issues tile when webhook postback URL is called by GitHub</a>
    </li>   
    
 </ul>

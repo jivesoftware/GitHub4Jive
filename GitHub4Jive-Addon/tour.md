@@ -105,9 +105,8 @@
    </li>
    
    <li>
-      <a href=""></a>
-   </li>
-   
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Recent Issues tile datapush handler is invoked by GitHub on issue close</a>
+   </li>   
    
 </ul>
 </p>
@@ -136,8 +135,6 @@
    <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Github Webhook processor - Issue Comment Handler</a>
    </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Recent Issues tile datapush handler is invoked by GitHub on issue close</a>
-   </li>
+
 </ul>
 </p>

@@ -50,15 +50,23 @@
   <ul>
 
     <li>
-      <a href=""></a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/tiles">GitHub4Jive/tree/master/GitHub4Jive-Addon/tiles - Tiles home</a>
     </li>
 
     <li>
-      <a href=""></a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js#L54">GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js - Recent issues tile registration handler</a>
     </li>
 
     <li>
-      <a href=""></a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js">GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js - Recent issues tile - setup github webhook processor</a>
+    </li>
+
+    <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js">GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js - Recent issues tile - github issue state change handler</a>
+    </li>
+
+    <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js - Recent issues tile - recent issues datapush</a>
     </li>
 
   </ul>

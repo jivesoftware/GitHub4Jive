@@ -55,12 +55,11 @@
    <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js">Recent issues tile - github issue state change handler</a>
    </li>
+   
    <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">Recent issues datapush</a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211">Subscribe to github repo event</a>
    </li>
-   <li>
-      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">Use gitHubFacade to fetch most recent repo issues from GitHub</a> 
-   </li>
+
 </ul>
 </p>
 
@@ -76,13 +75,14 @@
    <li>
       <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L306">Execute registered event handlers</a>
    </li>
-   
    <li>
-      <a href=""></a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js">Execute Recent Issues tile datapush handler</a>
    </li>
-   
    <li>
-      <a href=""></a>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js">Recent issues datapush</a>
+   </li>
+   <li>
+      <a href="https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L125">Use gitHubFacade to fetch most recent repo issues from GitHub</a> 
    </li>
    
 </ul>

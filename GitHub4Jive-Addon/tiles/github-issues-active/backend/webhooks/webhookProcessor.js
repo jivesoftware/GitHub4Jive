@@ -43,9 +43,9 @@ module.exports = new GitHubWebhookProcessor(
 /**
  * docs - todo
  */
-function setupInstance(instance){
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (place) {
+function setupInstance(tileInstance){
+    var parentPlaceURL = tileInstance.config.parent;
+    return placeStore.getPlaceByUrl(parentPlaceURL).then(function (place) {
         return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
             var jiveAuth = new JiveOAuth(place, place.jive.access_token, place.jive.refresh_token);
             return {
@@ -54,7 +54,7 @@ function setupInstance(instance){
                 jiveApi: new JiveApi(community, jiveAuth),
                 gitHubToken: place.github.token.access_token,
                 placeUrl: place.placeUrl,
-                instance: instance
+                instance: tileInstance
             };
         });
     });

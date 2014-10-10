@@ -58,7 +58,7 @@
   * [Invoke Jive APIs using access token, refresh if necessary](https://github.com/jivesoftware/jive-sdk/blob/master/jive-sdk-api/lib/community/community.js#L226)
 
 * **Sequence 8 & 9 Code: Comment GitHub issue --> Jive Discussion reply**
-  * TBD
+  * [Jive calls service webhook postback endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js#L26)
   * TBD
   * TBD
   * TBD

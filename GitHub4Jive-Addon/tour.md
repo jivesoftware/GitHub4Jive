@@ -68,7 +68,7 @@
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions2.jpg "Issue Discussions 2")
 
-* **Sequence 10 Code: TBD**
+* **Sequence 10 Code: Jive Discussion reply --> Comment on GitHub issue**
   * TBD
   * TBD
   * TBD

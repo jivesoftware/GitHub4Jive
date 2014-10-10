@@ -69,10 +69,13 @@
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions2.jpg "Issue Discussions 2")
 
 * **Sequence 10 Code: Jive Discussion reply --> Comment on GitHub issue**
-  * TBD
-  * TBD
-  * TBD
-  * TBD
+  * [Jive invokes service webhook endpoint]
+  * [Endpoint delegates to controller]
+  * [Controller forwards reply event to processor]
+  * [Processor determines its a discussion reply, delegates to issue comment handler]
+  * [Issue comment handler fetches jive discussion]
+  * [Issue comment handler fetches discussion ext props to locate linked github issue]
+  * [Issue comment handler uses GitHub facade to post a new comment on the issue]
 
 ## Issue Actions
 

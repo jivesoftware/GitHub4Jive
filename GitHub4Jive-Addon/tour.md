@@ -58,10 +58,11 @@
   * [Invoke Jive APIs using access token, refresh if necessary](https://github.com/jivesoftware/jive-sdk/blob/master/jive-sdk-api/lib/community/community.js#L226)
 
 * **Sequence 8 & 9 Code: Comment GitHub issue --> Jive Discussion reply**
-  * [Jive calls service webhook postback endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js#L26)
-  * TBD
-  * TBD
-  * TBD
+  * [GitHub calls service webhook endoint]()
+  * [GitHubFacade invokes registered event handler]()
+  * [Place issue comment handler is invoked]()
+  * [Issue handler queries Jive for related discussion via ext props]()
+  * [Issue handler uses Jive api facade to create discussion reply]()
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions2.jpg "Issue Discussions 2")
 

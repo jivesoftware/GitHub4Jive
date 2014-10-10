@@ -69,13 +69,14 @@
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions2.jpg "Issue Discussions 2")
 
 * **Sequence 10 Code: Jive Discussion reply --> Comment on GitHub issue**
-  * [Jive invokes service webhook endpoint]
-  * [Endpoint delegates to controller]
-  * [Controller forwards reply event to processor]
-  * [Processor determines its a discussion reply, delegates to issue comment handler]
-  * [Issue comment handler fetches jive discussion]
-  * [Issue comment handler fetches discussion ext props to locate linked github issue]
-  * [Issue comment handler uses GitHub facade to post a new comment on the issue]
+  * [Registered Jive service webhook](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L107) 
+  * [Jive invokes service webhook endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js#L27)
+  * [Endpoint delegates to controller](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveController.js#L30)
+  * [Controller forwards reply event to webhook processor, determines its a discussion reply, delegates to issue comment handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/webhookProcessor.js#L74)
+  * [Discussion Reply handler fetches jive discussion](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L38)
+  * [Discussion Reply handler fetches discussion ext props to locate linked github issue](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L47)
+  * [Discussion Reply handler uses GitHub facade to post a new comment on the issue](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L59)
+  * [GitHub facade posts a new issue comment](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L191)
 
 ## Issue Actions
 

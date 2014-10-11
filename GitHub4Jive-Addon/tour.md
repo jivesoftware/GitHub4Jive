@@ -83,10 +83,9 @@
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/actions1.jpg "Issue Actions 1")
 
 * **Sequence 11 Code: TBD**
-  * TBD
-  * TBD
-  * TBD
-  * TBD
+  * [App location](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/apps/GitHub4Jive/public)
+  * [Discussion app action definitions](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L59)
+  * [App action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
 
 * **Sequence 12 Code: TBD**
   * TBD

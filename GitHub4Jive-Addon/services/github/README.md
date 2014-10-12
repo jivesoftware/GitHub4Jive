@@ -1,4 +1,4 @@
-![]("GitHub for Jive - Developer Notes")
+**GitHub for Jive - Developer Notes**
 
 This service is for anything that is coming from Github or anything coming from the
 browser that will go to or query Github via a proxied api call.
@@ -13,6 +13,5 @@ browser that will go to or query Github via a proxied api call.
   * POST /github/place/newComment
 
 **backend/gitHubOAuthController.js**
-------------------------
-GET /github/oauth/callback
-GET /github/oauth/authorize
+  * GET /github/oauth/callback
+  * GET /github/oauth/authorize

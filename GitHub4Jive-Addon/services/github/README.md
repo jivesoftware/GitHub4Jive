@@ -1,3 +1,4 @@
+<pre>
 GitHub for Jive - Developer Notes
 =================================
 
@@ -18,5 +19,4 @@ gitHubOAuthController.js
 ------------------------
 GET /github/oauth/callback
 GET /github/oauth/authorize
-
-
+</pre>

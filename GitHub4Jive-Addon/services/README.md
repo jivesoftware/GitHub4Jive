@@ -15,10 +15,6 @@ Have no long running processes. They currently are simply controllers for proxie
 to respective systems. They also house the endpoints for respective webhook endpoints to 
 receive payloads. 
 
-Note: The GitHub Endpoint should not be edited to add functionality to events. Instead use
-the Event Strategies abstraction by using the EventStrategySkeleton class and related
-overridden builders and strategies.
-
 Place Service
 -------------
 

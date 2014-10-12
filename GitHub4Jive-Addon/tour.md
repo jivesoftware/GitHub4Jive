@@ -97,10 +97,11 @@
 * **Sequence 11 Code: State-aware app actions**
   * [App location](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/apps/GitHub4Jive/public)
   * [Discussion app action definitions](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L59)
+  * [Discussion ext properties are set](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L107)
   * [App action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
 
 * **Sequence 12 Code: TBD**
-  * TBD
-  * TBD
-  * TBD
-  * TBD
+  * [Jive calls service webhook endpoint]()
+  * [Service endpoint calls GitHub to close issue]()
+  * [GitHub calls service webhook endpoint]()
+  * [Discussion ext properties are set, indicating closure](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L123)

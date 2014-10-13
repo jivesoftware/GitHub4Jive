@@ -1,11 +1,11 @@
 {
-    "clientUrl": "http://mighty-missile-20-135980.usw1-2.nitrousbox.com",
-    "port": "8080",
+    "clientUrl": "REPLACE_ME",
+    "port": "8090",
     "development": true,
     "logLevel": "DEBUG",
     "ignoreExtensionRegistrationSource" : true,
     "extensionInfo" : {
-        "name" : "GitHub4JiveAron",
+        "name" : "GitHub4Jive",
         "description" : "Connect your GitHub repo to Jive to collaborate on Issues, Commits and Pull Requests and manage your repo."
     },
     "jive" : {
@@ -16,8 +16,8 @@
     "github" : {
         "oauth2" : {
             "clientOAuth2CallbackUrl" : "/github/oauth/callback",
-            "oauth2ConsumerKey": "d7e0cf42a146e0820489",
-            "oauth2ConsumerSecret": "ab885f388de85591afa94ad73a9508df65d31c28",
+            "oauth2ConsumerKey": "REPLACE_ME",
+            "oauth2ConsumerSecret": "REPLACE_ME",
             "oauth2Scope": "public_repo,user",
             "originServerAuthorizationUrl": "https://github.com/login/oauth/authorize",
             "originServerTokenRequestUrl": "https://github.com/login/oauth/access_token"

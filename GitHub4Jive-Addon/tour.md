@@ -1,8 +1,10 @@
 # GitHub4Jive Sequences and Code Refs
 
-## Issue Management
+## Issue Browser
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/issues1.jpg "Issue Management 1")
+Using a Place Tab to view GitHub issues in Jive
+
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/place1.jpg "Issue Browser")
 
 * **Sequence 1 Code:** Capture GitHub access tokens
   * [Service structure](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon)
@@ -13,14 +15,7 @@
   * [Browser invokes service endpoint for capturing Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js)
   * [Service stores Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js)
 
-* **Sequence 2 Code:** Jive tile registration --> setup GitHub webhooks
-  * [Tiles directory](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/tiles)
-  * [Service handles tile registration from Jive](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js#L54)
-  * [Tile registration handler sets up GitHub webhooks processor](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js)
-  * [GitHub issue state change webhook handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js)
-  * [Service subscribes to GitHub repo events](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211)
-
-* **Places Issues tab:** Browse ist of all repo issues via embedded app view
+* **Sequence 2 Code:** Browse ist of all repo issues via embedded app view within a Purposeful Place tab
   * [App contributes a tab into places](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L101)
   * [HTML of the issues tab](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/place-tab.html)
   * [Tab JS calls service to fetch issues from GitHub](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/place-tab.js#L23)
@@ -32,9 +27,22 @@
   * [Controller uses external props for access to the linked GitHub repo, and fetches issues](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L86)
   * [Tab JS gets list of issues and updates the DOM](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/place-tab.js#L30)
 
+## Issue Management
+
+Using Tiles in a Purposeful Place to track GitHub issues 
+
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/issues1.jpg "Issue Management 1")
+
+* **Sequence 3 & 4 Code:** Jive tile registration --> setup GitHub webhooks
+  * [Tiles directory](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/tiles)
+  * [Service handles tile registration from Jive](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/controller.js#L54)
+  * [Tile registration handler sets up GitHub webhooks processor](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookProcessor.js)
+  * [GitHub issue state change webhook handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js)
+  * [Service subscribes to GitHub repo events](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211)
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/issues2.jpg "Issue Management 2")
 
-* **Sequence 3 Code:** Create GitHub issue --> Update Jive tiles
+* **Sequence 5 Code:** Create GitHub issue --> Update Jive tiles
   * [GitHub calls service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28)
   * [Service forwards to GitHub facade to find event handlers](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L40)
   * [Execute registered event handlers](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L306)
@@ -44,7 +52,7 @@
   
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/issues3.jpg "Issue Management 3")
 
-* **Sequence 4 & 5 Code:** Close GitHub issue via tile action --> update Jive tiles
+* **Sequence 6 & 7 Code:** Close GitHub issue via tile action --> update Jive tiles
   * [Define tile action context as part of tile push](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js#L77)
   * [Define the tile entry action route (powers the modal)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/routes/action/get.js)
   * [Tile entry action modal HTML (front end)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/public/action.html)
@@ -57,9 +65,11 @@
 
 ## Issue Discussions
 
+Using a Jive discussion to comment on a GitHub issue
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions1.jpg "Issue Discussions 1")
 
-* **Sequence 6 & 7 Code:** Create GitHub issue --> Create Jive discussion
+* **Sequence 8 & 9 Code:** Create GitHub issue --> Create Jive discussion
   * [Config modal JS calls place setup endpoint (front end)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L255)
   * [Endpoint for triggering place setup](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/routes/placeEndpoints.js#L22)
   * [Kick off GitHub and Jive webhooks setup](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L80)
@@ -71,7 +81,7 @@
   * [Call Jive to add extended props to Jive discussion](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L229)
   * [Invoke Jive APIs using access token, refresh if necessary](https://github.com/jivesoftware/jive-sdk/blob/master/jive-sdk-api/lib/community/community.js#L226)
 
-* **Sequence 8 & 9 Code: Comment GitHub issue --> Jive Discussion reply**
+* **Sequence 10 & 11 Code: Comment GitHub issue --> Jive Discussion reply**
   * [GitHub calls service webhook endoint, forwards to controller](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28)
   * [Controller forwards GitHub event to GitHubFacade for processing](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L40)
   * [GitHubFacade invokes registered event handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L306)
@@ -82,7 +92,7 @@
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/discussions2.jpg "Issue Discussions 2")
 
-* **Sequence 10 Code: Jive Discussion reply --> Comment on GitHub issue**
+* **Sequence 12 Code: Jive Discussion reply --> Comment on GitHub issue**
   * [Registered Jive service webhook](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/placeController.js#L107) 
   * [Jive invokes service webhook endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js#L27)
   * [Endpoint delegates to controller](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveController.js#L30)
@@ -94,15 +104,17 @@
 
 ## Issue Actions
 
+Using Jive app actions to manage GitHub issues 
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/actions1.jpg "Issue Actions 1")
 
-* **Sequence 11 Code: State-aware app actions**
+* **Sequence 13 Code: State-aware app actions**
   * [App location](https://github.com/jivesoftware/GitHub4Jive/tree/master/GitHub4Jive-Addon/apps/GitHub4Jive/public)
   * [Discussion app action definitions](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L59)
   * [Discussion ext properties are set](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L107)
   * [App action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
 
-* **Sequence 12 Code: TBD**
+* **Sequence 14 Code: TBD**
   * [Jive calls service webhook endpoint]()
   * [Service endpoint calls GitHub to close issue]()
   * [GitHub calls service webhook endpoint]()

@@ -1,6 +1,6 @@
 # GitHub4Jive Sequences and Code Refs
 
-## Issue Browser
+## Browsing GitHub Issues in Jive
 
 Using a Place Tab to view GitHub issues in Jive
 
@@ -27,7 +27,7 @@ Using a Place Tab to view GitHub issues in Jive
   * [Controller uses external props for access to the linked GitHub repo, and fetches issues](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L86)
   * [Tab JS gets list of issues and updates the DOM](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/place-tab.js#L30)
 
-## Issue Management
+## Managing GitHub Issues in Jive
 
 Using Tiles in a Purposeful Place to track GitHub issues 
 

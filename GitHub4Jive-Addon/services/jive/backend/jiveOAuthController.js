@@ -35,9 +35,9 @@ myOauth.fetchOAuth2Conf = function() {
 };
 
 myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse, callback ) {
-    console.log("************************* OAUTH CALLBACK");
-    console.log('************************* State', state);
-    console.log('************************* originServerAccessTokenResponse', originServerAccessTokenResponse);
+    jive.logger.debug("************************* OAUTH CALLBACK");
+    jive.logger.debug('************************* State', state);
+    jive.logger.debug('************************* originServerAccessTokenResponse', originServerAccessTokenResponse);
 
     var placeRef = state.context.place;
 
@@ -45,7 +45,6 @@ myOauth.oauth2SuccessCallback = function( state, originServerAccessTokenResponse
     toStore.jive = originServerAccessTokenResponse.entity;
     toStore.jive.userID =  state['viewerID'];
     placeStore.save(placeRef, toStore).then( function() {
-        console.log('************************* doing callback');
         callback({'ticket': state['viewerID'] });
     });
 };

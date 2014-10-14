@@ -23,7 +23,7 @@ var placeStore = require(libDir + "github4jive/placeStore");
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueHandler");
+var issueHandler = require("./issueHandler"); // listen for issue create/close events and push updated issues to the tile
 
 module.exports = new GitHubWebhookProcessor(
     //

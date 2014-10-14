@@ -1,8 +1,8 @@
 # GitHub4Jive Sequences and Code Refs
 
-## Browsing GitHub Issues in Jive
+## Browsing GitHub Issues in Jive Places
 
-Using a Place Tab to view GitHub issues in Jive Places
+Using a Place Tab to view GitHub issues in Jive
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/place1.jpg "Issue Browser")
 

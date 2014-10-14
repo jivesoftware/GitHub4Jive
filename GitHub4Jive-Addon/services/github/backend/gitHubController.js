@@ -81,12 +81,12 @@ exports.getPlaceIssues = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
 
-    placeStore.getPlaceByUrl(placeUrl).then(function (linked) {
-        var auth = gitHubFacade.createOauthObject(linked.github.token.access_token);
-        gitHubFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth).then(function (issues) {
+    placeStore.getPlaceByUrl(placeUrl).then(function (place) {
+        var auth = gitHubFacade.createOauthObject(place.github.token.access_token);
+        gitHubFacade.getRepositoryIssues(place.github.repoOwner, place.github.repo, auth).then(function (issues) {
             if (issues.length) {
-                return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-                    var jAuth = new JiveAuth(linked.placeUrl, linked.jive.access_token, linked.jive.refresh_token);
+                return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
+                    var jAuth = new JiveAuth(place.placeUrl, place.jive.access_token, place.jive.refresh_token);
                     var japi = new JiveApi(community, jAuth);
                     q.all(issues.map(function (issue) {
                             return jiveDecorator.decorateIssueWithJiveContent(japi, placeUrl, issue);

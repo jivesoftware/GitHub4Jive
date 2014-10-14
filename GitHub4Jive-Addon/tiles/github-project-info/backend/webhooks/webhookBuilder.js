@@ -17,52 +17,52 @@
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var GitHubWebhookBuilder = require(libDir + "github4jive/GitHubWebhookBuilder");
 var placeStore = require(libDir + "github4jive/placeStore");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueHandler"); // listen for issue create/close events and push updated issues to the tile
+var issueHandler = require("./issueHandler");
 
-module.exports = new GitHubWebhookProcessor(
+module.exports = new GitHubWebhookBuilder(
     //
     [ issueHandler ],
 
-    // equivalence tests for unique tile instances
+    // test for unique tile
     function(lhs, rhs) {
         return lhs.config.parent === rhs.config.parent;
     },
 
     //
-    setupInstanceHandler, tearDownInstanceHandler
+    setupInstance, tearDownInstance
 );
 
 /**
- * Required by issueHandler#setup
+ * docs - todo
  */
-function setupInstanceHandler(tileInstance){
-    var placeURL = tileInstance.config.parent;
-    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
+function setupInstance(instance){
+    var place = instance.config.parent;
+    return placeStore.getPlaceByUrl(place).then(function (linked) {
         return {
-            owner: place.github.repoOwner,
-            repo: place.github.repo,
-            gitHubToken: place.github.token.access_token,
-            placeUrl: place.placeUrl,
-            instance: tileInstance
+            owner: linked.github.repoOwner,
+            repo: linked.github.repo,
+            gitHubToken: linked.github.token.access_token,
+            placeUrl: linked.placeUrl,
+            instance: instance
         };
     });
 }
 
 /**
- * Required by issueHandler#setup
+ * docs - todo
  */
-function tearDownInstanceHandler(tileInstance) {
-    var placeURL = tileInstance.config.parent;
-    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
+function tearDownInstance(instance) {
+    var place = instance.config.parent;
+    return placeStore.getPlaceByUrl(place).then(function (linked) {
         return {
-            placeUrl: place.placeUrl,
-            gitHubToken: place.github.token.access_token
+            placeUrl: linked.placeUrl,
+            gitHubToken: linked.github.token.access_token
         };
     });
 }

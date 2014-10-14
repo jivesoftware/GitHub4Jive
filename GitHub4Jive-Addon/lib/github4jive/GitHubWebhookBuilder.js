@@ -20,7 +20,7 @@ var libDir = process.cwd() + "/lib/";
 var EventStrategySkeleton = require(libDir + "github4jive/strategies/EventStrategySkeleton");
 var StrategySetBuilderBase = require(libDir + "github4jive/strategies/StrategySetBuilderBase");
 
-function GitHubWebhookProcessor(
+function GitHubWebhookBuilder(
     handlers,
     predicate,
     setupHandlerContextProvider,
@@ -30,8 +30,8 @@ function GitHubWebhookProcessor(
   // setup webhook processor by creating a webhook handler object
   // and attaching event handlers to it
 
-  // 1. create an object which will help construct a webhook processor
-  // and attach the event handlers to it
+  // 1. create an object which will help construct a webhook
+  // and attach the supplied event handlers to it
   var configurator = new StrategySetBuilderBase();
 
   // 2. create the webhook processor object
@@ -51,9 +51,9 @@ function GitHubWebhookProcessor(
   this.processor = processor;
 }
 
-GitHubWebhookProcessor.prototype.setup = function(watchedObject) {
+GitHubWebhookBuilder.prototype.setup = function(watchedObject) {
     var processor = this.processor;
     return processor.addOrUpdate.call( processor, watchedObject );
 };
 
-module.exports = GitHubWebhookProcessor;
+module.exports = GitHubWebhookBuilder;

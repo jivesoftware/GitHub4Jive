@@ -20,7 +20,7 @@ var q = require('q');
 var libDir = process.cwd() + "/lib/";
 var placeStore = require(libDir + "github4jive/placeStore");
 var tileInstanceProcessor = require("./tileInstanceProcessor");
-var gitHubWebhooks = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookBuilder");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
 

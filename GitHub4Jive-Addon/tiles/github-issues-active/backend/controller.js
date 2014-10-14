@@ -18,7 +18,7 @@ var GITHUB_ISSUES_ACTIVITY_TILE = 'github-issues-active';
 
 var jive = require("jive-sdk");
 var libDir = process.cwd() + "/lib/";
-var gitHubWebhooks = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookBuilder");
 
 /**
  * Handles event handlers registration and un registration

@@ -19,7 +19,7 @@ var url = require('url');
 var jive = require("jive-sdk");
 var q = require("q");
 
-var processor = require("./webhooks/webhookProcessor");
+var processor = require("./webhooks/webhookBuilder");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // public

@@ -18,7 +18,7 @@ var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
 var JiveOauth = require(libDir + "github4jive/JiveOauth");
-var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var GitHubWebhookBuilder = require(libDir + "github4jive/GitHubWebhookBuilder");
 var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 var issueHandler = require("./issueHandler");               // creates Jive discussions based on GitHub issue creation event
 var issueCommentHandler = require("./issueCommentHandler"); // replies to Jive discussions based on GitHub issue comment event
 
-module.exports = new GitHubWebhookProcessor(
+module.exports = new GitHubWebhookBuilder(
     //
     [ issueHandler, issueCommentHandler ],
 

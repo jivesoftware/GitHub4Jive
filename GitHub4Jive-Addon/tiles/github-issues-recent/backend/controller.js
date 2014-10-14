@@ -19,7 +19,7 @@ var q = require("q");
 
 var libDir = process.cwd() + "/lib/";
 var tileInstanceProcessor = require("./tileInstanceProcessor");
-var gitHubWebhooks = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookBuilder");
 
 var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
 ////////////////////////////////////////

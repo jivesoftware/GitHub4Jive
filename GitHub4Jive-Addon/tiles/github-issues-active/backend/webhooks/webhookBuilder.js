@@ -17,7 +17,7 @@
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var GitHubWebhookBuilder = require(libDir + "github4jive/GitHubWebhookBuilder");
 var placeStore = require(libDir + "github4jive/placeStore");
 var JiveApi = require(libDir + "github4jive/JiveApiFacade");
 var JiveOAuth = require(libDir + "github4jive/JiveOauth");
@@ -25,9 +25,9 @@ var JiveOAuth = require(libDir + "github4jive/JiveOauth");
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueHandler");
+var issueHandler = require("./issueHandler"); // will push an external activity entry on github issue state change events
 
-module.exports = new GitHubWebhookProcessor(
+module.exports = new GitHubWebhookBuilder(
     //
     [ issueHandler ],
 

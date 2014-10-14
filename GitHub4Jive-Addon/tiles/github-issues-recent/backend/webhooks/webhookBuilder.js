@@ -17,52 +17,52 @@
 var jive = require("jive-sdk");
 
 var libDir = process.cwd() + "/lib/";
-var GitHubWebhookProcessor = require(libDir + "github4jive/GitHubWebhookProcessor");
+var GitHubWebhookBuilder = require(libDir + "github4jive/GitHubWebhookBuilder");
 var placeStore = require(libDir + "github4jive/placeStore");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueHandler");
+var issueHandler = require("./issueHandler"); // listen for issue create/close events and push updated issues to the tile
 
-module.exports = new GitHubWebhookProcessor(
+module.exports = new GitHubWebhookBuilder(
     //
     [ issueHandler ],
 
-    // test for unique tile
+    // equivalence tests for unique tile instances
     function(lhs, rhs) {
         return lhs.config.parent === rhs.config.parent;
     },
 
     //
-    setupInstance, tearDownInstance
+    setupInstanceHandler, tearDownInstanceHandler
 );
 
 /**
- * docs - todo
+ * Required by issueHandler#setup
  */
-function setupInstance(instance){
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
+function setupInstanceHandler(tileInstance){
+    var placeURL = tileInstance.config.parent;
+    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
-            owner: linked.github.repoOwner,
-            repo: linked.github.repo,
-            gitHubToken: linked.github.token.access_token,
-            placeUrl: linked.placeUrl,
-            instance: instance
+            owner: place.github.repoOwner,
+            repo: place.github.repo,
+            gitHubToken: place.github.token.access_token,
+            placeUrl: place.placeUrl,
+            instance: tileInstance
         };
     });
 }
 
 /**
- * docs - todo
+ * Required by issueHandler#setup
  */
-function tearDownInstance(instance) {
-    var place = instance.config.parent;
-    return placeStore.getPlaceByUrl(place).then(function (linked) {
+function tearDownInstanceHandler(tileInstance) {
+    var placeURL = tileInstance.config.parent;
+    return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
-            placeUrl: linked.placeUrl,
-            gitHubToken: linked.github.token.access_token
+            placeUrl: place.placeUrl,
+            gitHubToken: place.github.token.access_token
         };
     });
 }

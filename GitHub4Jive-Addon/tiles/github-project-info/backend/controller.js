@@ -20,7 +20,7 @@ var q = require('q');
 var libDir = process.cwd() + "/lib/";
 var placeStore = require(libDir + "github4jive/placeStore");
 var tileInstanceProcessor = require("./tileInstanceProcessor");
-var gitHubWebhooksProcessor = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookProcessor");
 
 var GITHUB_PROJECT_INFO_TILE = 'github-project-info';
 
@@ -46,7 +46,7 @@ var pushData = function() {
 
 var updateTileInstance = function (newTile) {
     if ( newTile.name === GITHUB_PROJECT_INFO_TILE ) {
-        gitHubWebhooksProcessor.setup(newTile).then(function () {
+        gitHubWebhooks.setup(newTile).then(function () {
             return tileInstanceProcessor.processTileInstance(newTile);
         });
     }

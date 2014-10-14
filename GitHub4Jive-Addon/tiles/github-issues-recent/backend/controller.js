@@ -19,7 +19,7 @@ var q = require("q");
 
 var libDir = process.cwd() + "/lib/";
 var tileInstanceProcessor = require("./tileInstanceProcessor");
-var gitHubWebhooksProcessor = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookProcessor");
 
 var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
 ////////////////////////////////////////
@@ -32,7 +32,7 @@ var pushData = function () {
 
 var updateTileInstance = function (newTile) {
     if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
-        gitHubWebhooksProcessor.setup(newTile).then(function () {
+        gitHubWebhooks.setup(newTile).then(function () {
             return tileInstanceProcessor.processTileInstance(newTile);  // push a recent issues tile update right away
         });
     }

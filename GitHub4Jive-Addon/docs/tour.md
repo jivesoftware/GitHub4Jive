@@ -104,10 +104,9 @@ Using Jive app actions to manage GitHub issues
 
 * **Sequence 13: State-aware app actions**
   * The [app contributes actions in content for close and reopen operations](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L59). For a new issue
-    * The reopen action is hidden as the closed ext prop (github4jiveIssueClosed) is not set
-    * The close action is presented as the closed ext prop (github4jiveIssueClosed) is not set
+    * The reopen action is hidden as the closed ext prop (github4jiveIssueClosed) is not set; correspondingly, the close action is visible
+    * See the [app action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
   * Clicking the action produce an [app view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/issue-close.html) and its [JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30)
-  * [App action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
 
 * **Sequence 14: Closing an issue via discussion App Action**
   * On presentation, the [app action view JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30) calls the change issue service endpoint @ <b>/github/place/changeIssueState</b>

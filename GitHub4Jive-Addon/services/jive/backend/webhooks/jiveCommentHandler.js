@@ -37,8 +37,8 @@ exports.createGitHubComment = function (hookPayload) {
         .then(function (place) { return helpers.getJiveApi(place)
         .then(function (japi) { return helpers.hydrateObject(japi, jiveMessageReply)
         .then(function (message) { return message.retrieveAllExtProps()
-        .then(function (commentprops) {
-            if (commentprops.fromGitHub) {//Check for a jiveMessageReply originally from GitHub
+        .then(function (messageProps) {
+            if (messageProps.fromGitHub) {//Check for a jiveMessageReply originally from GitHub
                 return q();
             }
 

@@ -262,8 +262,8 @@ function getLinkedPlace(placeUrl) {
 }
 
 function getGitHubOauthTokenForPlace(placeUrl) {
-    return getLinkedPlace(placeUrl).then(function (linked) {
-        return gitHubFacade.createOauthObject(linked.github.token.access_token);
+    return getLinkedPlace(placeUrl).then(function (place) {
+        return gitHubFacade.createOauthObject(place.github.token.access_token);
     })
 }
 

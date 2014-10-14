@@ -26,7 +26,7 @@ var service = require('./../gitHubOAuthController.js');
  * events that the service has registered for.
  */
 exports.GitHubWebHookPortal = {
-    'path': config.github.webHookUrl,
+    'path': config.github.webHookUrl, // typically is /github/WebHookPortal
     'verb': 'post',
     'route': gitHubController.gitHubWebHookPortal
 };

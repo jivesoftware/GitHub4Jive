@@ -8,6 +8,7 @@ Using a Place Tab to view GitHub issues in Jive
 
 * **Sequence 1 Code:** Capture GitHub access tokens
   * [Service structure](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon)
+  * [App contributes a place configuration view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L83)
   * [Place configuration config endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/95abb8fd489adc14e900f3c0463bdc83e999abe6/GitHub4Jive-Addon/services/places/backend/routes/placeEndpoints.js#L12)
   * [Config modal JS launches 3-legged OAuth with Jive + GitHub (front end)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199)
   * [Browser invokes service endpoint for capturing GitHub access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102)

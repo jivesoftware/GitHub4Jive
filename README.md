@@ -24,6 +24,7 @@ As you play around with this project, refer to the following documentation links
 
 * [Jive Dev Platform Intro](https://developer.jivesoftware.com/intro/)
 * [Code Tour of GitHub4Jive Project](GitHub4Jive-Addon/docs/tour.md)
+* [App Action Contribution Reference](https://community.jivesoftware.com/docs/DOC-114464)
 * [Overview on Tiles](https://community.jivesoftware.com/docs/DOC-124346)
 * [Jive Node SDK](https://community.jivesoftware.com/docs/DOC-114053)
 * [Jive REST API](https://developers.jivesoftware.com/api/v3/cloud/rest/index.html)

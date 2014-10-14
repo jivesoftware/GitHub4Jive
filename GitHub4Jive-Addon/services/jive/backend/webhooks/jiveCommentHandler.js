@@ -31,18 +31,18 @@ function formatGitComment(japi, user, userPage, hookPayload) {
  * @return {promise}
  */
 exports.createGitHubComment = function (hookPayload) {
-    var place = hookPayload.target.id;
-    var comment = hookPayload.object;//ARON RENAME THIS TO WHATEVER YOU WANT
-    return helpers.getPlace(place).then(function (linked) {
-        return helpers.getJiveApi(linked).then(function (japi) {
-            return helpers.hydrateObject(japi, comment).then(function (message) {
+    var placeURL = hookPayload.target.id;
+    var jiveMessageReply = hookPayload.object;
+    return helpers.getPlace(placeURL).then(function (place) {
+        return helpers.getJiveApi(place).then(function (japi) {
+            return helpers.hydrateObject(japi, jiveMessageReply).then(function (message) {
                 return message.retrieveAllExtProps().then(function (commentprops) {
 
-                    if (commentprops.fromGitHub) {//Check for a comment originally from GitHub
+                    if (commentprops.fromGitHub) {//Check for a jiveMessageReply originally from GitHub
                         return q();
                     }
 
-                    //then check if the comment was even on a linked discussion
+                    //then check if the jiveMessageReply was even on a linked discussion
                     var discussion = helpers.getDiscussionUrl(message);
                     return japi.getAllExtProps(discussion).then(function (props) {
                         var issueNumber = props.github4jiveIssueNumber;
@@ -50,13 +50,13 @@ exports.createGitHubComment = function (hookPayload) {
                             return q();
                         }
 
-                        //finally, create the comment on GitHub with relevant user data
+                        //finally, create the jiveMessageReply on GitHub with relevant user data
                         return japi.get(hookPayload.object.author.id).then(function (user) {
                             user = user.entity;
                             var userPage = user.resources.html.ref;
                             var gitComment = formatGitComment(japi, user, userPage, hookPayload);
-                            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-                            return gitFacade.addNewComment(linked.github.repoOwner, linked.github.repo,
+                            var auth = gitFacade.createOauthObject(place.github.token.access_token);
+                            return gitFacade.addNewComment(place.github.repoOwner, place.github.repo,
                                 issueNumber, gitComment, auth).then(function (response) {
                             })
                         });

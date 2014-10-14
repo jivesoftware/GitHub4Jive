@@ -2,7 +2,7 @@
 
 ## Browsing GitHub Issues in Jive
 
-Using a Place Tab to view GitHub issues in Jive
+Using a Place Tab to view GitHub issues in Jive Places
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/place1.jpg "Issue Browser")
 

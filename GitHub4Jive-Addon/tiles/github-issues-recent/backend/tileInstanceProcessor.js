@@ -46,7 +46,6 @@ function decorateIssuesWithColoredIcons(issues){
 function decorateIssuesWithActions(issues, repository){
     issues.forEach(function(issue){
         issue["action"] = {
-            url : jive.service.options['clientUrl'] + '/github-issues-recent/action?id='+ new Date().getTime(),
             context : {
                 url:            issue.html_url,
                 title:          issue.title,

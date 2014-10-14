@@ -14,8 +14,9 @@ Using a Place Tab to view GitHub issues in Jive
   * Browser invokes service endpoint for storing GitHub access token
     * [Service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102)  
     * [Service stores GitHub access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubOAuthController.js#L42)
-  * [Browser invokes service endpoint for capturing Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js)
-  * [Service stores Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js)
+  * Browser invokes service endpoint for capturing Jive access
+    * [Service endpoint for capturing Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js)
+    * [Service stores Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js)
 
 * **Sequence 2 Code:** Browse ist of all repo issues via embedded app view within a Purposeful Place tab
   * [App contributes a tab into places](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L101)

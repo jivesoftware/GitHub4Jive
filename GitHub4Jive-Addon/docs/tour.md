@@ -61,7 +61,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
   * [GitHub calls service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28) in response to GitHub issue update @ <b>/github/WebHookPortal</b>
   * [Registered webhook handler is invoked to update the recent issues tile](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js#L30)
 
-## Modelling GitHub Issues as Jive Discussions
+## Shadowing GitHub Issues with Jive Discussions
 
 Using a Jive discussion to comment on a GitHub issue
 
@@ -96,7 +96,7 @@ Using a Jive discussion to comment on a GitHub issue
     * [Handler calls GitHub facade to post a new comment on the issue](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L59)
     * [GitHub facade posts a new issue comment](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L191)
 
-## Issue Actions
+## Modelling GitHub Issue Workflow using Jive App Actions
 
 Using Jive Discussion app actions to open/close GitHub issues 
 

@@ -16,7 +16,12 @@
 
 var jive = require("jive-sdk");
 var util = require("util");
-exports.route = function(req, res){
-    var conf = jive.service.options;
-    res.render('action.html', { host: jive.service.serviceURL() });
+
+exports.actionEndpoint = {
+    'verb' : 'get',
+    'path' : '/github-issues-recent/action',
+    'route' : function(req, res){
+        var conf = jive.service.options;
+        res.render('action.html', { host: jive.service.serviceURL() });
+    }
 };

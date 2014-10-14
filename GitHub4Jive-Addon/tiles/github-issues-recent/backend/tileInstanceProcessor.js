@@ -46,8 +46,15 @@ function decorateIssuesWithColoredIcons(issues){
 function decorateIssuesWithActions(issues, repository){
     issues.forEach(function(issue){
         issue["action"] = {
-            url : jive.service.options['clientUrl'] + '/github-issues-recent_GitHubIssues-List/action?id='+ new Date().getTime(),
-            context : {url:issue.html_url,title:issue.title,number:issue.number,repo:repository, labels:issue.labels, discussionLink: issue.jiveContentLink  }
+            url : jive.service.options['clientUrl'] + '/github-issues-recent/action?id='+ new Date().getTime(),
+            context : {
+                url:issue.html_url,
+                title:issue.title,
+                number:issue.number,
+                repo:repository,
+                labels:issue.labels,
+                discussionLink: issue.jiveContentLink
+            }
         };
     });
     return issues;

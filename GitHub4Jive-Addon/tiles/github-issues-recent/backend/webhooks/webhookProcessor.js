@@ -39,26 +39,26 @@ module.exports = new GitHubWebhookProcessor(
 );
 
 /**
- * docs - todo
+ * Required by issueHandler#setup
  */
-function setupInstanceHandler(instance){
-    var placeURL = instance.config.parent;
+function setupInstanceHandler(tileInstance){
+    var placeURL = tileInstance.config.parent;
     return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
             owner: place.github.repoOwner,
             repo: place.github.repo,
             gitHubToken: place.github.token.access_token,
             placeUrl: place.placeUrl,
-            instance: instance
+            instance: tileInstance
         };
     });
 }
 
 /**
- * docs - todo
+ * Required by issueHandler#setup
  */
-function tearDownInstanceHandler(instance) {
-    var placeURL = instance.config.parent;
+function tearDownInstanceHandler(tileInstance) {
+    var placeURL = tileInstance.config.parent;
     return placeStore.getPlaceByUrl(placeURL).then(function (place) {
         return {
             placeUrl: place.placeUrl,

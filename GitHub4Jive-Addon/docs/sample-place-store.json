@@ -1,0 +1,29 @@
+{
+    "https://sandbox.jiveon.com/api/core/v3/places/94590": {
+        "jive": {
+            "scope": "uri:/api,uri:/api/core/v3/places/700/1575(tiles)",
+            "token_type": "bearer",
+            "expires_in": "172799",
+            "refresh_token": "18hib2454a9qwdfwcj098vkwaso2f5wx1r4gntek.r",
+            "access_token": "k4uym62rkcp3jyyec3mf0s6vavv07mb3dqutncgz.t",
+            "userID": "1412376405795",
+            "hookID": "1141"
+        },
+        "jiveUrl": "https://sandbox.jiveon.com",
+        "placeID": "94590",
+        "placeUrl": "https://sandbox.jiveon.com/api/core/v3/places/94590",
+        "invalidCache": false,
+        "github": {
+            "userID": "1412376405789",
+            "tokenID": "de271b80-30c4-4a3c-a1cf-dc53bbfa24d3",
+            "token": {
+                "access_token": "454fda7b829611c03af56e89f48a3baa7feaf45e",
+                "scope": "public_repo,user",
+                "token_type": "bearer"
+            },
+            "repo": "simpletask",
+            "repoOwner": "rachoac"
+        },
+        "strategies": {}
+    }
+}

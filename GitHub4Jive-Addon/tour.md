@@ -8,11 +8,12 @@ Using a Place Tab to view GitHub issues in Jive
 
 * **Sequence 1 Code:** Capture GitHub access tokens
   * [Service structure](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon)
-  * [App contributes a place configuration view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L83)
-  * [Place configuration app modal config HTML](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/place-config.html)
-  * [Config modal JS launches 3-legged OAuth with Jive + GitHub (front end)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199)
-  * [Browser invokes service endpoint for capturing GitHub access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102)
-  * [Service stores GitHub access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubOAuthController.js#L42)
+  * [App contributes a place confi modal view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L83)
+  * [App config modal HTML](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/place-config.html)
+  * [App config modal JS launches 3-legged OAuth with Jive & GitHub)](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L199)
+  * Browser invokes service endpoint for storing GitHub access token
+    * [Service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L102)  
+    * [Service stores GitHub access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubOAuthController.js#L42)
   * [Browser invokes service endpoint for capturing Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/routes/jiveEndpoints.js)
   * [Service stores Jive access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/jiveOAuthController.js)
 

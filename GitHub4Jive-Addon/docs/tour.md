@@ -96,7 +96,7 @@ Using a Jive discussion to comment on a GitHub issue
     * [Handler calls GitHub facade to post a new comment on the issue](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L59)
     * [GitHub facade posts a new issue comment](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L191)
 
-## Modelling GitHub Issue Workflow using Jive App Actions
+## Modelling GitHub Issue Operations with App Actions
 
 Using Jive Discussion app actions to open/close GitHub issues 
 

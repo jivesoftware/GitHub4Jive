@@ -165,7 +165,7 @@ function setupGitHubOAuth() {
 }
 
 function setupJiveOauth() {
-    setupOAuthFor("jive", 350, function (ticketID) {
+    setupOAuthFor("jive", 500, function (ticketID) {
         if (ticketID) {
             jiveDone = true;
             $('#github4jive-jive-authorize').slideUp('fast');

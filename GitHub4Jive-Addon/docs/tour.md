@@ -25,7 +25,7 @@ Using a Place Tab to view GitHub issues in Jive
     * [Service controller uses linked GitHub repo, queries GitHub for issues](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L86)
   * [Places tab JS recieves list of issues and updates the tab DOM](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/place-tab.js#L30)
 
-## Managing GitHub Issues via Tiles
+## Managing GitHub Issues via Jive Tiles
 
 Using Tiles in a Purposeful Place to track GitHub issues 
 
@@ -61,7 +61,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
   * [GitHub calls service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28) in response to GitHub issue update @ <b>/github/WebHookPortal</b>
   * [Registered webhook handler is invoked to update the recent issues tile](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js#L30)
 
-## Issue Discussions
+## Modelling GitHub Issues as Jive Discussions
 
 Using a Jive discussion to comment on a GitHub issue
 
@@ -98,7 +98,7 @@ Using a Jive discussion to comment on a GitHub issue
 
 ## Issue Actions
 
-Using Jive app actions to manage GitHub issues 
+Using Jive Discussion app actions to open/close GitHub issues 
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/actions1.jpg "Issue Actions 1")
 

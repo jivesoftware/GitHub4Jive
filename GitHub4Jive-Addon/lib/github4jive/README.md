@@ -62,7 +62,7 @@ complicate it. There is also only one GitHub but there are multiple Jive instanc
 As a result all calls to the facade need to have repo and authentication information passed in.
 
 In order for the GitHub webhooks to work, a url endpoint must receive posts at the githubwebhookurl specified in
-the jiveclientconfiguration.json. That endpoint must then call notifyNewGitHubHookInfo function and pass the 
+the jiveclientconfiguration.json. That endpoint must then call handleIncomingWebhookEvent function and pass the
 payload data into it. Currently, this is done by the gitHubController in the services directory.
 
 

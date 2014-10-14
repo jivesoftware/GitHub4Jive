@@ -303,7 +303,7 @@ exports.unSubscribeFromRepoEvent = function (token, authOptions) {
  * @return {Promise} promise: Use .then(function(result){}); to process return asynchronously
  */
 
-exports.notifyNewGitHubHookInfo = function (eventType, eventData) {
+exports.handleIncomingWebhookEvent = function (eventType, eventData) {
     if (eventType !== "ping") {
         //grab the webhookRecord for the repository
         var repo = repoHooks[eventData.repository.full_name];

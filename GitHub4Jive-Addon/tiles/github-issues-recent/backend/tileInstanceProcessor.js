@@ -48,11 +48,11 @@ function decorateIssuesWithActions(issues, repository){
         issue["action"] = {
             url : jive.service.options['clientUrl'] + '/github-issues-recent/action?id='+ new Date().getTime(),
             context : {
-                url:issue.html_url,
-                title:issue.title,
-                number:issue.number,
-                repo:repository,
-                labels:issue.labels,
+                url:            issue.html_url,
+                title:          issue.title,
+                number:         issue.number,
+                repo:           repository,
+                labels:         issue.labels,
                 discussionLink: issue.jiveContentLink
             }
         };

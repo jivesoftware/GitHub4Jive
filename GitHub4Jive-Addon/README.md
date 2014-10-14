@@ -13,7 +13,7 @@ Before running, follow these instructions:
 The following instructions should help you get the GitHub4Jive project onto the [developer sandbox](https://sandbox.jiveon.com) for testing.
 
 1.  Determine the hostname for your service. All subsequent references to `SERVICE_HOSTNAME` should be replaced with this hostname. If you are using [Nitrous.IO](https://www.nitrous.io/), you can determine the hostname by selecting any **Port** submenu item from the **Preview** menu. When recording the hostname, be sure to omit the port number and do not include a terminating backslash (/).<br />
-    For example: `https://blazing-example-12345.usw1-2.nitrousbox.com`
+    For example: `http://blazing-example-12345.usw1-2.nitrousbox.com`
 1.  Clone the [GitHub4Jive](https://github.com/jivesoftware/GitHub4Jive) repository.<br/>
     `git clone https://github.com/jivesoftware/GitHub4Jive.git`
 1.  Change to the add-on subdirectory.<br/>

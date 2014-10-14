@@ -79,7 +79,7 @@ function pullExternalPropertiesIn(self,linked){
         return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
             var jauth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
             var japi = new JiveApi(community, jauth);
-            return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {
+            return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {   // -> GET [jiveURL]/api/core/v3/places/[placeID]/extProps
                 linked.github.repo = extprops.github4jiveRepo;
                 linked.github.repoOwner = extprops.github4jiveRepoOwner;
                 var githubReplacement = {"github": linked.github};

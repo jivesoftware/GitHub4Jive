@@ -21,7 +21,7 @@ var q = require("q");
 
 var libDir = process.cwd() + "/lib/";
 var placeStore = require(libDir + "github4jive/placeStore");
-var gitHubWebhooksProcessor = require("./webhooks/webhookProcessor");
+var gitHubWebhooks = require("./webhooks/webhookProcessor");
 
 /*
  * Given a place api url this endpoint returns an object describing which services have been configured.
@@ -134,7 +134,7 @@ function setupJiveHook(place) {
 }
 
 function updatePlace(place) {
-    return gitHubWebhooksProcessor.setup(place).then(function (r) {
+    return gitHubWebhooks.setup(place).then(function (r) {
         setupJiveHook(place);
     });
 }

@@ -154,7 +154,7 @@ function setupOAuthFor(system, popupWidth, successCallBack) {
     }).launch({'viewerID': viewerID});
 }
 
-function setupGitHubOAuth() {
+function launchGitHub3LeggedOAuth() {
     setupOAuthFor("github", 500, function (ticketID) {
         if (ticketID) {
             githubDone = true;
@@ -164,7 +164,7 @@ function setupGitHubOAuth() {
     });
 }
 
-function setupJiveOauth() {
+function launchJive3LeggedOAuth() {
     setupOAuthFor("jive", 500, function (ticketID) {
         if (ticketID) {
             jiveDone = true;
@@ -196,8 +196,19 @@ var app = {
                     placeUrl = result.content.resources.self.ref;
                 }
 
-                setupGitHubOAuth();
-                setupJiveOauth();
+                //
+                // launch the 3-legged OAuth dance with GitHub
+                // to acquire an OAuth access token on the behalf of the current user
+                // for use in the backend service to access GitHub APIs
+                //
+                launchGitHub3LeggedOAuth();
+
+                //
+                // launch the 3-legged OAuth dance with Jive
+                // to acquire an OAuth access token on the behalf of the current user
+                // for use in the backend service to access Jive APIs
+                //
+                launchJive3LeggedOAuth();
 
                 //This function is used right below it.
                 function setupPlaceConfig(p) {

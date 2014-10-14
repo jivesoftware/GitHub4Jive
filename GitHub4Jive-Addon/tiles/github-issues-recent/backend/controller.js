@@ -33,7 +33,7 @@ var pushData = function () {
 var updateTileInstance = function (newTile) {
     if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
         gitHubWebhooksProcessor.setup(newTile).then(function () {
-            return tileInstanceProcessor.processTileInstance(newTile);
+            return tileInstanceProcessor.processTileInstance(newTile);  // push a recent issues tile update right away
         });
     }
 };

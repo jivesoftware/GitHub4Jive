@@ -81,7 +81,7 @@ exports.getPlaceIssues = function (req, res) {
     var queryParams = url.parse(req.url, true).query;
     var placeUrl = queryParams.place;
 
-    placeStore.getPlaceByUrl(placeUrl).then(function (place) {
+    placeStore.getPlaceByUrl(placeUrl).then(function (place) { // fully hydrated place record, including access tokens and extended properties
         var auth = gitHubFacade.createOauthObject(place.github.token.access_token);
         gitHubFacade.getRepositoryIssues(place.github.repoOwner, place.github.repo, auth).then(function (issues) {
             if (issues.length) {

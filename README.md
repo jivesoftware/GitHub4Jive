@@ -26,6 +26,7 @@ As you play around with this project, refer to the following documentation links
 * [Code Tour of GitHub4Jive Project](GitHub4Jive-Addon/docs/tour.md)
 * [App Action Contribution Reference](https://community.jivesoftware.com/docs/DOC-114464)
 * [Overview on Tiles](https://community.jivesoftware.com/docs/DOC-124346)
+* [Extended Properties Documentation](https://developers.jivesoftware.com/api/v3/cloud/rest/ExtPropsEntity.html)
 * [Jive Node SDK](https://community.jivesoftware.com/docs/DOC-114053)
 * [Jive REST API](https://developers.jivesoftware.com/api/v3/cloud/rest/index.html)
 * [Jive Webhooks](https://developers.jivesoftware.com/api/v3/cloud/rest/WebhooksService.html)

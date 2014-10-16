@@ -285,7 +285,7 @@ var app = {
                     console.log('resp: {' + JSON.stringify(resp) + '}');
 
                     //
-                    // link the place to the remote github repo
+                    // create webhooks for shadowing issues as jive discussions
                     //
 
                     osapi.http.post({

@@ -69,26 +69,26 @@ exports.invalidateCache = function(placeUrl){
     })
 };
 
-function pullExternalPropertiesIn(self,linked){
+function pullExternalPropertiesIn(self,place){
     if (
-        linked &&
-        linked.jive &&
-        (linked.github && (!linked.github.repoOwner || !linked.github.repo) || linked.invalidCache)
+        place &&
+        place.jive &&
+        (place.github && (!place.github.repoOwner || !place.github.repo) || place.invalidCache)
      ){
         //cache repo information
-        return jive.community.findByJiveURL(linked.jiveUrl).then(function (community) {
-            var jauth = new JiveOauth(linked.placeUrl,linked.jive.access_token, linked.jive.refresh_token);
+        return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
+            var jauth = new JiveOauth(place.placeUrl, place.jive.access_token, place.jive.refresh_token);
             var japi = new JiveApi(community, jauth);
-            return japi.getAllExtProps("places/" + linked.placeID).then(function (extprops) {   // -> GET [jiveURL]/api/core/v3/places/[placeID]/extProps
-                linked.github.repo = extprops.github4jiveRepo;
-                linked.github.repoOwner = extprops.github4jiveRepoOwner;
-                var githubReplacement = {"github": linked.github};
-                return self.save(linked.placeUrl, githubReplacement, true);
+            return japi.getAllExtProps("places/" + place.placeID).then(function (extprops) {   // -> GET [jiveURL]/api/core/v3/places/[placeID]/extProps
+                place.github.repo = extprops.github4jiveRepo;
+                place.github.repoOwner = extprops.github4jiveRepoOwner;
+                var githubReplacement = {"github": place.github};
+                return self.save(place.placeUrl, githubReplacement, true);
             })
         });
 
-    }else{
-        return linked;
+    } else {
+        return place;
     }
 }
 

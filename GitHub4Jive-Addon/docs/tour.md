@@ -2,7 +2,7 @@
 
 ## Browsing GitHub Issues in Jive Places
 
-Using a Place Tab to view GitHub issues in Jive
+Using a App Tab in a Purposeful Place to view GitHub issues in Jive
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-place1.jpg "Browsing Issues 1")
 
@@ -24,7 +24,7 @@ Using a Place Tab to view GitHub issues in Jive
   * (8) [Service controller uses linked GitHub repo, queries GitHub for issues](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L86)
 * (9,10) [Places tab JS recieves list of issues and updates the tab DOM](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/place-tab.js#L30)
 
-## Managing GitHub Issues via Jive Tiles
+## Managing GitHub Issues using Jive Tiles
 
 Using Tiles in a Purposeful Place to track GitHub issues 
 
@@ -57,7 +57,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
 * (19) [GitHub calls service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28) in response to GitHub issue update @ <b>/github/WebHookPortal</b>
 * (19) [Registered webhook handler is invoked to update the recent issues tile](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js#L30)
 
-## Shadowing GitHub Issues with Jive Discussions
+## Discussing Issues
 
 Using a Jive discussion to comment on a GitHub issue
 
@@ -91,9 +91,9 @@ Using a Jive discussion to comment on a GitHub issue
   * (25) [Handler calls GitHub facade to post a new comment on the issue](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/jive/backend/webhooks/jiveCommentHandler.js#L59)
   * (25) [GitHub facade posts a new issue comment](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L191)
 
-## Modelling GitHub Issue Operations with App Actions
+## Modeling Workflows with App Actions
 
-Using Jive Discussion app actions to open/close GitHub issues 
+Using dynamic Jive app actions to open and close GitHub issues 
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-appaction1.jpg "Issue Actions 1")
 

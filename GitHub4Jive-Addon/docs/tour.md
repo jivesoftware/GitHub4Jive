@@ -4,6 +4,8 @@
 
 Using a App Tab in a Purposeful Place to view GitHub issues in Jive
 
+### Browsing GitHub Issues #1
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-place1.jpg "Browsing Issues 1")
 
 * (Sequence 0,1) [App contributes a place config modal view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L83)
@@ -14,6 +16,8 @@ Using a App Tab in a Purposeful Place to view GitHub issues in Jive
 * (2) [Fetch a list of GitHub repos to choose from, using access token](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L75) @ <b>/github/user/repos</b> 
 * (3) [On config save, modal calls Jive to save ext place properties identifying selected repo](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L280) @ <b>[/api/core/v3/places/[placeID]/extprops](https://developers.jivesoftware.com/api/v3/cloud/rest/PlaceService.html#createExtProps(UriInfo,%20String,%20String,%20String))</b>
 * (5) [App contributes a place tab view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L113)
+
+### Browsing GitHub Issues #2
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-place2.jpg "Browsing Issues 2")
 
@@ -28,6 +32,8 @@ Using a App Tab in a Purposeful Place to view GitHub issues in Jive
 
 Using Tiles in a Purposeful Place to track GitHub issues 
 
+### Managing GitHub Issues #1
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile1.jpg "Issue Management 1")
 
 * Tiles contribute a place config modal
@@ -39,12 +45,16 @@ Using Tiles in a Purposeful Place to track GitHub issues
   * (11) [Tile webhooks setup logic](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/webhookBuilder.js#L28) establishes a [GitHub issue state change handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js#L30)
   * (15) Handler injects its callback function into [gitHubFacade for the purpose of subscribing to issue events](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L211)
 
+### Managing GitHub Issues #2
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile2.jpg "Issue Management 2")
 
 * (Sequence 16) [GitHub calls service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L28) in response to GitHub issue creation @ <b>/github/WebHookPortal</b>
 * (16) [Service controller forwards event from request to gitHubFacade to trigger event handlers](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L40)
 * (16,17) [gitHubFacade locates registered event handlers](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L306)
   * (17) [Recent issues handler is executed, and recent issues are acquired/pushed to the tile](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/webhooks/issueHandler.js#L38)
+
+### Managing GitHub Issues #3
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile3.jpg "Issue Management 3")
 
@@ -61,6 +71,8 @@ Using Tiles in a Purposeful Place to track GitHub issues
 
 Using a Jive discussion to comment on a GitHub issue
 
+### Discussing Issues #1
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss1.jpg "Issue Discussions 1")
 
 * During place config, webhooks are established to model GitHub issues as Jive discussions
@@ -69,6 +81,8 @@ Using a Jive discussion to comment on a GitHub issue
 * The [GitHub webhooks setup code defines an issue handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/webhookBuilder.js#L30)
   * (20) [Calls jive to create discussion](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51) when triggered by an incoming GitHub event @ <b>/api/core/v3/contents</b>
   * (21) [Calls Jive to write ext props](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L107) linking the discussion to a GitHub issue, using [the jiveApiFacade to make the actual call](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L229) @ <b>[/api/core/v3/contents/[contentID]/extProps](https://developers.jivesoftware.com/api/v3/cloud/rest/ContentService.html#createExtProps(UriInfo,%20String,%20String,%20String))</b>
+
+### Discussing Issues #2
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss2.jpg "Issue Discussions 2")
 
@@ -79,6 +93,8 @@ Using a Jive discussion to comment on a GitHub issue
   * [Queries Jive for related discussion via ext props](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/helpers.js#L18) @ <b>[/api/core/v3/extprops/github4jiveIssueId/[issueID]](https://developers.jivesoftware.com/api/v3/cloud/rest/ExtPropsService.html)</b>
   * [Creates a reply based on issue comment] (https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueCommentHandler.js#L66)
   * (23) [Invokes Jive api facade to create discussion reply](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L208) @ <b>[/api/core/v3/messages/contents/[discussionID]](https://developers.jivesoftware.com/api/v3/cloud/rest/MessageService.html)</b>
+
+### Discussing Issues #3
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss3.jpg "Issue Discussions 3")
 
@@ -95,11 +111,15 @@ Using a Jive discussion to comment on a GitHub issue
 
 Using dynamic Jive app actions to open and close GitHub issues 
 
+### Modeling Workflows #1
+
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-appaction1.jpg "Issue Actions 1")
 
 * (Sequence 26) The [app contributes actions in content for close and reopen operations](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L59). For a new issue
   * (26) The reopen action is hidden as the closed ext prop (github4jiveIssueClosed) is not set; correspondingly, the close action is visible
   * (26) See the [app action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
+
+### Modeling Workflows #2
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-appaction2.jpg "Issue Actions 2")
 

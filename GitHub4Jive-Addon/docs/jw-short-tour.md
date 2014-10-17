@@ -1,4 +1,4 @@
-# GitHub4Jive Sequences and Code Refs
+# GitHub4Jive Sequences (short version)
 
 This is the shorter tour for the JiveWorld14 Presentation. Full tour [here](tour.md).
 

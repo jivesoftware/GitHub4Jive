@@ -1,5 +1,7 @@
 # GitHub4Jive Sequences and Code Refs
 
+This is the shorter tour for the JiveWorld14 Presentation. Full tour [here](tour.md).
+
 ## Browsing GitHub Issues in Jive Places
 
 Using a App Tab in a Purposeful Place to view GitHub issues in Jive

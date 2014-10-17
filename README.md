@@ -8,7 +8,7 @@ powerful.
 
 # Get Started
 
-To set up the GitHub4Jive Add-On (which includes the tiles, an activity stream, a template, place configuration, app actions, REST calls, Webhooks, and a cartridge), refer to these instructions:
+To set up the GitHub4Jive Add-On (which uses **tiles**, an activity **stream**, a **template**, place configuration, an **app**, conditional **app actions**, 3-legged **OAuth**, **REST API** calls, **Jive extended properties** use cases, **webhooks**, and a **cartridge**), refer to these instructions:
 
 * [Add-on Setup Instructions](GitHub4Jive-Addon/README.md)
 

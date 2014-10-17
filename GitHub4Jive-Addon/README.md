@@ -55,3 +55,9 @@ To develop and test the Jive cartridge, add
 to the `extensionInfo` object in `jiveclientconfiguration.json`.
 
 Without this entry, the SDK will not package the cartridge into the add-on.
+
+## Code Tour
+
+For a tour of the GitHub4Jive Add-On code (which includes sequence diagrams), refer to:
+
+* [Code Tour of GitHub4Jive Project](docs/tour.md)

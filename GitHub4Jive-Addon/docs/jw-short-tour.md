@@ -93,9 +93,9 @@ Using dynamic Jive app actions to open and close GitHub issues
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-appaction1.jpg "Issue Actions 1")
 
-* (Sequence 26) The [app contributes actions in content for close and reopen operations](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L71). For a new issue:
-  * (26) The reopen action is hidden as the closed ext prop (github4jiveIssueClosed) is not set; correspondingly, the close action is visible
-  * (26) See the [app action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
+* (26) The [app contributes actions in content for close and reopen operations](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L71). For a new issue:
+  * The reopen action is hidden as the closed ext prop (github4jiveIssueClosed) is not set; correspondingly, the close action is visible
+  * See the [app action contribution reference](https://community.jivesoftware.com/docs/DOC-114464)
 
 ### Modeling Workflows #2:  App Action (Reopen)
 

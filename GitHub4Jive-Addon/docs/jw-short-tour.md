@@ -66,7 +66,7 @@ Using a Jive discussion to comment on a GitHub issue
 
 ### Discussing Issues #1: Create Discussion
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss1.jpg "Issue Discussions 1")
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss1b.jpg "Issue Discussions 1")
 
 * During place config, webhooks are established to model GitHub issues as Jive discussions
   * The [config modal JS calls place setup endpoint] (https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L291) to trigger webhooks setup @ <b>/github4jive/place/trigger</b>

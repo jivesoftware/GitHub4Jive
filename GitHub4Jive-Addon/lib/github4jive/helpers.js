@@ -15,7 +15,8 @@
  */
 
 exports.getDiscussionForIssue = function (jiveApi, place,issueId){
-    return jiveApi.getByExtProp("github4jiveIssueId", issueId).then(function (contents) { // -> GET [jiveURL]/api/core/v3/extprops/github4jiveIssueId/[issueID]
+    // -> GET [jiveURL]/api/core/v3/extprops/github4jiveIssueId/[issueID]
+    return jiveApi.getByExtProp("github4jiveIssueId", issueId).then(function (contents) {
         var toReturn = null;
         if(contents.list){
             contents.list.forEach(function (discussion) {

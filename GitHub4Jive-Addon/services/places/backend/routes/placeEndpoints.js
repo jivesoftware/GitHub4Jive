@@ -21,7 +21,7 @@ exports.basicTileConfig = {
  */
 exports.ConfigurationUpdateTrigger = {
     'verb': 'post',
-    'path': "/github4jive/place/trigger",
+    'path': "/github4jive/place/setupDiscussionWebhooks",
     'jiveLocked' : true,
     'route': placeController.onConfigurationChange
 };

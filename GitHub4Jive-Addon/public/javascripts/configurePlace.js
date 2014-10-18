@@ -289,7 +289,7 @@ var app = {
                     //
 
                     osapi.http.post({
-                        'href': host + "/github4jive/place/trigger?" +
+                        'href': host + "/github4jive/place/setupDiscussionWebhooks?" +
                             "ts=" + new Date().getTime() +
                             "&place=" + encodeURIComponent(placeUrl),
                         'format': 'json',

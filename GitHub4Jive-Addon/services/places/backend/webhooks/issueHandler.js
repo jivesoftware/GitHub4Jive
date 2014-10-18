@@ -103,7 +103,7 @@ function createIssueDiscussion(placeID, gitData, jiveApi) {
                         .build();
     jiveApi.create(content).then(function (contentResponse) {
         var contentID = contentResponse.apiID;
-        //attach ext props to query for discussion later
+        // POST /api/core/v3/contents/[contentID]/extProps  -- attach ext props to query for discussion later
         return jiveApi.attachPropsToContent(contentID, createExtProps(gitData));
     });
 }

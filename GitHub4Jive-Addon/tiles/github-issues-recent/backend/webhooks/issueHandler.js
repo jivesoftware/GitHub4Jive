@@ -34,9 +34,13 @@ thisHandler.setup = function(setupOptions){
     var repo = setupOptions.repo;
     var auth = self.gitHubFacade.createOauthObject( setupOptions.gitHubToken);
     var instance = setupOptions.instance;
-
-    return self.gitHubFacade.subscribeToRepoEvent(owner, repo, self.gitHubFacade.Events.Issues, auth, function () {
-        // invoke the tile data push
-        tileInstanceProcessor.processTileInstance(instance);
-    });
+    // (1) create GitHub webhook, callback is /github/WebHookPortal; 
+    return self.gitHubFacade.subscribeToRepoEvent(owner, repo, self.gitHubFacade.Events.Issues, auth, 
+        // (2) contribute a webhook callback function to handle issue events
+        
+        function () {
+            // invoke the tile data push
+            tileInstanceProcessor.processTileInstance(instance);
+        }
+    );
 };

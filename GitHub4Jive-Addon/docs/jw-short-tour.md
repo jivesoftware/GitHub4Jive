@@ -49,7 +49,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
 
 ### Managing GitHub Issues #2: Tile Action
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile3.jpg "Issue Management 3")
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile3b.jpg "Issue Management 3")
 
 * The [tile push logic defines issue metadata as part of tile JSON push](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js#L46)
   * [Endpoint URL specified in tile definition](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/definition.json#L20)

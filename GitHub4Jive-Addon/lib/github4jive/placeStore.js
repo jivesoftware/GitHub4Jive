@@ -71,15 +71,15 @@ exports.invalidateCache = function(placeUrl){
 
 function pullExternalPropertiesIn(self,place){
     if (
-        place &&
-        place.jive &&
+        place && place.jive &&
         (place.github && (!place.github.repoOwner || !place.github.repo) || place.invalidCache)
      ){
         //cache repo information
         return jive.community.findByJiveURL(place.jiveUrl).then(function (community) {
             var jauth = new JiveOauth(place.placeUrl, place.jive.access_token, place.jive.refresh_token);
             var japi = new JiveApi(community, jauth);
-            return japi.getAllExtProps("places/" + place.placeID).then(function (extprops) {   // -> GET [jiveURL]/api/core/v3/places/[placeID]/extProps
+            // GET [jiveURL]/api/core/v3/places/[placeID]/extProps
+            return japi.getAllExtProps("places/" + place.placeID).then(function (extprops) {   
                 place.github.repo = extprops.github4jiveRepo;
                 place.github.repoOwner = extprops.github4jiveRepoOwner;
                 var githubReplacement = {"github": place.github};

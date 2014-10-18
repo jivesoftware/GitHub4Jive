@@ -84,8 +84,7 @@ Using a Jive discussion to comment on a GitHub issue
   * [GitHubFacade looks up registered event handlers](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/gitHubFacade.js#L306)
 * [Place issue comment handler is invoked](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueCommentHandler.js#L42)
   * (22) [Queries Jive for related discussion via ext props](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/helpers.js#L18) @ <b>[/api/core/v3/extprops/github4jiveIssueId/[issueID]](https://developers.jivesoftware.com/api/v3/cloud/rest/ExtPropsService.html)</b>
-  * [Creates a reply based on issue comment] (https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueCommentHandler.js#L66)
-  * (23) [Invokes Jive api facade to create discussion reply](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L208) @ <b>[/api/core/v3/messages/contents/[discussionID]](https://developers.jivesoftware.com/api/v3/cloud/rest/MessageService.html)</b>
+  * (23) [Creates a reply based on issue comment] (https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueCommentHandler.js#L66), [calls Jive to post the reply](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L208) @ <b>[/api/core/v3/messages/contents/[discussionID]](https://developers.jivesoftware.com/api/v3/cloud/rest/MessageService.html)</b>
 
 ## Modeling Workflows with App Actions
 

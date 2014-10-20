@@ -15,6 +15,7 @@
  */
 
 var q = require("q");
+var jive = require("jive-sdk");
 var libDir = process.cwd() + "/lib/";
 var gitFacade = require(libDir + "github4jive/gitHubFacade");
 var helpers = require("./helpers");
@@ -42,6 +43,11 @@ exports.createGitHubComment = function (hookPayload) {
                 return q();
             }
 
+            if (messageProps.attachedToGitHub) {// no-op if already attached to github
+                jive.logger.debug("Already attached to github, skipping write to GitHub for message", message.id);
+                return q();
+            }
+
             //then check if the jiveMessageReply was even on a linked discussion
             var discussion = helpers.getDiscussionUrl(message);
             return japi.getAllExtProps(discussion).then(function (props) {
@@ -57,9 +63,19 @@ exports.createGitHubComment = function (hookPayload) {
                     var gitComment = formatGitComment(japi, user, userPage, hookPayload);
                     var auth = gitFacade.createOauthObject(place.github.token.access_token);
                     return gitFacade.addNewComment(place.github.repoOwner, place.github.repo,
-                        issueNumber, gitComment, auth).then(function (response) {
-                    })
+                            issueNumber, gitComment, auth).then(function (response) {
+                        })
                 });
+            }).then( function() {
+                messageProps.attachedToGitHub = true;
+                // mark the reply as written toGitHub so it doesn't happen again!
+                return japi.attachPropsToReply(message.id,messageProps).then(function (response) {
+                    if (!response.success) {
+                        jive.logger.error("Error attaching props to discussion reply", response);
+                    } else {
+                        jive.logger.debug("Attached props to message",message,messageProps);
+                    }
+                })
             });
         });
         });

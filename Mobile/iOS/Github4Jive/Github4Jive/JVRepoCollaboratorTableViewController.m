@@ -52,7 +52,7 @@
 
 - (void)loadView {
     [super loadView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"JVRepoCollaboratorTableViewControllerAdd", nil)
                                                                               style:UIBarButtonItemStylePlain target:self action:@selector(addUser)];
 }
 
@@ -128,7 +128,7 @@
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         } onError:^(NSError *error) {
             NSLog(@"Error removing user %@", error);
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred removing this collaborator." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVRepoCollaboratorTableViewControllerRemoveCollaboratorError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
         }];
     }
 }
@@ -149,7 +149,7 @@
         [self.tableView reloadData];
     } onError:^(NSError *error) {
         NSLog(@"Error getting repo collaborators for %@, %@", self.repo.name, [error localizedDescription]);
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred fetching this repo's collaborators." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVRepoCollaboratorTableViewControllerFetchCollaboratorError", nil) delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         
     }];
 }

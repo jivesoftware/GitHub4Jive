@@ -81,12 +81,12 @@
     self.addCollaboratorButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.addCollaboratorButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20.0f];
     [self.addCollaboratorButton addTarget:self action:@selector(addAsCollaborator) forControlEvents:UIControlEventTouchUpInside];
-    [self.addCollaboratorButton setTitle:@"Add As Collaborator" forState:UIControlStateNormal];
+    [self.addCollaboratorButton setTitle:NSLocalizedString(@"JVGithubCollaboratorConfirmViewControllerAddAsCollaborator", nil) forState:UIControlStateNormal];
     
     self.addCollaboratorExplanationLabel = [UILabel new];
     self.addCollaboratorExplanationLabel.numberOfLines = 0;
     self.addCollaboratorExplanationLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:16.0f];
-    self.addCollaboratorExplanationLabel.text = [NSString stringWithFormat:@"This will permit this user to make commits against the repo %@.", self.repo.name];
+    self.addCollaboratorExplanationLabel.text = [NSString stringWithFormat:NSLocalizedString(@"JVGithubCollaboratorConfirmViewControllerAddAsCollaboratorExplanationFormat", nil), self.repo.name];
 
 }
 
@@ -105,7 +105,7 @@
     [self.addCollaboratorExplanationLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.addCollaboratorButton.mas_bottom).offset(5);
         make.left.equalTo(self.view.mas_left).offset(20);
-        make.left.equalTo(self.view.mas_right).offset(-20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
         make.centerX.equalTo(self.view.mas_centerX);
     }];
     
@@ -119,7 +119,7 @@
     [self.jiveFullNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.githubUsernameLabel.mas_top).offset(-10);
         make.left.equalTo(self.view.mas_left).offset(20);
-        make.left.equalTo(self.view.mas_right).offset(-20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
         make.centerX.equalTo(self.view.mas_centerX);
     }];
     
@@ -174,7 +174,7 @@
         [strongWeakSelf.navigationController popToViewController:[strongWeakSelf.navigationController.viewControllers objectAtIndex:1] animated:YES];
     } onError:^(NSError *error) {
         NSLog(@"Error adding user %@", error);
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error adding this collaborator." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVGithubCollaboratorConfirmViewControllerAddCollaboratorError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
     }];
 }
 

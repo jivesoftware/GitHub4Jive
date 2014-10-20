@@ -24,6 +24,7 @@
 		63B68B352457470EB54E3A27 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 930CB551E0A44ABF819401D7 /* libPods.a */; };
 		89C10E3E17CD2AAC00628EC9 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89C10E3D17CD2AAC00628EC9 /* Security.framework */; };
 		DE5B319D19F55F1B00C3ADBA /* JVGithubCollaboratorConfirmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5B319C19F55F1B00C3ADBA /* JVGithubCollaboratorConfirmViewController.m */; };
+		DE5B319F19F568B500C3ADBA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE5B319E19F568B500C3ADBA /* Localizable.strings */; };
 		DE6198C719F46B93002253C3 /* JVGithubUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6198C619F46B93002253C3 /* JVGithubUser.m */; };
 		DE6198CA19F46DF0002253C3 /* JVGithubRepo.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6198C919F46DEF002253C3 /* JVGithubRepo.m */; };
 		DE6198D319F477AB002253C3 /* JVJiveConnectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6198D219F477AB002253C3 /* JVJiveConnectionTableViewController.m */; };
@@ -62,6 +63,7 @@
 		B35EC3520E0B498CBE108E1C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		DE5B319B19F55F1B00C3ADBA /* JVGithubCollaboratorConfirmViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVGithubCollaboratorConfirmViewController.h; sourceTree = "<group>"; };
 		DE5B319C19F55F1B00C3ADBA /* JVGithubCollaboratorConfirmViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JVGithubCollaboratorConfirmViewController.m; sourceTree = "<group>"; };
+		DE5B319E19F568B500C3ADBA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE6198C519F46B93002253C3 /* JVGithubUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVGithubUser.h; sourceTree = "<group>"; };
 		DE6198C619F46B93002253C3 /* JVGithubUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JVGithubUser.m; sourceTree = "<group>"; };
 		DE6198C819F46DEF002253C3 /* JVGithubRepo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVGithubRepo.h; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				0F9B86D8179854FE005BBFE8 /* Default.png */,
 				0F9B86DA179854FE005BBFE8 /* Default@2x.png */,
 				0F9B86DC179854FE005BBFE8 /* Default-568h@2x.png */,
+				DE5B319E19F568B500C3ADBA /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F9B86D1179854FE005BBFE8 /* InfoPlist.strings in Resources */,
+				DE5B319F19F568B500C3ADBA /* Localizable.strings in Resources */,
 				0F9B86D9179854FE005BBFE8 /* Default.png in Resources */,
 				0F9B86DB179854FE005BBFE8 /* Default@2x.png in Resources */,
 				DE6198D819F498F3002253C3 /* client_config.plist in Resources */,

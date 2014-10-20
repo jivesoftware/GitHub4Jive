@@ -55,7 +55,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"My Followers";
+    self.title = NSLocalizedString(@"JVJiveConnectionTableViewControllerMyFollowers", nil);
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -66,11 +66,8 @@
         [self.tableView reloadData];
     } onError:^(NSError *error) {
         NSLog(@"Error getting followers %@", error);
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred getting your followers." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-
-        
-    }];
-    
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchFollowersError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    }];    
 }
 
 
@@ -135,14 +132,14 @@
                 JVGithubCollaboratorConfirmViewController *confirmViewController = [[JVGithubCollaboratorConfirmViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:self.repo jiveCollaboratorPerson:person githubCollaboratorUser:userToAdd];
                 [self.navigationController pushViewController:confirmViewController animated:YES];                
             } else {
-                [[[UIAlertView alloc] initWithTitle:@"No User Found" message:@"We couldn't find a Github user with this person's work email." delegate:nil cancelButtonTitle:@"Oh well." otherButtonTitles:nil] show];
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"JVJiveConnectionTableViewControllerNoUserFound", nil)  message:NSLocalizedString(@"JVJiveConnectionTableViewControllerNoUserFoundMessage", nil)  delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
             }
         } onError:^(NSError *error) {
             NSLog(@"Error searchihg Github %@", error);
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred while trying to see if this follower is on Github." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerGithubSearchFailedMessage", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
         }];
     }
     
-    }
+}
 
 @end

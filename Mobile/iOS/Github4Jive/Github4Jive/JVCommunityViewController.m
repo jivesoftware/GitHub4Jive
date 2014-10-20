@@ -49,19 +49,19 @@
 - (void)loadView {
     [super loadView];
     
-    self.title = @"Community";
+    self.title = NSLocalizedString(@"JVCommunityViewControllerTitle", nil);
     
     self.communityURL = [UITextField new];
     self.communityURL.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.communityURL.borderStyle = UITextBorderStyleRoundedRect;
-    self.communityURL.text = @"http://192.168.2.150:8080";
+    self.communityURL.text = NSLocalizedString(@"JVCommunityViewControllerDefaultCommunityUrl",nil);
     self.communityURL.delegate = self;
     
     self.communityEntryLabel = [[UILabel alloc] init];
     self.communityEntryLabel.numberOfLines = 0;
     self.communityEntryLabel.textAlignment = NSTextAlignmentCenter;
     self.communityEntryLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:19.0f];
-    self.communityEntryLabel.text = @"Please Enter the URL for Your Jive Community";
+    self.communityEntryLabel.text = NSLocalizedString(@"JVCommunityViewControllerURLEntryTitle", nil);
     
     self.activityIndicator = [UIActivityIndicatorView new];
     self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
@@ -71,18 +71,20 @@
     [super viewDidLoad];
     [self.view addSubview:self.communityEntryLabel];
 
+    [self.view addSubview:self.communityURL];
+    [self.communityURL mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.view.mas_centerY);
+        make.left.equalTo(self.view.mas_left).with.offset(10);
+        make.right.equalTo(self.view.mas_right).with.offset(-10);
+    }];
+
+    
     [self.communityEntryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top).with.offset(20);
+        make.bottom.equalTo(self.communityURL.mas_top).with.offset(-20);
         make.left.equalTo(self.view.mas_left).with.offset(20);
         make.right.equalTo(self.view.mas_right).with.offset(-20);
     }];
     
-    [self.view addSubview:self.communityURL];
-    [self.communityURL mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.communityEntryLabel.mas_bottom).with.offset(10);
-        make.left.equalTo(self.view.mas_left).with.offset(10);
-        make.right.equalTo(self.view.mas_right).with.offset(-10);
-    }];
     
     [self.view addSubview:self.activityIndicator];
     [self.activityIndicator mas_makeConstraints:^(MASConstraintMaker *make) {

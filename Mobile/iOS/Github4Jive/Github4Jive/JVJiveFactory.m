@@ -65,7 +65,8 @@
 
 - (void)handleLoginError:(NSError *)error withErrorBlock:(JiveErrorBlock)errorBlockCopy
 {
-    self.jive = nil;
+    //Reset the client
+    self.jive = [[Jive alloc] initWithJiveInstance:self.jive.jiveInstanceURL authorizationDelegate:self];
     if (errorBlockCopy) {
         errorBlockCopy(error);
     }

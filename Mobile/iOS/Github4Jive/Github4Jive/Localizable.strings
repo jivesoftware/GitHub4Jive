@@ -29,6 +29,7 @@
 "JVLoginViewControllerUsername" = "Username";
 "JVLoginViewControllerPassword" = "Password";
 "JVLoginViewControllerGithubError" = "An error occurred signing into Github.";
+"JVLoginViewControllerJiveLoginError" = "An error occurred signing into Jive.  Please check your username and password, and ensure the Github4Jive addon is installed on the Jive instance.";
 
 "JVLandingControllerTitle" = "Jive ❤ Github";
 "JVLandingControllerLogout" = "Logout";

@@ -128,6 +128,7 @@
                             complete:^(JivePerson *person) {
                                 [self handleLogin:person];
                             } error:^(NSError *error) {
+                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLoginViewControllerJiveLoginError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                 [self resetLoginView];
                                 [self.password becomeFirstResponder];
                             }];

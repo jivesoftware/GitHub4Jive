@@ -156,13 +156,7 @@
 
 
 - (void)addUser {
-    JVJiveConnectionTableViewController *tableViewController = [JVJiveConnectionTableViewController new];
-    tableViewController.jiveFactory = self.jiveFactory;
-    tableViewController.jiveMePerson = self.jiveMePerson;
-    tableViewController.jiveFactory = self.jiveFactory;
-    tableViewController.githubMeUser = self.githubMeUser;
-    tableViewController.githubClient = self.githubClient;
-    tableViewController.repo = self.repo;
+    JVJiveConnectionTableViewController *tableViewController = [[JVJiveConnectionTableViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:self.repo];
     
     [self.navigationController pushViewController:tableViewController animated:YES];
 }

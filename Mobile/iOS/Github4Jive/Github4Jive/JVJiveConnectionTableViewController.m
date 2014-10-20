@@ -22,15 +22,27 @@
 
 @interface JVJiveConnectionTableViewController ()
 
+@property(nonatomic) JVGithubRepo *repo;
+@property(nonatomic) JVJiveFactory *jiveFactory;
+@property(nonatomic) JVGithubClient *githubClient;
+@property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubUser *githubMeUser;
+
 @property (nonatomic) NSArray *jiveUsersInSet;
 
 @end
 
 @implementation JVJiveConnectionTableViewController
 
-- (id)init {
+- (id)initWithJiveFactory:(JVJiveFactory*)jiveFactory githubClient:(JVGithubClient*)githubClient jiveMePerson:(JivePerson*)jiveMePerson githubMeUser:(JVGithubUser*)githubMeUser repo:(JVGithubRepo*)repo {
     self = [super init];
     if (self) {
+        self.jiveFactory = jiveFactory;
+        self.githubClient = githubClient;
+        self.jiveMePerson = jiveMePerson;
+        self.githubMeUser = githubMeUser;
+        self.repo = repo;
+        
         self.jiveUsersInSet = [NSArray new];
     }
     return self;

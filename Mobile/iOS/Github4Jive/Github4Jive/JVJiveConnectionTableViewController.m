@@ -128,7 +128,6 @@
     JiveEmail *workEmail = [emailList objectAtIndex:0];
     if (workEmail != nil) {
         
-        __typeof(self) __weak weakSelf = self;
         [self.githubClient searchUsersByEmail:workEmail.value onSuccess:^(NSArray *people) {
             if ([people count] > 0) {
                 JVGithubUser *userToAdd = [people objectAtIndex:0];

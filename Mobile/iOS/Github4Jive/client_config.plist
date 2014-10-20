@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>github_oauth_consumer_key</key>
+	<string>0d9d961938a4f7e3f518</string>
+	<key>github_oauth_consumer_secret</key>
+	<string>19782ed1662551ef98358e6bcd9bd0033c37bb01</string>
+	<key>jive_oauth_consumer_key</key>
+	<string>OThFNUZEODMtODMzQi00QTJFLUExMjYtQUY1MjY3NUJBNjAw</string>
+	<key>jive_oauth_consumer_secret</key>
+	<string>MDg1NDM3NEMtNTkxOC00MkZGLTgzOUEtNUZGOTQzMTQzRjZF</string>
+</dict>
+</plist>

@@ -1,0 +1,6 @@
+pod 'jive-ios-sdk', :git => 'https://github.com/jivesoftware/jive-ios-sdk.git', :branch => 'develop'
+pod 'gtm-oauth2'
+pod 'AFNetworking', '1.3.4'
+pod 'UICKeyChainStore'
+pod 'Masonry'
+pod 'Mantle'

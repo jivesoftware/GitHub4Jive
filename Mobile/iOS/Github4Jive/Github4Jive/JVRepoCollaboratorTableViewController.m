@@ -1,0 +1,158 @@
+//
+//  JVRepoCollaboratorTableViewController.m
+/*
+ Copyright 2014 Jive Software
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+#import "JVRepoCollaboratorTableViewController.h"
+#import "JVJiveConnectionTableViewController.h"
+#import <AFNetworking/UIImageView+AFNetworking.h>
+
+@interface JVRepoCollaboratorTableViewController ()
+
+@property(nonatomic) NSArray* collaboratorList;
+
+@end
+
+@implementation JVRepoCollaboratorTableViewController
+
+#pragma mark - UIViewController
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        self.collaboratorList = [NSArray new];
+    }
+    return self;
+}
+
+- (void)loadView {
+    [super loadView];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
+                                                                              style:UIBarButtonItemStylePlain target:self action:@selector(addUser)];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.navigationItem.title = self.repo.name;
+    [self fetchRepoCollaborators];
+}
+
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+    return [self.collaboratorList count];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+        static NSString *reuseIdentifier = @"GithubRepoCollaboratorTableViewCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        }
+        
+        JVGithubUser *user = [self.collaboratorList objectAtIndex:[indexPath row]];
+        cell.textLabel.text = user.login;
+    
+    
+        NSURLRequest *avatarRequest = [NSURLRequest requestWithURL:user.avatarUrl];
+    
+        __weak UITableViewCell *weakCell = cell;
+    
+        [cell.imageView setImageWithURLRequest:avatarRequest
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                       weakCell.imageView.image = image;
+                                       [weakCell setNeedsLayout];
+                                   } failure:nil];
+    
+        return cell;
+}
+
+
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        JVGithubUser *userToNuke = [self.collaboratorList objectAtIndex:indexPath.row];
+        [self.githubClient removeCollaborator:userToNuke toRepo:self.repo ownerName:self.githubMeUser onSuccess:^() {
+            NSLog(@"Removed");
+            
+            NSMutableArray *replacementMutableArray = [NSMutableArray arrayWithArray:self.collaboratorList];
+            [replacementMutableArray removeObjectAtIndex:indexPath.row];
+            self.collaboratorList = [NSArray arrayWithArray:replacementMutableArray];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        } onError:^(NSError *error) {
+            NSLog(@"Error removing user %@", error);
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred removing this collaborator." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        }];
+    }
+}
+
+#pragma mark - Private API
+
+- (void)fetchRepoCollaborators {
+    
+    [self.githubClient getCollaboratorsForRepo:self.repo owner:self.githubMeUser onSuccess:^(NSArray *collabList) {
+        
+        // Github collab response includes the owner as a collaborator
+        
+        NSPredicate *notMePredicate = [NSPredicate predicateWithBlock:^BOOL(JVGithubUser *item, NSDictionary *bindings) {
+            return (![item.login isEqualToString:self.githubMeUser.login]);
+        }];
+        
+        self.collaboratorList = [collabList filteredArrayUsingPredicate:notMePredicate];
+        [self.tableView reloadData];
+    } onError:^(NSError *error) {
+        NSLog(@"Error getting repo collaborators for %@, %@", self.repo.name, [error localizedDescription]);
+        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred fetching this repo's collaborators." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        
+    }];
+}
+
+
+- (void)addUser {
+    JVJiveConnectionTableViewController *tableViewController = [JVJiveConnectionTableViewController new];
+    tableViewController.jiveFactory = self.jiveFactory;
+    tableViewController.jiveMePerson = self.jiveMePerson;
+    tableViewController.jiveFactory = self.jiveFactory;
+    tableViewController.githubMeUser = self.githubMeUser;
+    tableViewController.githubClient = self.githubClient;
+    tableViewController.repo = self.repo;
+    
+    [self.navigationController pushViewController:tableViewController animated:YES];
+}
+
+@end

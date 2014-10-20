@@ -24,6 +24,11 @@
 
 @interface JVLandingViewController () <UITableViewDataSource,UITableViewDelegate>
 
+@property(nonatomic) JVJiveFactory *jiveFactory;
+@property(nonatomic) JVGithubClient *githubClient;
+@property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubUser *githubMeUser;
+
 @property (nonatomic) NSArray* reposList;
 
 @property (nonatomic) UIImageView *jiveAvatarImageView;
@@ -35,17 +40,20 @@
 @property (nonatomic) UILabel *repoTitleLabel;
 @property (nonatomic) UILabel *repoSubtitleLabel;
 
-
 @end
 
 @implementation JVLandingViewController
 
-- (id)init {
+- (id)initWithJiveFactory:(JVJiveFactory*)jiveFactory githubClient:(JVGithubClient*)githubClient jiveMePerson:(JivePerson*)jiveMePerson {
     self = [super init];
     if (self) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         
         self.reposList = [NSArray new];
+
+        self.jiveFactory = jiveFactory;
+        self.jiveMePerson = jiveMePerson;
+        self.githubClient = githubClient;
     }
     return self;
 }
@@ -205,12 +213,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.githubMeUser != nil) {
         JVGithubRepo *selectedRepoInfo = [self.reposList objectAtIndex:[indexPath row]];
-        JVRepoCollaboratorTableViewController *repoTableViewController = [JVRepoCollaboratorTableViewController new];
-        repoTableViewController.jiveFactory = self.jiveFactory;
-        repoTableViewController.jiveMePerson = self.jiveMePerson;
-        repoTableViewController.githubClient = self.githubClient;
-        repoTableViewController.githubMeUser = self.githubMeUser;
-        repoTableViewController.repo = selectedRepoInfo;
+        JVRepoCollaboratorTableViewController *repoTableViewController = [[JVRepoCollaboratorTableViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:selectedRepoInfo];
         [self.navigationController pushViewController:repoTableViewController animated:YES];
     }
 }

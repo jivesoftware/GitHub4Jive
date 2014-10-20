@@ -22,6 +22,12 @@
 
 @interface JVRepoCollaboratorTableViewController ()
 
+@property(nonatomic) JVGithubRepo *repo;
+@property(nonatomic) JVJiveFactory *jiveFactory;
+@property(nonatomic) JVGithubClient *githubClient;
+@property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubUser *githubMeUser;
+
 @property(nonatomic) NSArray* collaboratorList;
 
 @end
@@ -30,9 +36,15 @@
 
 #pragma mark - UIViewController
 
-- (id)init {
+- (id)initWithJiveFactory:(JVJiveFactory*)jiveFactory githubClient:(JVGithubClient*)githubClient jiveMePerson:(JivePerson*)jiveMePerson githubMeUser:(JVGithubUser*)githubMeUser repo:(JVGithubRepo*)repo {
     self = [super init];
     if (self) {
+        self.jiveFactory = jiveFactory;
+        self.githubClient = githubClient;
+        self.jiveMePerson = jiveMePerson;
+        self.githubMeUser = githubMeUser;
+        self.repo = repo;
+        
         self.collaboratorList = [NSArray new];
     }
     return self;
@@ -144,13 +156,7 @@
 
 
 - (void)addUser {
-    JVJiveConnectionTableViewController *tableViewController = [JVJiveConnectionTableViewController new];
-    tableViewController.jiveFactory = self.jiveFactory;
-    tableViewController.jiveMePerson = self.jiveMePerson;
-    tableViewController.jiveFactory = self.jiveFactory;
-    tableViewController.githubMeUser = self.githubMeUser;
-    tableViewController.githubClient = self.githubClient;
-    tableViewController.repo = self.repo;
+    JVJiveConnectionTableViewController *tableViewController = [[JVJiveConnectionTableViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:self.repo];
     
     [self.navigationController pushViewController:tableViewController animated:YES];
 }

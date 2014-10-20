@@ -100,7 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				DE6198D719F498F3002253C3 /* client_config.plist */,
-				0F9B86CC179854FE005BBFE8 /* Example */,
+				0F9B86CC179854FE005BBFE8 /* Github4Jive */,
 				0F9B86C5179854FE005BBFE8 /* Frameworks */,
 				0F9B86C4179854FE005BBFE8 /* Products */,
 				B35EC3520E0B498CBE108E1C /* Pods.xcconfig */,
@@ -129,7 +129,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		0F9B86CC179854FE005BBFE8 /* Example */ = {
+		0F9B86CC179854FE005BBFE8 /* Github4Jive */ = {
 			isa = PBXGroup;
 			children = (
 				DE90484019EF5F3C003A8286 /* View Controllers */,
@@ -141,7 +141,7 @@
 				0F9B86D6179854FE005BBFE8 /* JVAppDelegate.m */,
 				0F9B86CD179854FE005BBFE8 /* Supporting Files */,
 			);
-			name = Example;
+			name = Github4Jive;
 			path = Github4Jive;
 			sourceTree = "<group>";
 		};
@@ -226,7 +226,7 @@
 			dependencies = (
 			);
 			name = Github4Jive;
-			productName = Example;
+			productName = Github4Jive;
 			productReference = 0F9B86C3179854FE005BBFE8 /* Github4Jive.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -406,7 +406,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/Github4Jive-Prefix.pch";
+				GCC_PREFIX_HEADER = "Github4Jive/Github4Jive-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -417,7 +417,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = "Example/Github4Jive-Info.plist";
+				INFOPLIST_FILE = "Github4Jive/Github4Jive-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Github4Jive;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -439,7 +439,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Example/Github4Jive-Prefix.pch";
+				GCC_PREFIX_HEADER = "Github4Jive/Github4Jive-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -450,7 +450,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = "Example/Github4Jive-Info.plist";
+				INFOPLIST_FILE = "Github4Jive/Github4Jive-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Github4Jive;
 				RUN_CLANG_STATIC_ANALYZER = YES;

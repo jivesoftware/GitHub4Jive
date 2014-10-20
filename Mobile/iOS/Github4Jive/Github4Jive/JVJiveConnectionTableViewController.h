@@ -23,10 +23,8 @@
 
 @interface JVJiveConnectionTableViewController : UITableViewController
 
-@property(nonatomic) JVGithubRepo *repo;
-@property(nonatomic) JVJiveFactory *jiveFactory;
-@property(nonatomic) JVGithubClient *githubClient;
-@property(nonatomic) JivePerson *jiveMePerson;
-@property(nonatomic) JVGithubUser *githubMeUser;
+
+
+- (id)initWithJiveFactory:(JVJiveFactory*)jiveFactory githubClient:(JVGithubClient*)githubClient jiveMePerson:(JivePerson*)jiveMePerson githubMeUser:(JVGithubUser*)githubMeUser repo:(JVGithubRepo*)repo;
 
 @end

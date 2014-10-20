@@ -159,10 +159,7 @@
 }
 
 - (void)proceedAfterLogin {
-    JVLandingViewController *landingViewController = [JVLandingViewController new];
-    landingViewController.jiveFactory = self.jiveFactory;
-    landingViewController.jiveMePerson = self.me;
-    landingViewController.githubClient = self.githubClient;
+    JVLandingViewController *landingViewController = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.me];
     [self.navigationController setViewControllers:@[landingViewController]];
 }
 

@@ -152,10 +152,7 @@
     //If we think we already have credentials, try them and bypass login.
     if ([self.jiveFactory hasCredentialsForCommunity] && [githubClient maybeAlreadyLoggedIn]) {
         [self.jiveFactory getMe:^(JivePerson *person) {
-            JVLandingViewController *landing = [JVLandingViewController new];
-            landing.githubClient = githubClient;
-            landing.jiveFactory = self.jiveFactory;
-            landing.jiveMePerson = person;
+            JVLandingViewController *landing = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:githubClient jiveMePerson:person];
             [self.navigationController setViewControllers:@[landing]];
         } error:^(NSError *error) {
             // Our credentials must not be good.

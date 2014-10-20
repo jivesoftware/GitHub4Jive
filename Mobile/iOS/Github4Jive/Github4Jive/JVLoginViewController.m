@@ -73,6 +73,7 @@
     self.password = [UITextField new];
     self.password.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.password.borderStyle = UITextBorderStyleRoundedRect;
+    self.password.secureTextEntry = YES;
     self.password.delegate = self;
     self.password.placeholder = NSLocalizedString(@"JVLoginViewControllerPassword", nil);
 

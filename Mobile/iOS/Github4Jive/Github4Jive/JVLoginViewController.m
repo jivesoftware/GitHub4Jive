@@ -27,9 +27,10 @@
 
 @interface JVLoginViewController ()
 
-@property (nonatomic) JivePerson *me;
 @property (nonatomic) JVGithubClient *githubClient;
+
 @property (nonatomic) JVJiveFactory *jiveFactory;
+@property (nonatomic) JivePerson *jiveMePerson;
 
 @property (nonatomic) UILabel *loginHeaderLabel;
 @property (nonatomic) UITextField *userName;
@@ -54,12 +55,12 @@
 
 - (void)loadView {
     [super loadView];
-    self.title = @"Login";
+    self.title = NSLocalizedString(@"JVLoginViewControllerTitle", nil);
 
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.loginHeaderLabel = [UILabel new];
-    self.loginHeaderLabel.text = @"Login To Jive";
+    self.loginHeaderLabel.text = NSLocalizedString(@"JVLoginViewControllerLoginHeaderText", nil);
     self.loginHeaderLabel.textAlignment = NSTextAlignmentCenter;
     self.loginHeaderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:19.0f];
     
@@ -67,13 +68,13 @@
     self.userName.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.userName.borderStyle = UITextBorderStyleRoundedRect;
     self.userName.delegate = self;
-    self.userName.placeholder = @"Username";
+    self.userName.placeholder = NSLocalizedString(@"JVLoginViewControllerUsername", nil);
     
     self.password = [UITextField new];
     self.password.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.password.borderStyle = UITextBorderStyleRoundedRect;
     self.password.delegate = self;
-    self.password.placeholder = @"Password";
+    self.password.placeholder = NSLocalizedString(@"JVLoginViewControllerPassword", nil);
 
     self.activityIndicator = [UIActivityIndicatorView new];
     self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
@@ -110,12 +111,6 @@
     [super viewDidAppear:animated];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    [segue.destinationViewController setMe:self.me];
-    [segue.destinationViewController setGithubClient:self.githubClient];
-    [segue.destinationViewController setJiveFactory:self.jiveFactory];
-}
-
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -133,6 +128,7 @@
                             complete:^(JivePerson *person) {
                                 [self handleLogin:person];
                             } error:^(NSError *error) {
+                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLoginViewControllerJiveLoginError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                 [self resetLoginView];
                                 [self.password becomeFirstResponder];
                             }];
@@ -144,7 +140,7 @@
 #pragma mark - Private API
 
 - (void)handleLogin:(JivePerson *)person {
-    self.me = person;
+    self.jiveMePerson = person;
     [self resetLoginView];
     
     GTMOAuth2ViewControllerTouch *oauthViewController = [self.githubClient oauthViewControllerWithSuccess:^{
@@ -152,14 +148,14 @@
         [self proceedAfterLogin];
     } onError:^(NSError *error) {
         [self.navigationController dismissViewControllerAnimated:NO completion:nil];
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred signing into Github." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLoginViewControllerGithubError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
     }];
     [[self navigationController] pushViewController:oauthViewController animated:YES];
     
 }
 
 - (void)proceedAfterLogin {
-    JVLandingViewController *landingViewController = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.me];
+    JVLandingViewController *landingViewController = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson];
     [self.navigationController setViewControllers:@[landingViewController]];
 }
 

@@ -25,20 +25,20 @@
 @interface JVLandingViewController () <UITableViewDataSource,UITableViewDelegate>
 
 @property(nonatomic) JVJiveFactory *jiveFactory;
-@property(nonatomic) JVGithubClient *githubClient;
 @property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubClient *githubClient;
 @property(nonatomic) JVGithubUser *githubMeUser;
+
+@property (nonatomic) UIImageView *githubAvatarImageView;
+@property (nonatomic) UILabel *githubUsernameLabel;
+@property (nonatomic) UIImageView *jiveAvatarImageView;
+@property (nonatomic) UILabel *jiveFullNameLabel;
+@property (nonatomic) UITableView *repoTableView;
+@property (nonatomic) UILabel *repoTitleLabel;
+@property (nonatomic) UILabel *repoSubtitleLabel;
 
 @property (nonatomic) NSArray* reposList;
 
-@property (nonatomic) UIImageView *jiveAvatarImageView;
-@property (nonatomic) UIImageView *githubAvatarImageView;
-@property (nonatomic) UILabel *githubUsernameLabel;
-@property (nonatomic) UILabel *jiveFullNameLabel;
-@property (nonatomic) UITableView *repoTableView;
-
-@property (nonatomic) UILabel *repoTitleLabel;
-@property (nonatomic) UILabel *repoSubtitleLabel;
 
 @end
 
@@ -63,13 +63,15 @@
 - (void)loadView {
     [super loadView];
     
-    self.title = @"Jive ❤ Github";
+    self.title = NSLocalizedString(@"JVLandingControllerTitle", nil);
     self.jiveAvatarImageView = [UIImageView new];
     self.githubAvatarImageView = [UIImageView new];
     self.repoTableView = [UITableView new];
     
     self.jiveFullNameLabel = [UILabel new];
     self.jiveFullNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:36.0f];
+    self.jiveFullNameLabel.numberOfLines = 0;
+    self.jiveFullNameLabel.textAlignment = NSTextAlignmentCenter;
 
     self.githubUsernameLabel = [UILabel new];
     self.githubUsernameLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
@@ -77,13 +79,13 @@
     
     self.repoTitleLabel = [UILabel new];
     self.repoTitleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20.0f];
-    self.repoTitleLabel.text = @"My Repositories";
+    self.repoTitleLabel.text = NSLocalizedString(@"JVLandingControllerRepoTitleText", nil);
 
     self.repoSubtitleLabel = [UILabel new];
     self.repoSubtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:14.0f];
-    self.repoSubtitleLabel.text = @"Tap to Manage Collaborators";
+    self.repoSubtitleLabel.text = NSLocalizedString(@"JVLandingControllerRepoSubTitleText", nil);
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"JVLandingControllerLogout", nil)
                                                                               style:UIBarButtonItemStylePlain target:self action:@selector(logout)];
 
 
@@ -117,6 +119,8 @@
     [self.view addSubview:self.jiveFullNameLabel];
     [self.jiveFullNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.jiveAvatarImageView.mas_bottom).offset(10);
+        make.left.equalTo(self.view.mas_left).offset(20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
         make.centerX.equalTo(self.view.mas_centerX);
     }];
     
@@ -175,7 +179,7 @@
         self.githubUsernameLabel.text = githubFriendlyName;
     } onError:^(NSError *error) {
         NSLog(@"Error getting Github info %@", error);
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred fetching your Github user info." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLandingControllerGithubInfoError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
     }];
 }
 
@@ -183,8 +187,8 @@
     [self.githubClient getMyRepos:^(NSArray *reposList) {
         self.reposList = reposList;
     } onError:^(NSError *error) {
-        NSLog(@"Oops, an error occurred getting my user info. %@", error);
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred fetching your Github user info." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        NSLog(@"Oops, an error occurred getting my repo list. %@", error);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLandingControllerGithubRepoError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
     }];
 }
 

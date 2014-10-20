@@ -29,6 +29,7 @@
 
 @property (nonatomic) JivePerson *me;
 @property (nonatomic) JVGithubClient *githubClient;
+@property (nonatomic) JVJiveFactory *jiveFactory;
 
 @property (nonatomic) UILabel *loginHeaderLabel;
 @property (nonatomic) UITextField *userName;
@@ -39,11 +40,12 @@
 
 @implementation JVLoginViewController
 
-- (id)init {
+-(id)initWithJiveFactory:(JVJiveFactory*)jiveFactory {
     self = [super init];
     if (self) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.githubClient = [JVGithubClient new];
+        self.jiveFactory = jiveFactory;
     }
     return self;
 }

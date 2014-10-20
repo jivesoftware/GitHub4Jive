@@ -167,8 +167,7 @@
 }
 
 - (void)goToLoginPage {
-    JVLoginViewController *loginViewController = [JVLoginViewController new];
-    loginViewController.jiveFactory = self.jiveFactory;
+    JVLoginViewController *loginViewController = [[JVLoginViewController alloc] initWithJiveFactory:self.jiveFactory];
     [self.navigationController pushViewController:loginViewController animated:YES];
 }
 

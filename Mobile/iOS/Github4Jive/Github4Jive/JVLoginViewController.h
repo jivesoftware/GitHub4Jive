@@ -21,7 +21,6 @@
 
 @interface JVLoginViewController : UIViewController <UITextFieldDelegate>
 
-@property (nonatomic) JVJiveFactory *jiveFactory;
-
+-(id)initWithJiveFactory:(JVJiveFactory*)jiveFactory;
 
 @end

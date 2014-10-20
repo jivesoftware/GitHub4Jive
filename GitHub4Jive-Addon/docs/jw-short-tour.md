@@ -102,10 +102,9 @@ Using dynamic Jive app actions to open and close GitHub issues
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-appaction2.jpg "Issue Actions 2")
 
-* Clicking the action produce an [app view](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/issue-close.html) and its [JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30)
-  * On presentation, the [app action view JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30) calls the change issue service endpoint @ <b>/github/place/changeIssueState</b>
+* Clicking the close action produces an [app view modal](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/issue-close.html) and its [JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30)
+  * The [JS](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/javascripts/actions/issue-close-reopen.js#L30) calls the change issue service endpoint @ <b>/github/place/changeIssueState</b>
   * The [service endpoint](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/routes/gitHubEndpoints.js#L66) and its [controller](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/github/backend/gitHubController.js#L143) closes the specified issue
-* GitHub invokes the service webhook endpoint on issue close, triggering the [github place issue handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L38)
+* GitHub calls the service webhook endpoint, triggering the [github place issue handler](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L38)
   * (27) The handler updates [discussion ext properties, setting the property indicating closure](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L123)
-  * On view, the [re-open action is shown because the closed ext prop is set on the discussion](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L77)
-* The [app contributes actions in content for reopen operation](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L77)
+* On view, the [app contributes actions in content for reopen operation](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/apps/GitHub4Jive/public/app.xml#L77)

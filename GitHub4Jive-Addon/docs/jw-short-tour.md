@@ -75,7 +75,7 @@ Using a Jive discussion to comment on a GitHub issue
   * (20) [Calls jive to create discussion](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L51) when triggered by an incoming GitHub event @ <b>[/api/core/v3/contents](https://developers.jivesoftware.com/api/v3/cloud/rest/ContentService.html#createContent(String,%20String,%20String,%20String))</b>
   * (21) [Calls Jive to write ext props](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/services/places/backend/webhooks/issueHandler.js#L106) linking the discussion to a GitHub issue, using [the jiveApiFacade to make the actual call](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/lib/github4jive/JiveApiFacade.js#L229) @ <b>[/api/core/v3/contents/[contentID]/extProps](https://developers.jivesoftware.com/api/v3/cloud/rest/ContentService.html#createExtProps(UriInfo,%20String,%20String,%20String))</b>
 
-### Discussing Issues #2: Reply to Discussion
+### Discussing Issues #2: Add Reply to Discussion
 
 ![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss2.jpg "Issue Discussions 2")
 

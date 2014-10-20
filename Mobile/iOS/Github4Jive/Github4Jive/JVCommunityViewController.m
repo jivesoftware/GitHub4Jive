@@ -28,7 +28,6 @@
 
 @property (nonatomic)JVJiveFactory *jiveFactory;
 
-
 @property (nonatomic) UITextField *communityURL;
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) UILabel *communityEntryLabel;

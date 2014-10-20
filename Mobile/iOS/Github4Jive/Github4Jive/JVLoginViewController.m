@@ -27,9 +27,10 @@
 
 @interface JVLoginViewController ()
 
-@property (nonatomic) JivePerson *me;
 @property (nonatomic) JVGithubClient *githubClient;
+
 @property (nonatomic) JVJiveFactory *jiveFactory;
+@property (nonatomic) JivePerson *jiveMePerson;
 
 @property (nonatomic) UILabel *loginHeaderLabel;
 @property (nonatomic) UITextField *userName;
@@ -110,12 +111,6 @@
     [super viewDidAppear:animated];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    [segue.destinationViewController setMe:self.me];
-    [segue.destinationViewController setGithubClient:self.githubClient];
-    [segue.destinationViewController setJiveFactory:self.jiveFactory];
-}
-
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -144,7 +139,7 @@
 #pragma mark - Private API
 
 - (void)handleLogin:(JivePerson *)person {
-    self.me = person;
+    self.jiveMePerson = person;
     [self resetLoginView];
     
     GTMOAuth2ViewControllerTouch *oauthViewController = [self.githubClient oauthViewControllerWithSuccess:^{
@@ -159,7 +154,7 @@
 }
 
 - (void)proceedAfterLogin {
-    JVLandingViewController *landingViewController = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.me];
+    JVLandingViewController *landingViewController = [[JVLandingViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson];
     [self.navigationController setViewControllers:@[landingViewController]];
 }
 

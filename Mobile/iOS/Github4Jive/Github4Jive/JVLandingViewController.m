@@ -25,20 +25,20 @@
 @interface JVLandingViewController () <UITableViewDataSource,UITableViewDelegate>
 
 @property(nonatomic) JVJiveFactory *jiveFactory;
-@property(nonatomic) JVGithubClient *githubClient;
 @property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubClient *githubClient;
 @property(nonatomic) JVGithubUser *githubMeUser;
+
+@property (nonatomic) UIImageView *githubAvatarImageView;
+@property (nonatomic) UILabel *githubUsernameLabel;
+@property (nonatomic) UIImageView *jiveAvatarImageView;
+@property (nonatomic) UILabel *jiveFullNameLabel;
+@property (nonatomic) UITableView *repoTableView;
+@property (nonatomic) UILabel *repoTitleLabel;
+@property (nonatomic) UILabel *repoSubtitleLabel;
 
 @property (nonatomic) NSArray* reposList;
 
-@property (nonatomic) UIImageView *jiveAvatarImageView;
-@property (nonatomic) UIImageView *githubAvatarImageView;
-@property (nonatomic) UILabel *githubUsernameLabel;
-@property (nonatomic) UILabel *jiveFullNameLabel;
-@property (nonatomic) UITableView *repoTableView;
-
-@property (nonatomic) UILabel *repoTitleLabel;
-@property (nonatomic) UILabel *repoSubtitleLabel;
 
 @end
 

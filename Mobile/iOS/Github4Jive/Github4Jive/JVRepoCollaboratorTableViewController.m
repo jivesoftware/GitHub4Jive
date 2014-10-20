@@ -22,11 +22,11 @@
 
 @interface JVRepoCollaboratorTableViewController ()
 
-@property(nonatomic) JVGithubRepo *repo;
-@property(nonatomic) JVJiveFactory *jiveFactory;
 @property(nonatomic) JVGithubClient *githubClient;
-@property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubRepo *repo;
 @property(nonatomic) JVGithubUser *githubMeUser;
+@property(nonatomic) JVJiveFactory *jiveFactory;
+@property(nonatomic) JivePerson *jiveMePerson;
 
 @property(nonatomic) NSArray* collaboratorList;
 

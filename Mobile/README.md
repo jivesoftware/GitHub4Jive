@@ -11,6 +11,17 @@ has a publicly listed email address in Github, you can add that person as a coll
 The projects also act as a demonstration of how to sign into a Jive instance using OAuth on both iOS
 and Android, and how to do some simple interactions.
 
+## Building & Running
+
+### iOS
+
+Because this project uses CocoaPods, you'll want to open `Github4Jive.xcworkspace` instead of the XCode
+project directly.
+
+### Android
+
+TBA
+
 ##Requirements
 
 These applications require either a current Jive Cloud instance, or hosted/on-prem version 7.0.1 or later.
@@ -20,7 +31,7 @@ mobile addon into your Jive instance.
 
 ## Limitations
 
-The app does not currently do any paging of Github results. If you have more than 30 repos, you will 
+The iOS app does not currently do any paging of Github results. If you have more than 30 repos, you will 
 only see the first 30.  Sorry!
 
 ## Developer Challenge Exercise

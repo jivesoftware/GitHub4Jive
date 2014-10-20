@@ -213,12 +213,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.githubMeUser != nil) {
         JVGithubRepo *selectedRepoInfo = [self.reposList objectAtIndex:[indexPath row]];
-        JVRepoCollaboratorTableViewController *repoTableViewController = [JVRepoCollaboratorTableViewController new];
-        repoTableViewController.jiveFactory = self.jiveFactory;
-        repoTableViewController.jiveMePerson = self.jiveMePerson;
-        repoTableViewController.githubClient = self.githubClient;
-        repoTableViewController.githubMeUser = self.githubMeUser;
-        repoTableViewController.repo = selectedRepoInfo;
+        JVRepoCollaboratorTableViewController *repoTableViewController = [[JVRepoCollaboratorTableViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:selectedRepoInfo];
         [self.navigationController pushViewController:repoTableViewController animated:YES];
     }
 }

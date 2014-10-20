@@ -22,6 +22,12 @@
 
 @interface JVRepoCollaboratorTableViewController ()
 
+@property(nonatomic) JVGithubRepo *repo;
+@property(nonatomic) JVJiveFactory *jiveFactory;
+@property(nonatomic) JVGithubClient *githubClient;
+@property(nonatomic) JivePerson *jiveMePerson;
+@property(nonatomic) JVGithubUser *githubMeUser;
+
 @property(nonatomic) NSArray* collaboratorList;
 
 @end
@@ -30,9 +36,15 @@
 
 #pragma mark - UIViewController
 
-- (id)init {
+- (id)initWithJiveFactory:(JVJiveFactory*)jiveFactory githubClient:(JVGithubClient*)githubClient jiveMePerson:(JivePerson*)jiveMePerson githubMeUser:(JVGithubUser*)githubMeUser repo:(JVGithubRepo*)repo {
     self = [super init];
     if (self) {
+        self.jiveFactory = jiveFactory;
+        self.githubClient = githubClient;
+        self.jiveMePerson = jiveMePerson;
+        self.githubMeUser = githubMeUser;
+        self.repo = repo;
+        
         self.collaboratorList = [NSArray new];
     }
     return self;

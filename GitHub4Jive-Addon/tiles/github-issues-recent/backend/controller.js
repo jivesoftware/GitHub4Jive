@@ -66,3 +66,16 @@ exports.eventHandlers = [
         'handler' : updateTileInstance
     }
 ];
+
+// sample tile registration data
+/**
+ {
+    "id": "3f2dbd48-746f-41cc-a893-d2b96eeaa887",
+    "url": "https://sandbox.jiveon.com/api/jivelinks/v1/tiles/3306/data",
+    "config": {
+      "parent": "https://sandbox.jiveon.com/api/core/v3/places/95698"
+    },
+    "name": "github-issues-recent",
+    ..
+ }
+**/

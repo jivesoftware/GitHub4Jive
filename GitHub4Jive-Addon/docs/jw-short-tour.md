@@ -37,7 +37,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
 
 ### Managing GitHub Issues #1: Tile Config
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile1b.jpg "Issue Management 1")
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile1.jpg "Issue Management 1")
 
 * Tiles contribute a place config modal
   * [Recent issues](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/definition.json#L21) and [project info](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/definition.json#L21) tile definitions declare a source for config modal
@@ -49,7 +49,7 @@ Using Tiles in a Purposeful Place to track GitHub issues
 
 ### Managing GitHub Issues #2: Tile Action
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile3b.jpg "Issue Management 3")
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-tile3.jpg "Issue Management 3")
 
 * The [tile push logic defines issue metadata as part of tile JSON push](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/backend/tileInstanceProcessor.js#L46)
   * [Endpoint URL specified in tile definition](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/tiles/github-issues-recent/definition.json#L20)
@@ -66,7 +66,7 @@ Using a Jive discussion to comment on a GitHub issue
 
 ### Discussing Issues #1: Create Discussion
 
-![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss1b.jpg "Issue Discussions 1")
+![](https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/images/jw-discuss1.jpg "Issue Discussions 1")
 
 * During place config, webhooks are established to model GitHub issues as Jive discussions
   * The [config modal JS calls place setup endpoint] (https://github.com/jivesoftware/GitHub4Jive/blob/master/GitHub4Jive-Addon/public/javascripts/configurePlace.js#L291) to trigger webhooks setup @ <b>/github4jive/place/setupDiscussionWebhooks</b>

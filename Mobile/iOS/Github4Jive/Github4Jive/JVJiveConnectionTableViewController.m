@@ -18,6 +18,7 @@
 
 
 #import "JVJiveConnectionTableViewController.h"
+#import "JVGithubCollaboratorConfirmViewController.h"
 #import <AFNetworking.h>
 
 @interface JVJiveConnectionTableViewController ()
@@ -119,7 +120,6 @@
 
 
 -(void)tryAddingCollaborator:(JivePerson*)person {
-    
     NSPredicate *workEmailPredicate = [NSPredicate predicateWithBlock:^BOOL(JiveEmail *item, NSDictionary *bindings) {
         return ([item.type isEqualToString:@"work"]);
     }];
@@ -132,14 +132,9 @@
         [self.githubClient searchUsersByEmail:workEmail.value onSuccess:^(NSArray *people) {
             if ([people count] > 0) {
                 JVGithubUser *userToAdd = [people objectAtIndex:0];
-                [self.githubClient addCollaborator:userToAdd toRepo:self.repo ownerName:self.githubMeUser onSuccess:^{
-                    __typeof(self) __strong strongWeakSelf = weakSelf;
-                    [strongWeakSelf.navigationController popViewControllerAnimated:YES];
-                } onError:^(NSError *error) {
-                    NSLog(@"Error adding user %@", error);
-                    [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error adding this collaborator." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-
-                }];
+                
+                JVGithubCollaboratorConfirmViewController *confirmViewController = [[JVGithubCollaboratorConfirmViewController alloc] initWithJiveFactory:self.jiveFactory githubClient:self.githubClient jiveMePerson:self.jiveMePerson githubMeUser:self.githubMeUser repo:self.repo jiveCollaboratorPerson:person githubCollaboratorUser:userToAdd];
+                [self.navigationController pushViewController:confirmViewController animated:YES];                
             } else {
                 [[[UIAlertView alloc] initWithTitle:@"No User Found" message:@"We couldn't find a Github user with this person's work email." delegate:nil cancelButtonTitle:@"Oh well." otherButtonTitles:nil] show];
             }
@@ -148,6 +143,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"An error occurred while trying to see if this follower is on Github." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         }];
     }
-}
+    
+    }
 
 @end

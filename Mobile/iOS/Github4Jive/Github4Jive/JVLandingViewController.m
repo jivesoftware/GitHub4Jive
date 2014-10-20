@@ -70,6 +70,8 @@
     
     self.jiveFullNameLabel = [UILabel new];
     self.jiveFullNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:36.0f];
+    self.jiveFullNameLabel.numberOfLines = 0;
+    self.jiveFullNameLabel.textAlignment = NSTextAlignmentCenter;
 
     self.githubUsernameLabel = [UILabel new];
     self.githubUsernameLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
@@ -117,6 +119,8 @@
     [self.view addSubview:self.jiveFullNameLabel];
     [self.jiveFullNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.jiveAvatarImageView.mas_bottom).offset(10);
+        make.left.equalTo(self.view.mas_left).offset(20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
         make.centerX.equalTo(self.view.mas_centerX);
     }];
     

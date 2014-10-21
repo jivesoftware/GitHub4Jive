@@ -94,7 +94,7 @@ function formatDiscussionSubject(gitData) {
 function createIssueDiscussion(placeID, gitData, jiveApi) {
     var self = this;
 
-    jive.logger.info("New Issue! Creating a discussion for it.");
+    jive.logger.info("New GitHub issue! Creating a Jive discussion for it.");
     var builder = new (self.jiveContentBuilder)();
     var content = builder.discussion()
                         .parentPlace(placeID)

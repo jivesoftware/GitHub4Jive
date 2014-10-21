@@ -18,17 +18,28 @@ var colorMap = {
 };
 
 /**
- * This is used to update the tile on any change to an issue.
+ * This is used to update the recent issues tile on any change to an issue.
+ *
+ * Tile instance data:
+ * {
+ *   "id": "3f2dbd48-746f-41cc-a893-d2b96eeaa887",
+ *   "url": "https://sandbox.jiveon.com/api/jivelinks/v1/tiles/3306/data",
+ *   "config": {
+ *     "parent": "https://sandbox.jiveon.com/api/core/v3/places/95698"  <---- tile parent URL
+ *   },
+ *   "name": "github-issues-recent",
+ *   ..
+ * }
  * @param {object} instance of a tile
  */
 exports.processTileInstance = function processTileInstance(instance) {
     if ( instance.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
-        var place = instance.config.parent;
-        return placeStore.getPlaceByUrl(place).then(function (linked) {
-            var auth = gitFacade.createOauthObject(linked.github.token.access_token);
-            return gitFacade.getRepositoryIssues(linked.github.repoOwner, linked.github.repo, auth, 10, "open")
+        var placeURL = instance.config.parent;
+        return placeStore.getPlaceByUrl(placeURL).then(function (place) {   // get tile parent place, including ext props
+            var auth = gitFacade.createOauthObject(place.github.token.access_token);
+            return gitFacade.getRepositoryIssues(place.github.repoOwner, place.github.repo, auth, 10, "open")
                 .then(function (issues) {
-                    processTileIssues(instance, linked, issues);
+                    processTileIssues(instance, place, issues);
                 });
         });
     }

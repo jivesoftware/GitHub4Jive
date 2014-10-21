@@ -147,7 +147,7 @@ exports.changeIssueState = function (req, res) {
     var issueNumber = queryParams.number;
     var ticketID = queryParams.ticketID;
     var state = req.body.state;
-
+    // (1) fetch place details to get gitHub access token; (2) query github, close issue using issue# & repo from request
     getGitHubOauthTokenForPlace(placeUrl).then(function (authOptions) {
         return gitHubFacade.changeIssueState(repo.owner, repo.repo, issueNumber, state, authOptions).then(function (confirmation) {
             contentResponse(res, {success: confirmation});

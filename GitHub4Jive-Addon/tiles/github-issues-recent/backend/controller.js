@@ -23,19 +23,10 @@ var gitHubWebhooks = require("./webhooks/webhookBuilder");
 
 var GITHUB_RECENT_ISSUES_TILE_NAME = "github-issues-recent";
 ////////////////////////////////////////
-
 var pushData = function () {
     jive.tiles.findByDefinitionName( GITHUB_RECENT_ISSUES_TILE_NAME ).then( function(tiles) {
         return q.all(tiles.map(tileInstanceProcessor.processTileInstance)) ;
     });
-};
-
-var updateTileInstance = function (newTile) {
-    if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
-        gitHubWebhooks.setup(newTile).then(function () {
-            return tileInstanceProcessor.processTileInstance(newTile);  // push a recent issues tile update right away
-        });
-    }
 };
 
 exports.onBootstrap = function(){
@@ -50,6 +41,15 @@ exports.task = [
         'handler' : pushData
     }
 ];
+
+// handle tile instance registration call from Jive (on place save)
+var updateTileInstance = function (newTile) {
+    if ( newTile.name === GITHUB_RECENT_ISSUES_TILE_NAME ) {
+        gitHubWebhooks.setup(newTile).then(function () {                // setup github webhook + handler
+            return tileInstanceProcessor.processTileInstance(newTile);  // push a recent issues tile update right away
+        });
+    }
+};
 
 exports.eventHandlers = [
 

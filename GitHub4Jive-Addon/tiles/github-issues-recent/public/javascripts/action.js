@@ -87,11 +87,11 @@ jive.tile.onOpen(function (config, options) {
             "state": "closed"
         };
         osapi.http.post({
-            'href': host + '/github/place/changeIssueState?' +
-                "ts=" + new Date().getTime()+
-                "&place=" + encodeURIComponent(placeUrl) +
-                "&repo=" + config.repo +
-                "&number=" + config.number,
+            'href': host + '/github/place/changeIssueState?' +      // call endpoint to proxy the close issue signal
+                "ts=" + new Date().getTime()+                       // to github, providing this info:
+                "&place=" + encodeURIComponent(placeUrl) +          // - jive place identity
+                "&repo=" + config.repo +                            // - github repo
+                "&number=" + config.number,                         // - girhub issue number
             headers: { 'Content-Type': ['application/json'] },
             'noCache': true,
             'authz': 'signed',

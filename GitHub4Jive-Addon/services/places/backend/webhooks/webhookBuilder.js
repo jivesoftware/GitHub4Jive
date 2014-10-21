@@ -24,12 +24,15 @@ var JiveFacade = require(libDir + "github4jive/JiveApiFacade");
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // create a webhook processor and attaching event handlers to it
 
-var issueHandler = require("./issueHandler");               // creates Jive discussions based on GitHub issue creation event
-var issueCommentHandler = require("./issueCommentHandler"); // replies to Jive discussions based on GitHub issue comment event
+var issueHandler = require("./issueHandler");
+var issueCommentHandler = require("./issueCommentHandler");
 
 module.exports = new GitHubWebhookBuilder(
     //
-    [ issueHandler, issueCommentHandler ],
+    [
+        issueHandler,             // creates Jive discussions based on GitHub issue creation event
+        issueCommentHandler       // replies to Jive discussions based on GitHub issue comment event
+    ],
 
     //
     function(lhs, rhs) {

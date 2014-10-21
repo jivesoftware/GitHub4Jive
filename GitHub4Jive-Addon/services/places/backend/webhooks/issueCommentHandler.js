@@ -39,7 +39,7 @@ thisHandler.setup = function(setupOptions) {
         var gitComment = gitData.comment.body;
       
         if(commentDidNotOriginateFromJive.call( self, gitComment)){
-            self.helpers.getDiscussionForIssue(jiveApi,setupOptions.placeUrl, gitData.issue.id)
+            self.helpers.getDiscussionForIssue(jiveApi, setupOptions.placeUrl, gitData.issue.id)
                 .then(function (discussion) {
                     addCommentToDiscussion.call(self, jiveApi, gitData, auth, discussion);
                 })
@@ -61,7 +61,7 @@ function formatGitComment(gitComment) {
 function addCommentToDiscussion(jiveApi, gitData, gitAuth, discussion){
     var self = this;
 
-    if(discussion){
+    if (discussion) {
         return self.gitHubFacade.getUserDetails(gitData.comment.user.login, gitAuth).then(function (user) {
             var builder = new self.jiveContentBuilder();
             var gitComment = gitData.comment.body;
@@ -73,8 +73,8 @@ function addCommentToDiscussion(jiveApi, gitData, gitAuth, discussion){
             return jiveApi.replyToDiscussion(discussion.contentID , jiveReply).then(function (response) {
                 if (!response.success) {
                     jive.logger.error("Error creating comment on " + discussion.subject, response);
-                }else{
-                    jiveApi.attachPropsToReply(response.entity.id,{fromGitHub: true}).then(function (response) {
+                } else {
+                    jiveApi.attachPropsToReply(response.entity.id, {fromGitHub: true} ).then(function (response) {
                         if (!response.success) {
                             jive.logger.error("Error attaching props to comment", response);
                         }

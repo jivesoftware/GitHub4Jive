@@ -16,6 +16,13 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is a UITableViewController that gets a list of our Jive followers.
+ *
+ * Check out the code in -viewDidAppear:animated: to see the call to Jive to
+ * get our follower list.
+ */
+
 
 #import "JVJiveConnectionTableViewController.h"
 #import "JVGithubCollaboratorConfirmViewController.h"

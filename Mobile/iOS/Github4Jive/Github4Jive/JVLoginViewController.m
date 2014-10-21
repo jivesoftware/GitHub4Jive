@@ -16,6 +16,15 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is a view controller that handles logging into a Jive instance
+ * and takes care of displaying errors.
+ *
+ * Check out -loginToJive.
+ *
+ * We also use this controller to forward the user to Github for login.
+ */
+
 #import "JVLoginViewController.h"
 #import "JVJiveFactory.h"
 #import <Jive/Jive.h>
@@ -120,19 +129,7 @@
     } else if (self.userName.text.length == 0) {
         [self.userName becomeFirstResponder];
     } else if (self.password.text.length > 0) {
-        [self.activityIndicator startAnimating];
-        [self.password resignFirstResponder];
-        self.userName.enabled = NO;
-        self.password.enabled = NO;
-        [self.jiveFactory loginWithName:self.userName.text
-                            password:self.password.text
-                            complete:^(JivePerson *person) {
-                                [self handleLogin:person];
-                            } error:^(NSError *error) {
-                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLoginViewControllerJiveLoginError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                                [self resetLoginView];
-                                [self.password becomeFirstResponder];
-                            }];
+        [self loginToJive];
     }
     
     return NO;
@@ -140,9 +137,27 @@
 
 #pragma mark - Private API
 
-- (void)handleLogin:(JivePerson *)person {
-    self.jiveMePerson = person;
-    [self resetLoginView];
+- (void)loginToJive {
+    [self.activityIndicator startAnimating];
+    [self.password resignFirstResponder];
+    self.userName.enabled = NO;
+    self.password.enabled = NO;
+    [self.jiveFactory loginWithName:self.userName.text
+                           password:self.password.text
+                           complete:^(JivePerson *person) {
+                               [self resetLoginView];
+
+                               self.jiveMePerson = person;
+                               [self loginSucceededSoAuthToGithub];
+                           } error:^(NSError *error) {
+                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVLoginViewControllerJiveLoginError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                               [self resetLoginView];
+                               [self.password becomeFirstResponder];
+                           }];
+
+}
+
+- (void)loginSucceededSoAuthToGithub {
     
     GTMOAuth2ViewControllerTouch *oauthViewController = [self.githubClient oauthViewControllerWithSuccess:^{
         [self.navigationController dismissViewControllerAnimated:NO completion:nil];

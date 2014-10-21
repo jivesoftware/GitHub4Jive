@@ -22,6 +22,8 @@
 @interface JVOAuthRefresher ()
 
 @property(nonatomic) JVJiveFactory *jiveFactory;
+
+//
 @property(nonatomic) NSMutableArray *retryBlocks;
 @property(nonatomic) NSMutableArray *failBlocks;
 
@@ -39,6 +41,8 @@
     
     return self;
 }
+
+// This gets called if an operation fails and maybe should be retried.
 
 - (void)retryingOperation:(NSOperation *)retryingOperation
      retryFailedOperation:(NSOperation *)failedOperation
@@ -58,6 +62,8 @@
         failBlock(originalError);
     }
 }
+
+// Take a stab at refreshing OAuth, if we can.
 
 - (void)tryReauthenticatingHTTPRequestOperation:(AFHTTPRequestOperation *)retryingHTTPRequestOperation
                                    thatFailedWithError:(NSError *)originalError
@@ -86,6 +92,8 @@
         }];
     }
 }
+
+// Make a clone of the operation that failed, using the original request.
 
 -(NSOperation<JiveRetryingOperation>*)retriableOperationForFailedOperation:(NSOperation<JiveRetryingOperation>*)failedOperation {
     AFURLConnectionOperation<JiveRetryingOperation> *newOperation;

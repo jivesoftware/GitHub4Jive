@@ -16,6 +16,11 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is a view controller that displays and removes repo collaborators.
+ * There's nothing Jive-specific in this code.
+ */
+
 #import "JVRepoCollaboratorTableViewController.h"
 #import "JVJiveConnectionTableViewController.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>

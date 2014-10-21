@@ -16,6 +16,15 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is our app's interface into the Jive SDK.  We'll define methods here
+ * that handle the heavy lifting between our app and Jive.
+ * 
+ * Of note is logging in, OAuth refreshing, secure credential storage, and
+ * image request authentication.
+ */
+
+
 #import "JVJiveFactory.h"
 #import "JVOAuthRefresher.h"
 #import "JVClientConfig.h"
@@ -39,6 +48,8 @@
 
 @implementation JVJiveFactory
 
+// Initialize our client, and kick off a version check against the
+// Jive instance at the specified url.
 
 - (id)initWithInstanceURL:(NSURL *)instanceURL
                  complete:(JivePlatformVersionBlock)completeBlock
@@ -51,6 +62,10 @@
                                  authorizationDelegate:self];
         
         self.keyChainStore = [UICKeyChainStore keyChainStore];
+        
+        // If requests fail due to invalid OAuth tokens, the Jive SDK will attempt to
+        // retry the operation.  JVOAuthRefresher provides a means to handle requesting the
+        // OAuth token refresh.
         
         self.oauthRefresher = [[JVOAuthRefresher alloc] initWithJiveFactory:self];
         self.jive.defaultOperationRetrier = self.oauthRefresher;
@@ -72,6 +87,11 @@
     }
 }
 
+// Use the  OAuth consumer key and secret provided in the client_config plist, along with the
+// user name and password, to attempt to get an OAuth token.
+
+// If we get credentials back, then we should securely store them (see -setCredentials: here).
+
 - (void)loginWithName:(NSString *)userName
              password:(NSString *)password
              complete:(JivePersonCompleteBlock)completeBlock
@@ -91,6 +111,9 @@
     }];
 }
 
+
+// Get the user data for the currently logged in Jive user
+
 - (void)getMe:(JivePersonCompleteBlock)completeBlock error:(JiveErrorBlock)errorBlock {
     [self.jive me:^(JivePerson *me) {
         completeBlock(me);
@@ -98,6 +121,9 @@
         errorBlock(e);
     }];
 }
+
+// Attempt to send a token revocation request at the server.  This way, when the user logs out,
+// they don't have an orphaned entry in their list of authorized apps on the Jive instance.
 
 - (void)logout:(JiveCompletedBlock)completeBlock error:(JiveErrorBlock)errorBlock; {
     [self.jive OAuthRevocationWithOAuthCredentials:self.credentials onComplete:^{
@@ -114,6 +140,8 @@
     self.communityUrl = nil;
 }
 
+// If the OAuth access token is invalid due to expiry, then attempt to refresh it.
+
 -(void)attemptOAuthRefreshWithCompleteBlock:(JiveCompletedBlock)onComplete onError:(JiveErrorBlock)onError {
     [self.jive OAuthTokenRefreshWithOAuthID:self.clientConfig.jiveOAuthConsumerKey
                                 OAuthSecret:self.clientConfig.jiveOAuthConsumerSecret
@@ -127,34 +155,16 @@
 }
 
 -(BOOL)hasCredentialsForCommunity {
-    return ([self.communityUrl isEqualToString:[self.jive.jiveInstanceURL absoluteString]]);
-}
-
--(void)setCredentials:(JiveOAuthCredentials *)credentials {
-    [self.keyChainStore setData:[NSKeyedArchiver archivedDataWithRootObject:credentials] forKey:@"oauthCredentials"];
-    [self.keyChainStore synchronize];
-}
-
--(JiveOAuthCredentials*)credentials {
-    return [NSKeyedUnarchiver unarchiveObjectWithData:[self.keyChainStore dataForKey:@"oauthCredentials"]];
-}
-
-- (void)applyCredentialsToRequest:(NSMutableURLRequest*)request {
-    [self.credentials applyToRequest:request];
-}
-
-- (void)setCommunityUrl:(NSString *)communityUrl {
-    [self.keyChainStore setString:communityUrl forKey:@"communityUrl"];
-    [self.keyChainStore synchronize];
-}
-
-- (NSString*)communityUrl {
-    return [self.keyChainStore stringForKey:@"communityUrl"];
+    return ([self.communityUrl isEqualToString:[self.jive.jiveInstanceURL absoluteString]] &&
+            self.credentials != nil);
 }
 
 - (Jive*)jiveInstance {
     return self.jive;
 }
+
+// Image requests against the Jive instance need to be authenticated.  This provides a means to
+// auth those requests.
 
 - (NSMutableURLRequest *)imageURLRequestForURL:(NSURL *)imageURL {
     NSMutableURLRequest *imageURLRequest = nil;
@@ -173,7 +183,7 @@
 
 - (JiveMobileAnalyticsHeader *)mobileAnalyticsHeaderForJiveInstance:(NSURL *)url {
     if (!self.mobileAnalyticsHeader) {
-        self.mobileAnalyticsHeader = [[JiveMobileAnalyticsHeader alloc] initWithAppID:@"Example Jive iOS SDK app" // Your custome app id
+        self.mobileAnalyticsHeader = [[JiveMobileAnalyticsHeader alloc] initWithAppID:@"Github4Jive" // Your custom app id
                                                                            appVersion:[NSString stringWithFormat:@"%1$@ (%2$@)", // The version information from your .plist
                                                                                        [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
                                                                                        [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]]
@@ -184,5 +194,33 @@
     
     return self.mobileAnalyticsHeader;
 }
+
+#pragma mark - Private API
+
+- (void)setCommunityUrl:(NSString *)communityUrl {
+    [self.keyChainStore setString:communityUrl forKey:@"communityUrl"];
+    [self.keyChainStore synchronize];
+}
+
+- (NSString*)communityUrl {
+    return [self.keyChainStore stringForKey:@"communityUrl"];
+}
+
+// Securely access credentials via the iOS Keychain.
+
+-(void)setCredentials:(JiveOAuthCredentials *)credentials {
+    [self.keyChainStore setData:[NSKeyedArchiver archivedDataWithRootObject:credentials] forKey:@"oauthCredentials"];
+    [self.keyChainStore synchronize];
+}
+
+-(JiveOAuthCredentials*)credentials {
+    return [NSKeyedUnarchiver unarchiveObjectWithData:[self.keyChainStore dataForKey:@"oauthCredentials"]];
+}
+
+- (void)applyCredentialsToRequest:(NSMutableURLRequest*)request {
+    [self.credentials applyToRequest:request];
+}
+
+
 
 @end

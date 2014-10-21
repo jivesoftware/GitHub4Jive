@@ -16,6 +16,17 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is a view controller that displays a mashup of Jive user info,
+ * as well as Github user info.
+ *
+ * Pay especially close attention to fetching avatars for Jive users.
+ * The URL request must be authenticated.
+ *
+ * Check out -displayJiveInfo for implementation details.
+ */
+
+
 #import "JVLandingViewController.h"
 #import "JVRepoCollaboratorTableViewController.h"
 #import <UIImageView+AFNetworking.h>

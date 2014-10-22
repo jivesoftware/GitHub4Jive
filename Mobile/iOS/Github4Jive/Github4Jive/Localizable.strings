@@ -42,8 +42,8 @@
 "JVRepoCollaboratorTableViewControllerRemoveCollaboratorError" = "An error occurred removing this collaborator.";
 "JVRepoCollaboratorTableViewControllerFetchCollaboratorError" = "An error occurred fetching this repo's collaborators.";
 
-"JVJiveConnectionTableViewControllerMyFollowers" = "My Followers";
-"JVJiveConnectionTableViewControllerFetchFollowersError" = "An error occurred fetching your Jive followers.";
+"JVJiveConnectionTableViewControllerMyConnections" = "My Connections";
+"JVJiveConnectionTableViewControllerFetchConnectionsError" = "An error occurred fetching your Jive connections.";
 "JVJiveConnectionTableViewControllerNoUserFound" = "No User Found";
 "JVJiveConnectionTableViewControllerNoUserFoundMessage" = "We couldn't find a Github user with this person's work email.";
 "JVJiveConnectionTableViewControllerGithubSearchFailedMessage" = "An error occurred while trying to see if this follower is on Github.";

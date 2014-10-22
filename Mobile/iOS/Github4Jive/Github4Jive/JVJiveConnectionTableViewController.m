@@ -62,19 +62,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"JVJiveConnectionTableViewControllerMyFollowers", nil);
+    self.title = NSLocalizedString(@"JVJiveConnectionTableViewControllerMyConnections", nil);
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [[self.jiveFactory jiveInstance] followers:self.jiveMePerson onComplete:^(NSArray *followers) {
-        self.jiveUsersInSet = followers;
+    // withOptions takes a JivePagedRequestOptions, if you want to get additional pages.
+    
+    [[self.jiveFactory jiveInstance] following:self.jiveMePerson withOptions:nil onComplete:^(NSArray *connections) {
+        self.jiveUsersInSet = connections;
         [self.tableView reloadData];
     } onError:^(NSError *error) {
-        NSLog(@"Error getting followers %@", error);
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchFollowersError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-    }];    
+        NSLog(@"Error getting connections %@", error);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchConnectionsError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    }];
 }
 
 

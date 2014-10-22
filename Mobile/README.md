@@ -5,7 +5,7 @@ delivered at JiveWorld14 on Wednesday, October 22.
 
 The projects act as a demonstration of a Jive SDK mobile integration with an external service.  The demo app
 allows you to log into a Jive instance, and see a mashup of your Jive and Github user info.  You can add
-collaborators to your Github repositories based upon those who follow you in Jive.  If your Jive follower
+collaborators to your Github repositories based upon those who you follow in Jive.  If your Jive follower
 has a publicly listed email address in Github, you can add that person as a collaborator to your repos.
 
 The projects also act as a demonstration of how to sign into a Jive instance using OAuth on both iOS
@@ -31,8 +31,8 @@ mobile addon into your Jive instance.
 
 ## Limitations
 
-The iOS app does not currently do any paging of Github results. If you have more than 30 repos, you will 
-only see the first 30.  Sorry!
+The iOS app does not currently do any paging of Github or Jive results. If you have more than 30 repos, or 25 
+Jive connections, you will only see the first 30.  Sorry!
 
 ## Developer Challenge Exercise
 

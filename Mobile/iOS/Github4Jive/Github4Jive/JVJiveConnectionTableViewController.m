@@ -16,12 +16,23 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This is a UITableViewController that gets a list of our Jive followers.
+ *
+ * Check out the code in -viewDidAppear:animated: to see the call to Jive to
+ * get our follower list.
+ */
+
 
 #import "JVJiveConnectionTableViewController.h"
 #import "JVGithubCollaboratorConfirmViewController.h"
 #import <AFNetworking.h>
+#import <Masonry.h>
 
 @interface JVJiveConnectionTableViewController ()
+
+@property(nonatomic) UIView *tableHeaderView;
+@property(nonatomic) UISegmentedControl *tableSegmentedControl;
 
 @property(nonatomic) JVGithubClient *githubClient;
 @property(nonatomic) JVGithubRepo *repo;
@@ -50,24 +61,43 @@
     return self;
 }
 
+-(void)loadView {
+    [super loadView];
+    self.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0,0, CGRectGetWidth(self.tableView.frame), 44)];
+
+    NSArray *itemArray = [NSArray arrayWithObjects: NSLocalizedString(@"JVJiveConnectionTableViewControllerFollowing", nil),
+                          NSLocalizedString(@"JVJiveConnectionTableViewControllerFollowers", nil), nil];
+    self.tableSegmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    [self.tableSegmentedControl setSelectedSegmentIndex:0];
+    [self.tableSegmentedControl setEnabled:YES];
+    
+    [self.tableSegmentedControl addTarget:self
+                                action:@selector(connectionTypeChanged)
+                      forControlEvents:UIControlEventValueChanged];
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"JVJiveConnectionTableViewControllerMyFollowers", nil);
+    self.title = NSLocalizedString(@"JVJiveConnectionTableViewControllerMyConnections", nil);
+    
+    [self.tableHeaderView addSubview:self.tableSegmentedControl];
+    [self.tableSegmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@40);
+        make.width.equalTo(@200);
+        make.centerX.equalTo(self.tableHeaderView.mas_centerX);
+        make.centerY.equalTo(self.tableHeaderView.mas_centerY);
+    }];
+        
+    self.tableView.tableHeaderView = self.tableHeaderView;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [[self.jiveFactory jiveInstance] followers:self.jiveMePerson onComplete:^(NSArray *followers) {
-        self.jiveUsersInSet = followers;
-        [self.tableView reloadData];
-    } onError:^(NSError *error) {
-        NSLog(@"Error getting followers %@", error);
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchFollowersError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-    }];    
+    [self.tableSegmentedControl setSelectedSegmentIndex:0];
+    [self loadFollowing];
 }
 
 
@@ -139,7 +169,36 @@
             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerGithubSearchFailedMessage", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
         }];
     }
-    
+}
+
+-(void)connectionTypeChanged {
+    if (self.tableSegmentedControl.selectedSegmentIndex == 0) {
+        [self loadFollowing];
+    } else {
+        [self loadFollowers];
+    }
+}
+
+-(void)loadFollowing {
+    // withOptions takes a JivePagedRequestOptions, if you want to get additional pages.
+    [[self.jiveFactory jiveInstance] following:self.jiveMePerson withOptions:nil onComplete:^(NSArray *connections) {
+        self.jiveUsersInSet = connections;
+        [self.tableView reloadData];
+    } onError:^(NSError *error) {
+        NSLog(@"Error getting connections %@", error);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchConnectionsError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    }];
+
+}
+
+-(void) loadFollowers {    
+    [[self.jiveFactory jiveInstance] followers:self.jiveMePerson withOptions:nil onComplete:^(NSArray *connections) {
+        self.jiveUsersInSet = connections;
+        [self.tableView reloadData];
+    } onError:^(NSError *error) {
+        NSLog(@"Error getting connections %@", error);
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) message:NSLocalizedString(@"JVJiveConnectionTableViewControllerFetchConnectionsError", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    }];
 }
 
 @end

@@ -16,9 +16,6 @@
 		0F9B86D1179854FE005BBFE8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0F9B86CF179854FE005BBFE8 /* InfoPlist.strings */; };
 		0F9B86D3179854FE005BBFE8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F9B86D2179854FE005BBFE8 /* main.m */; };
 		0F9B86D7179854FE005BBFE8 /* JVAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F9B86D6179854FE005BBFE8 /* JVAppDelegate.m */; };
-		0F9B86D9179854FE005BBFE8 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F9B86D8179854FE005BBFE8 /* Default.png */; };
-		0F9B86DB179854FE005BBFE8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F9B86DA179854FE005BBFE8 /* Default@2x.png */; };
-		0F9B86DD179854FE005BBFE8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F9B86DC179854FE005BBFE8 /* Default-568h@2x.png */; };
 		0F9B86F017985C1D005BBFE8 /* JVLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F9B86EF17985C1D005BBFE8 /* JVLoginViewController.m */; };
 		0FA7CC6618610077009A26C5 /* JVCommunityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA7CC6518610077009A26C5 /* JVCommunityViewController.m */; };
 		63B68B352457470EB54E3A27 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 930CB551E0A44ABF819401D7 /* libPods.a */; };
@@ -30,6 +27,7 @@
 		DE6198D319F477AB002253C3 /* JVJiveConnectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6198D219F477AB002253C3 /* JVJiveConnectionTableViewController.m */; };
 		DE6198D619F496B8002253C3 /* JVClientConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6198D519F496B8002253C3 /* JVClientConfig.m */; };
 		DE6198D819F498F3002253C3 /* client_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6198D719F498F3002253C3 /* client_config.plist */; };
+		DE798C2019F811E9005F20BB /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE798C1F19F811E9005F20BB /* Launch Screen.xib */; };
 		DE90483D19EE3C92003A8286 /* JVRepoCollaboratorTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE90483C19EE3C92003A8286 /* JVRepoCollaboratorTableViewController.m */; };
 		DE90484319EF6183003A8286 /* JVOAuthRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = DE90484219EF6183003A8286 /* JVOAuthRefresher.m */; };
 		DEAF819719ECD55A0070090E /* JVLandingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEAF819619ECD55A0070090E /* JVLandingViewController.m */; };
@@ -51,9 +49,6 @@
 		0F9B86D4179854FE005BBFE8 /* Github4Jive-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Github4Jive-Prefix.pch"; sourceTree = "<group>"; };
 		0F9B86D5179854FE005BBFE8 /* JVAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JVAppDelegate.h; sourceTree = "<group>"; };
 		0F9B86D6179854FE005BBFE8 /* JVAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JVAppDelegate.m; sourceTree = "<group>"; };
-		0F9B86D8179854FE005BBFE8 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		0F9B86DA179854FE005BBFE8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		0F9B86DC179854FE005BBFE8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0F9B86EE17985C1D005BBFE8 /* JVLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVLoginViewController.h; sourceTree = "<group>"; };
 		0F9B86EF17985C1D005BBFE8 /* JVLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JVLoginViewController.m; sourceTree = "<group>"; };
 		0FA7CC6418610077009A26C5 /* JVCommunityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVCommunityViewController.h; sourceTree = "<group>"; };
@@ -73,6 +68,7 @@
 		DE6198D419F496B8002253C3 /* JVClientConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVClientConfig.h; sourceTree = "<group>"; };
 		DE6198D519F496B8002253C3 /* JVClientConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JVClientConfig.m; sourceTree = "<group>"; };
 		DE6198D719F498F3002253C3 /* client_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = client_config.plist; sourceTree = "<group>"; };
+		DE798C1F19F811E9005F20BB /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		DE90483B19EE3C92003A8286 /* JVRepoCollaboratorTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVRepoCollaboratorTableViewController.h; sourceTree = "<group>"; };
 		DE90483C19EE3C92003A8286 /* JVRepoCollaboratorTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JVRepoCollaboratorTableViewController.m; sourceTree = "<group>"; };
 		DE90484119EF6183003A8286 /* JVOAuthRefresher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JVOAuthRefresher.h; sourceTree = "<group>"; };
@@ -156,10 +152,8 @@
 				0F9B86CF179854FE005BBFE8 /* InfoPlist.strings */,
 				0F9B86D2179854FE005BBFE8 /* main.m */,
 				0F9B86D4179854FE005BBFE8 /* Github4Jive-Prefix.pch */,
-				0F9B86D8179854FE005BBFE8 /* Default.png */,
-				0F9B86DA179854FE005BBFE8 /* Default@2x.png */,
-				0F9B86DC179854FE005BBFE8 /* Default-568h@2x.png */,
 				DE5B319E19F568B500C3ADBA /* Localizable.strings */,
+				DE798C1F19F811E9005F20BB /* Launch Screen.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -271,10 +265,8 @@
 			files = (
 				0F9B86D1179854FE005BBFE8 /* InfoPlist.strings in Resources */,
 				DE5B319F19F568B500C3ADBA /* Localizable.strings in Resources */,
-				0F9B86D9179854FE005BBFE8 /* Default.png in Resources */,
-				0F9B86DB179854FE005BBFE8 /* Default@2x.png in Resources */,
 				DE6198D819F498F3002253C3 /* client_config.plist in Resources */,
-				0F9B86DD179854FE005BBFE8 /* Default-568h@2x.png in Resources */,
+				DE798C2019F811E9005F20BB /* Launch Screen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,7 +364,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -396,7 +388,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

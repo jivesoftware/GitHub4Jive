@@ -16,6 +16,14 @@
  limitations under the License.
  */
 
+/* WHAT'S INSIDE:
+ * This view controller displays a mashup of our Jive collaborator and a 
+ * potential Github user to add as a collaborator.
+ * 
+ * Get a look at -displayJiveInfo to see an example of another authed image
+ * request (the user's Jive avatar).
+ */
+
 #import <Masonry.h>
 #import <AFNetworking.h>
 
